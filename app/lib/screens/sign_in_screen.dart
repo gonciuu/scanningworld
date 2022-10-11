@@ -2,14 +2,31 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:scanning_world/theme/theme.dart';
+import 'package:scanning_world/widgets/auth/sign_in_form_fields.dart';
 
-class SignInScreen extends StatelessWidget {
+import '../theme/widgtes_base_theme.dart';
+
+class SignInScreen extends StatefulWidget {
   SignInScreen({Key? key}) : super(key: key);
-  final _formKey = GlobalKey<FormBuilderState>();
+
+  @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  final phoneNumberController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  Future<void> _onSubmit() async {
+    if (_formKey.currentState!.validate()) {
+      print('validated');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +36,20 @@ class SignInScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: FormBuilder(
+              child: Form(
                 key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                onChanged: () {
+                  Form.of(primaryFocus!.context!)?.save();
+                },
                 child: Column(
                   children: <Widget>[
                     Image.asset(
                       'assets/logo_scanningworld.png',
-                      width: 150,
+                      width: 120,
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 16,
                     ),
                     const Text('Zaloguj się',
                         style: TextStyle(
@@ -36,51 +57,32 @@ class SignInScreen extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       'Zaloguj się na swoje konto, szukaj kodów QR i zdobywaj nogrody',
-                      style: TextStyle(color: Colors.grey.shade600),
+                      style:
+                          TextStyle(color: Colors.grey.shade600, fontSize: 15),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 36),
-                    FormBuilderField(
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                        FormBuilderValidators.numeric(),
-                      ]),
-                      name: 'phone',
-                      builder: (field) {
-                        return PlatformTextField(
-                          keyboardType: TextInputType.phone,
-                          cupertino: (_, __) => CupertinoTextFieldData(
-                            cursorColor: primary[700],
-                            placeholder: 'Nr. Telefonu',
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            prefix: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Icon(
-                                CupertinoIcons.phone,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          material: (_, __) => MaterialTextFieldData(
-                            decoration:   InputDecoration(
-                              contentPadding: EdgeInsets.zero,
-                              filled: true,
-                              fillColor: Colors.white,
-                              hintText: 'Nr. Telefonu',
-                              prefixIcon: const Icon(
-                                Icons.phone_outlined,
-                                color: Colors.black,
-                              ),
-                              border:OutlineInputBorder(
-                                gapPadding: 0,
-                                borderSide: BorderSide.none,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    )
+                    SignInFormFields(),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text('Zapomniałem hasła',
+                            style:
+                                TextStyle(color: primary[600], fontSize: 13)),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: PlatformElevatedButton(
+                        onPressed: _onSubmit,
+                        child: const Text(
+                          'Zaloguj się',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

@@ -28,6 +28,19 @@ var baseTheme = ThemeData(brightness: Brightness.light);
 final materialTheme = MaterialAppData(
   themeMode: ThemeMode.light,
   theme: ThemeData(
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        textStyle: GoogleFonts.poppins().copyWith(
+          color: Colors.white,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    ),
     textTheme: GoogleFonts.poppinsTextTheme().copyWith(
       headline1: GoogleFonts.poppins(
         fontSize: 96,

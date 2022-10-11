@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return PlatformApp(
         title: 'Flutter Demo',
+
         material: (_, __) => materialTheme,
         cupertino: (_, __) => cupertinoTheme,
         home: SignInScreen());
