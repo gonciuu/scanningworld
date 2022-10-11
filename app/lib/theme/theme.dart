@@ -103,7 +103,7 @@ final materialTheme = MaterialAppData(
       button: GoogleFonts.poppins(
         fontSize: 14,
         fontWeight: FontWeight.w500,
-        letterSpacing: 1.25,
+        letterSpacing: 0.25,
         color: Colors.black,
       ),
       caption: GoogleFonts.poppins(
@@ -121,6 +121,9 @@ final materialTheme = MaterialAppData(
     ),
     primarySwatch: primarySwatch,
     appBarTheme: const AppBarTheme(
+      iconTheme: IconThemeData(
+        color: Colors.white, //change your color here
+      ),
       centerTitle: true,
       backgroundColor: Color(0xff32BE73),
       titleTextStyle: TextStyle(

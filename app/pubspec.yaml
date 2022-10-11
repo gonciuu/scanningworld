@@ -38,6 +38,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_platform_widgets: ^2.0.0
   google_fonts: ^3.0.1
+  dio: ^4.0.6
+  dio_cookie_manager: ^2.0.0
+  cookie_jar: ^3.0.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.10.0

@@ -3,74 +3,80 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:scanning_world/utils/extensions.dart';
 
 import '../../theme/widgtes_base_theme.dart';
 
-class SignInFormFields extends StatelessWidget {
-  final TextEditingController phoneNumberController;
-  final TextEditingController passwordController;
-
-  SignInFormFields(
+class RegisterFormFields2 extends StatelessWidget {
+  const RegisterFormFields2(
       {Key? key,
-      required this.phoneNumberController,
-      required this.passwordController})
+        required this.usernameController,
+        required this.emailController,
+      })
       : super(key: key);
 
-
+  final TextEditingController usernameController;
+  final TextEditingController emailController;
 
   @override
   Widget build(BuildContext context) {
-
-    final Widget phoneNumberField = PlatformTextFormField(
+    final Widget usernameField = PlatformTextFormField(
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'To pole nie może być puste';
         }
-        if (value.length < 9) {
-          return 'Podaj poprawny format numeru telefonu';
-        }
+
         return null;
       },
-      controller: phoneNumberController,
-      keyboardType: TextInputType.phone,
+      controller: usernameController,
       textInputAction: TextInputAction.next,
       cupertino: (_, __) => cupertinoTextFieldDecoration(
-          placeholder: 'Nr. Telefonu',
+          placeholder: 'Nazwa użytkownika',
           prefix: const Padding(
             padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 4),
             child: Icon(
-              CupertinoIcons.phone,
+              CupertinoIcons.person,
               color: Colors.black,
             ),
           )),
       material: (_, __) => MaterialTextFormFieldData(
         decoration: materialInputDecoration.copyWith(
           prefixIcon: const Icon(
-            Icons.phone_outlined,
+            Icons.person_outline,
             color: Colors.black,
           ),
-          hintText: 'Nr. Telefonu',
+          hintText: 'Nazwa użytkownika',
         ),
       ),
     );
 
-    final Widget passwordField = PlatformTextFormField(
-      controller: passwordController,
+    final Widget emailField = PlatformTextFormField(
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'To pole nie może być puste';
+        }
+        if(!value.isValidEmail()){
+          return 'Niepoprawny adres email';
+        }
+        return null;
+      },
+      controller: emailController,
       obscureText: true,
-      textInputAction: TextInputAction.done,
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
       cupertino: (_, __) => cupertinoTextFieldDecoration(
           placeholder: 'Hasło',
           prefix: const Padding(
             padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 4),
             child: Icon(
-              CupertinoIcons.lock,
+              Icons.alternate_email_outlined,
               color: Colors.black,
             ),
           )),
       material: (_, __) => MaterialTextFormFieldData(
         decoration: materialInputDecoration.copyWith(
           prefixIcon: const Icon(
-            Icons.lock_outline,
+            Icons.alternate_email_outlined,
             color: Colors.black,
           ),
           hintText: 'Hasło',
@@ -78,16 +84,19 @@ class SignInFormFields extends StatelessWidget {
       ),
     );
 
+
     return Platform.isIOS
         ? CupertinoFormSection.insetGrouped(
-            margin: EdgeInsets.zero,
-            children: [phoneNumberField, passwordField])
+        margin: EdgeInsets.zero,
+        children: [usernameField, emailField])
         : Column(
-            children: [
-              phoneNumberField,
-              const SizedBox(height: 12),
-              passwordField,
-            ],
-          );
+      children: [
+        usernameField,
+        const SizedBox(height: 12),
+        emailField,
+        const SizedBox(height: 12),
+
+      ],
+    );
   }
 }

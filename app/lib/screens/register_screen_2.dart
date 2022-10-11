@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:scanning_world/screens/register_screen_2.dart';
+import 'package:scanning_world/widgets/auth/register_form_fields_2.dart';
 
 import '../theme/theme.dart';
 import '../widgets/auth/register_form_fields_1.dart';
 
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({Key? key}) : super(key: key);
-  static const String routeName = '/register';
+class RegisterScreen2 extends StatelessWidget {
+  RegisterScreen2({Key? key}) : super(key: key);
+
+  static const String routeName = '/register2';
 
   final _formKey = GlobalKey<FormState>();
 
-  final phoneNumberController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
 
   Future<void> _register(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      Navigator.of(context).pushNamed(RegisterScreen2.routeName, arguments: {
-        'phoneNumber': phoneNumberController.text,
-        'password': passwordController.text,
-      });
+
+
     }
   }
 
@@ -28,7 +26,7 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return PlatformScaffold(
       appBar: PlatformAppBar(
-        title: Text('Zarejestruj się 1/2'),
+        title: Text('Zarejestruj się 2/2'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -50,7 +48,7 @@ class RegisterScreen extends StatelessWidget {
                     const SizedBox(
                       height: 16,
                     ),
-                    const Text('Zarejestruj się',
+                    const Text('Zarejestruj się 2/2',
                         style: TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 24)),
                     const SizedBox(height: 8),
@@ -61,42 +59,23 @@ class RegisterScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 36),
-                    RegisterFormFields1(
-                        phoneNumberController: phoneNumberController,
-                        passwordController: passwordController,
-                        confirmPasswordController: confirmPasswordController),
+                    RegisterFormFields2(
+                      usernameController: usernameController,
+                      emailController: emailController,
+                    ),
 
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: PlatformElevatedButton(
                         onPressed: () => _register(context),
                         child: const Text(
-                          'Zarejestruj się - krok 1/2',
+                          'Zarejestruj się',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Masz już konto? ",
-                            style: TextStyle(
-                                color: Colors.grey.shade600, fontSize: 14)),
-                        PlatformTextButton(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/sign-in');
-                            //Navigator.pushReplacementNamed(context, '/register');
-                          },
-                          child: Text(
-                            'Zaloguj się',
-                            style: TextStyle(color: primary[600], fontSize: 14),
-                          ),
-                        ),
-                      ],
-                    ),
+
                   ],
                 ),
               ),
