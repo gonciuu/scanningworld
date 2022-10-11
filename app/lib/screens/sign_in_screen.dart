@@ -25,6 +25,8 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> _onSubmit() async {
     if (_formKey.currentState!.validate()) {
       print('validated');
+      debugPrint(passwordController.text);
+      debugPrint(phoneNumberController.text);
     }
   }
 
@@ -62,7 +64,9 @@ class _SignInScreenState extends State<SignInScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 36),
-                    SignInFormFields(),
+                    SignInFormFields(
+                        passwordController: passwordController,
+                        phoneNumberController: phoneNumberController),
                     const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
