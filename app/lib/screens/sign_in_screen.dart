@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:scanning_world/screens/forgot_password_screen.dart';
 import '../theme/theme.dart';
 import '../widgets/auth/sign_in_form_fields.dart';
 
@@ -107,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 4, vertical: 0),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/forgot_password');
+                            Navigator.pushNamed(context, ForgotPasswordScreen.routeName);
                           },
                           child: Text(
                             'Zapomniałem hasła',
