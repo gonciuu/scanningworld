@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Patch, UseGuards, Req } from '@nestjs/common';
 import { Request } from 'express';
 
-import { AccessTokenGuard } from 'src/auth/guards/accesstoken.guard';
+import { AccessTokenGuard } from 'src/auth/guards/accessToken.guard';
 
 import { UpdateUserDto } from './dto/updateUserDto';
 import { User } from './schemas/user.schema';
