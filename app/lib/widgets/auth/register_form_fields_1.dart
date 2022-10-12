@@ -4,23 +4,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
+import '../../data/models/auth.dart';
 import '../../theme/widgtes_base_theme.dart';
 
 class RegisterFormFields1 extends StatelessWidget {
-  const RegisterFormFields1(
-      {Key? key,
-      required this.phoneNumberController,
-      required this.passwordController,
-      required this.confirmPasswordController})
-      : super(key: key);
+  const RegisterFormFields1({
+    Key? key,
+    required this.registerData,
+  }) : super(key: key);
 
-  final TextEditingController phoneNumberController;
-  final TextEditingController passwordController;
-  final TextEditingController confirmPasswordController;
+  final RegisterData registerData;
 
   @override
   Widget build(BuildContext context) {
     final Widget phoneNumberField = PlatformTextFormField(
+      controller: TextEditingController(text: registerData.phoneNumber),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'To pole nie może być puste';
@@ -30,7 +28,9 @@ class RegisterFormFields1 extends StatelessWidget {
         }
         return null;
       },
-      controller: phoneNumberController,
+      onChanged: (value) {
+        registerData.phoneNumber = value;
+      },
       keyboardType: TextInputType.phone,
       textInputAction: TextInputAction.next,
       cupertino: (_, __) => cupertinoTextFieldDecoration(
@@ -54,6 +54,7 @@ class RegisterFormFields1 extends StatelessWidget {
     );
 
     final Widget passwordField = PlatformTextFormField(
+      controller: TextEditingController(text: registerData.password),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'To pole nie może być puste';
@@ -63,7 +64,9 @@ class RegisterFormFields1 extends StatelessWidget {
         }
         return null;
       },
-      controller: passwordController,
+      onChanged: (value) {
+        registerData.password = value;
+      },
       obscureText: true,
       textInputAction: TextInputAction.next,
       cupertino: (_, __) => cupertinoTextFieldDecoration(
@@ -86,16 +89,19 @@ class RegisterFormFields1 extends StatelessWidget {
       ),
     );
     final Widget confirmPasswordField = PlatformTextFormField(
+      controller: TextEditingController(text: registerData.confirmPassword),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'To pole nie może być puste';
         }
-        if (value != passwordController.text) {
+        if (value != registerData.password) {
           return 'Hasła nie są takie same';
         }
         return null;
       },
-      controller: confirmPasswordController,
+      onChanged: (value) {
+        registerData.confirmPassword = value;
+      },
       obscureText: true,
       textInputAction: TextInputAction.done,
       cupertino: (_, __) => cupertinoTextFieldDecoration(
@@ -121,7 +127,7 @@ class RegisterFormFields1 extends StatelessWidget {
     return Platform.isIOS
         ? CupertinoFormSection.insetGrouped(
             margin: EdgeInsets.zero,
-            children: [phoneNumberField, passwordField,confirmPasswordField])
+            children: [phoneNumberField, passwordField, confirmPasswordField])
         : Column(
             children: [
               phoneNumberField,

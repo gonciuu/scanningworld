@@ -7,13 +7,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:scanning_world/theme/theme.dart';
-import 'package:scanning_world/widgets/auth/sign_in_form_fields.dart';
-
-import '../theme/widgtes_base_theme.dart';
+import '../theme/theme.dart';
+import '../widgets/auth/sign_in_form_fields.dart';
 
 class SignInScreen extends StatefulWidget {
-
   static const String routeName = '/sign-in';
 
   const SignInScreen({Key? key}) : super(key: key);
@@ -26,9 +23,11 @@ class _SignInScreenState extends State<SignInScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
+  //handle sign in data
   final phoneNumberController = TextEditingController();
   final passwordController = TextEditingController();
 
+  //handle form submission
   Future<void> _onSubmit() async {
     if (_formKey.currentState!.validate()) {
       var dio = Dio(BaseOptions(
@@ -98,8 +97,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     const SizedBox(height: 36),
                     SignInFormFields(
-                        passwordController: passwordController,
-                        phoneNumberController: phoneNumberController),
+                      phoneNumberController: phoneNumberController,
+                      passwordController: passwordController,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [

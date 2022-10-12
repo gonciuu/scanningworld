@@ -1,26 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:scanning_world/screens/register_screen_2.dart';
+import 'package:scanning_world/data/models/auth.dart';
 
 import '../theme/theme.dart';
 import '../widgets/auth/register_form_fields_1.dart';
+import '../widgets/auth/register_form_fields_2.dart';
 
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
+
   static const String routeName = '/register';
 
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  // handle register data
   final _formKey = GlobalKey<FormState>();
+  final RegisterData registerData = RegisterData();
 
-  final phoneNumberController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  //form step
+  int step = 0;
 
-  Future<void> _register(BuildContext context) async {
+  // handle form submission
+  void _nextStep() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.of(context).pushNamed(RegisterScreen2.routeName, arguments: {
-        'phoneNumber': phoneNumberController.text,
-        'password': passwordController.text,
-      });
+      _formKey.currentState!.save();
+      setState(() => step = 1);
+    }
+  }
+
+  //go to previous step
+  void _previousStep() {
+    setState(() => step = 0);
+  }
+
+  //register user
+  Future<void> _registerUser() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
     }
   }
 
@@ -28,7 +48,7 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return PlatformScaffold(
       appBar: PlatformAppBar(
-        title: Text('Zarejestruj się 1/2'),
+        title: Text(step == 0 ? 'Zarejestruj się 1/2' : "Zarejestruj się 2/2"),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -50,9 +70,30 @@ class RegisterScreen extends StatelessWidget {
                     const SizedBox(
                       height: 16,
                     ),
-                    const Text('Zarejestruj się',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 24)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('Zarejestruj się krok ',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 24),
+                        ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          transitionBuilder:
+                              (Widget child, Animation<double> animation) {
+                            return ScaleTransition(
+                                scale: animation, child: child);
+                          },
+                          child: Text(
+                            '${step + 1}',
+
+                            key: ValueKey<int>(step),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 24),
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       'Stwórz konto, szukaj kodów QR i zdobywaj nogrody',
@@ -61,41 +102,76 @@ class RegisterScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 36),
-                    RegisterFormFields1(
-                        phoneNumberController: phoneNumberController,
-                        passwordController: passwordController,
-                        confirmPasswordController: confirmPasswordController),
-
-                    const SizedBox(height: 8),
+                    AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder: (child, animation) {
+                          return SizeTransition(
+                              sizeFactor: animation, child: child);
+                        },
+                        child: step == 0
+                            ? RegisterFormFields1(
+                                registerData: registerData,
+                              )
+                            : RegisterFormFields2(
+                                registerData: registerData,
+                              )),
+                    const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: PlatformElevatedButton(
-                        onPressed: () => _register(context),
-                        child: const Text(
-                          'Zarejestruj się - krok 1/2',
-                          style: TextStyle(color: Colors.white),
+                        onPressed: step == 0 ? _nextStep : _registerUser,
+                        child: Text(
+                          step == 0
+                              ? 'Zarejestruj się - krok 1/2'
+                              : 'Zarejestruj się',
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("Masz już konto? ",
-                            style: TextStyle(
-                                color: Colors.grey.shade600, fontSize: 14)),
-                        PlatformTextButton(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/sign-in');
-                            //Navigator.pushReplacementNamed(context, '/register');
-                          },
-                          child: Text(
-                            'Zaloguj się',
-                            style: TextStyle(color: primary[600], fontSize: 14),
-                          ),
-                        ),
-                      ],
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (child, animation) {
+                        return ScaleTransition(scale: animation, child: child);
+                      },
+                      child: step == 0
+                          ? Container(
+                              height: 50,
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text("Masz już konto? ",
+                                      style: TextStyle(
+                                          color: Colors.grey.shade600,
+                                          fontSize: 14)),
+                                  PlatformTextButton(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4),
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, '/sign-in');
+                                      //Navigator.pushReplacementNamed(context, '/register');
+                                    },
+                                    child: Text(
+                                      'Zaloguj się',
+                                      style: TextStyle(
+                                          color: primary[600], fontSize: 14),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Container(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: SizedBox(
+                                height: 50,
+                                width: double.infinity,
+                                child: PlatformTextButton(
+                                  onPressed: _previousStep,
+                                  child: const Text('Wróc do kroku 1'),
+                                ),
+                              ),
+                            ),
                     ),
                   ],
                 ),
