@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:scanning_world/data/http/http_exception.dart';
 import 'package:scanning_world/data/providers/auth_provider.dart';
 import 'package:scanning_world/screens/forgot_password_screen.dart';
+import 'package:scanning_world/screens/wrappers/home_wrapper.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import 'package:scanning_world/widgets/common/error_dialog.dart';
 import '../theme/theme.dart';
@@ -44,12 +45,12 @@ class _SignInScreenState extends State<SignInScreen> {
               passwordController.text,
             );
         // login successful
-        //do something with response
+        if (!mounted) return;
+        Navigator.of(context).pushReplacementNamed(HomeWrapper.routeName);
       } on HttpError catch (e) {
         showPlatformDialog(
             context: context,
-            builder: (_) =>
-                ErrorDialog(message: "Error:  ${e.message}"));
+            builder: (_) => ErrorDialog(message: "Error:  ${e.message}"));
       } finally {
         setState(() => _isLoading = false);
       }

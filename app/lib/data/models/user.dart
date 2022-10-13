@@ -3,16 +3,14 @@ class User {
   String email;
   String phone;
   String? image;
-  String? token;
-  String? city;
+  String? region;
 
   User({
     required this.name,
     required this.email,
     required this.phone,
     this.image,
-    required this.token,
-    this.city,
+    this.region,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -20,18 +18,14 @@ class User {
         email: json["email"],
         phone: json["phone"],
         image: json["image"],
-        token: json["token"],
-        city: json["city"],
+        region: json["region"],
       );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = name;
-    data['email'] = email;
-    data['phone'] = phone;
-    data['city'] = city;
-    data['image'] = image;
-    data['token'] = token;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "email": email,
+        "phone": phone,
+        "image": image,
+        "region": region,
+  };
 }

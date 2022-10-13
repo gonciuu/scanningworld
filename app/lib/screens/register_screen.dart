@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:scanning_world/data/models/auth.dart';
+import 'package:scanning_world/screens/wrappers/home_wrapper.dart';
+import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 
+import '../data/http/http_exception.dart';
+import '../data/providers/auth_provider.dart';
 import '../theme/theme.dart';
 import '../widgets/auth/register_form_fields_1.dart';
 import '../widgets/auth/register_form_fields_2.dart';
+import '../widgets/common/error_dialog.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -23,6 +29,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   //form step
   int step = 0;
 
+  var _isLoading = false;
+
   // handle form submission
   void _nextStep() async {
     if (_formKey.currentState!.validate()) {
@@ -39,8 +47,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
   //register user
   Future<void> _registerUser() async {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-
+      try {
+        setState(() => _isLoading = true);
+        final response = await context.read<AuthProvider>().register(
+              registerData,
+            );
+        // login successful
+        if (!mounted) return;
+        Navigator.of(context).pushReplacementNamed(HomeWrapper.routeName);
+      } on HttpError catch (e) {
+        showPlatformDialog(
+            context: context,
+            builder: (_) => ErrorDialog(message: "Error:  ${e.message}"));
+      } finally {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -73,7 +94,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Zarejestruj się krok ',
+                        const Text(
+                          'Zarejestruj się krok ',
                           style: TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 24),
                         ),
@@ -86,7 +108,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                           child: Text(
                             '${step + 1}',
-
                             key: ValueKey<int>(step),
                             style: const TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 24),
@@ -110,8 +131,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         child: step == 0
                             ? RegisterFormFields1(
-                                registerData: registerData,
-                              )
+                                registerData: registerData, nextStep: _nextStep)
                             : RegisterFormFields2(
                                 registerData: registerData,
                               )),
@@ -119,13 +139,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: PlatformElevatedButton(
-                        onPressed: step == 0 ? _nextStep : _registerUser,
-                        child: Text(
-                          step == 0
-                              ? 'Zarejestruj się - krok 1/2'
-                              : 'Zarejestruj się',
-                          style: const TextStyle(color: Colors.white),
-                        ),
+                        onPressed: _isLoading
+                            ? null
+                            : step == 0
+                                ? _nextStep
+                                : _registerUser,
+                        child: _isLoading
+                            ? const CustomProgressIndicator()
+                            : Text(
+                                step == 0
+                                    ? 'Zarejestruj się - krok 1/2'
+                                    : 'Zarejestruj się',
+                                style: const TextStyle(color: Colors.white),
+                              ),
                       ),
                     ),
                     AnimatedSwitcher(

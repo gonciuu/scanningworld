@@ -36,11 +36,11 @@ class AuthProvider with ChangeNotifier {
       final response = await dio.post(
         '/auth/register',
         data: {
-          "name": registerData.username,
+          "name": registerData.name,
           "email": registerData.email,
           "password": registerData.password,
-          "phone": registerData.phoneNumber,
-          "region": registerData.city,
+          "phone": registerData.phone,
+          "region": registerData.region,
         },
       );
       return Session.fromJson(response.data!);

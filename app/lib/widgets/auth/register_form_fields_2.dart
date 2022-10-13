@@ -50,8 +50,8 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
 
   @override
   void initState() {
-    if (widget.registerData.city.isEmpty) {
-      widget.registerData.city = _citiesList[0];
+    if (widget.registerData.region.isEmpty) {
+      widget.registerData.region = _citiesList[0];
     }
 
     super.initState();
@@ -60,7 +60,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
   @override
   Widget build(BuildContext context) {
     final Widget usernameField = PlatformTextFormField(
-      controller: TextEditingController(text: widget.registerData.username),
+      controller: TextEditingController(text: widget.registerData.name),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'To pole nie może być puste';
@@ -68,7 +68,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
         return null;
       },
       onChanged: (value) {
-        widget.registerData.username = value;
+        widget.registerData.name = value;
       },
       textInputAction: TextInputAction.next,
       cupertino: (_, __) => cupertinoTextFieldDecoration(
@@ -137,7 +137,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
               Icons.location_city_outlined,
               color: Colors.black,
             )),
-        value: widget.registerData.city,
+        value: widget.registerData.region,
         icon: const Padding(
           padding: EdgeInsets.only(top: 2.0),
           child: Icon(
@@ -147,7 +147,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
           ),
         ),
         onChanged: (String? value) =>
-            setState(() => widget.registerData.city = value!),
+            setState(() => widget.registerData.region = value!),
         items: _citiesList.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
@@ -180,21 +180,25 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
                 child: Semantics(
                   inMutuallyExclusiveGroup: true,
                   selected: true,
-                  child: Text(widget.registerData.city),
+                  child: Text(widget.registerData.region),
                 ),
               ),
             ),
           ),
           const Padding(
             padding: EdgeInsets.only(right: 12.0),
-            child: Icon(CupertinoIcons.chevron_down, color: Colors.black,size: 20,),
+            child: Icon(
+              CupertinoIcons.chevron_down,
+              color: Colors.black,
+              size: 20,
+            ),
           ),
         ],
       ),
       onPressed: () => _showDialog(
         CupertinoPicker(
           scrollController: FixedExtentScrollController(
-            initialItem: _citiesList.indexOf(widget.registerData.city),
+            initialItem: _citiesList.indexOf(widget.registerData.region),
           ),
           magnification: 1.22,
           squeeze: 1.2,
@@ -203,7 +207,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
           // This is called when selected item is changed.
           onSelectedItemChanged: (int selectedItem) {
             setState(
-                () => widget.registerData.city = _citiesList[selectedItem]);
+                () => widget.registerData.region = _citiesList[selectedItem]);
           },
           children: List<Widget>.generate(_citiesList.length, (int index) {
             return Center(

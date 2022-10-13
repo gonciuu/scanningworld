@@ -11,14 +11,16 @@ class RegisterFormFields1 extends StatelessWidget {
   const RegisterFormFields1({
     Key? key,
     required this.registerData,
+    required this.nextStep,
   }) : super(key: key);
 
   final RegisterData registerData;
+  final Function nextStep;
 
   @override
   Widget build(BuildContext context) {
     final Widget phoneNumberField = PlatformTextFormField(
-      controller: TextEditingController(text: registerData.phoneNumber),
+      controller: TextEditingController(text: registerData.phone),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'To pole nie może być puste';
@@ -29,7 +31,7 @@ class RegisterFormFields1 extends StatelessWidget {
         return null;
       },
       onChanged: (value) {
-        registerData.phoneNumber = value;
+        registerData.phone = value;
       },
       keyboardType: TextInputType.phone,
       textInputAction: TextInputAction.next,
@@ -89,6 +91,9 @@ class RegisterFormFields1 extends StatelessWidget {
       ),
     );
     final Widget confirmPasswordField = PlatformTextFormField(
+      onFieldSubmitted: (_) {
+        nextStep();
+      },
       controller: TextEditingController(text: registerData.confirmPassword),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -122,6 +127,7 @@ class RegisterFormFields1 extends StatelessWidget {
           hintText: 'Powtórz Hasło',
         ),
       ),
+
     );
 
     return Platform.isIOS
