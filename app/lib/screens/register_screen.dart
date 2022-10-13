@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:scanning_world/data/models/auth.dart';
 import 'package:scanning_world/screens/wrappers/home_wrapper.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 
-import '../data/http/http_exception.dart';
-import '../data/providers/auth_provider.dart';
+import '../data/remote/http/http_exception.dart';
+import '../data/remote/models/auth.dart';
+import '../data/remote/providers/auth_provider.dart';
 import '../theme/theme.dart';
 import '../widgets/auth/register_form_fields_1.dart';
 import '../widgets/auth/register_form_fields_2.dart';

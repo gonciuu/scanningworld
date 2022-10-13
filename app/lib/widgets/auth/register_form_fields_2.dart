@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:scanning_world/utils/extensions.dart';
 
-import '../../data/models/auth.dart';
+import '../../data/remote/models/auth.dart';
 import '../../theme/widgtes_base_theme.dart';
 
 const double _kItemExtent = 32.0;

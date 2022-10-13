@@ -9,8 +9,8 @@ class HttpError implements Exception {
   HttpError(this.message, {this.statusCode});
 
   static HttpError fromDioError(DioError dioError){
-    if(dioError.response != null){
-      return HttpError(dioError.response!.data['message'],statusCode: dioError.response!.data['statusCode']);
+    if(dioError.response != null && dioError.response!.data != null && dioError.response!.statusCode != null){
+      return HttpError(dioError.response!.data['message'].toString(),statusCode: dioError.response!.data['statusCode']);
     }else{
       return HttpError("Błąd połączenia z serwerem");
     }
