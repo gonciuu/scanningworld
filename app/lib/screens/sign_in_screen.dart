@@ -1,6 +1,5 @@
 import 'dart:io';
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'package:scanning_world/data/http/http_exception.dart';
 import 'package:scanning_world/data/providers/auth_provider.dart';
 import 'package:scanning_world/screens/forgot_password_screen.dart';
+import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
+import 'package:scanning_world/widgets/common/error_dialog.dart';
 import '../theme/theme.dart';
 import '../widgets/auth/sign_in_form_fields.dart';
 
@@ -31,22 +32,26 @@ class _SignInScreenState extends State<SignInScreen> {
   final phoneNumberController = TextEditingController();
   final passwordController = TextEditingController();
 
+  bool _isLoading = false;
+
   //handle form submission
   Future<void> _onSubmit() async {
     if (_formKey.currentState!.validate()) {
-      try{
+      try {
+        setState(() => _isLoading = true);
         final response = await context.read<AuthProvider>().signIn(
-          phoneNumberController.text,
-          passwordController.text,
-        );
-
+              phoneNumberController.text,
+              passwordController.text,
+            );
         // login successful
-
-      }on HttpError catch(e){
-        // login failed with error
-        // TODO: show error message
-        debugPrint(e.message);
-        debugPrint(e.statusCode.toString());
+        //do something with response
+      } on HttpError catch (e) {
+        showPlatformDialog(
+            context: context,
+            builder: (_) =>
+                ErrorDialog(message: "Error:  ${e.message}"));
+      } finally {
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -92,6 +97,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     SignInFormFields(
                       phoneNumberController: phoneNumberController,
                       passwordController: passwordController,
+                      onSubmit: _onSubmit,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -114,11 +120,13 @@ class _SignInScreenState extends State<SignInScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: PlatformElevatedButton(
-                        onPressed: _onSubmit,
-                        child: const Text(
-                          'Zaloguj się',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        onPressed: _isLoading ? null : _onSubmit,
+                        child: _isLoading
+                            ? const CustomProgressIndicator()
+                            : const Text(
+                                'Zaloguj się',
+                                style: TextStyle(color: Colors.white),
+                              ),
                       ),
                     ),
                     Row(

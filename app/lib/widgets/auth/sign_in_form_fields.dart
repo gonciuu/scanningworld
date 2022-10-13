@@ -9,18 +9,17 @@ import '../../theme/widgtes_base_theme.dart';
 class SignInFormFields extends StatelessWidget {
   final TextEditingController phoneNumberController;
   final TextEditingController passwordController;
+  final Function onSubmit;
 
-  SignInFormFields(
+  const SignInFormFields(
       {Key? key,
       required this.phoneNumberController,
-      required this.passwordController})
+      required this.passwordController,
+      required this.onSubmit})
       : super(key: key);
-
-
 
   @override
   Widget build(BuildContext context) {
-
     final Widget phoneNumberField = PlatformTextFormField(
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -55,6 +54,9 @@ class SignInFormFields extends StatelessWidget {
     );
 
     final Widget passwordField = PlatformTextFormField(
+      onFieldSubmitted: (e) {
+        onSubmit();
+      },
       controller: passwordController,
       obscureText: true,
       textInputAction: TextInputAction.done,
