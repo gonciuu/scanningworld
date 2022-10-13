@@ -1,13 +1,14 @@
 import 'dart:io';
 
-import 'package:cookie_jar/cookie_jar.dart';
-import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:scanning_world/data/http/http_exception.dart';
+import 'package:scanning_world/data/providers/auth_provider.dart';
 import 'package:scanning_world/screens/forgot_password_screen.dart';
 import '../theme/theme.dart';
 import '../widgets/auth/sign_in_form_fields.dart';
@@ -22,8 +23,6 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-
-
   final LocalAuthentication auth = LocalAuthentication();
 
   final _formKey = GlobalKey<FormState>();
@@ -34,47 +33,21 @@ class _SignInScreenState extends State<SignInScreen> {
 
   //handle form submission
   Future<void> _onSubmit() async {
-    final List<BiometricType> availableBiometrics =
-    await auth.getAvailableBiometrics();
-    final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
-    final bool canAuthenticate =
-        canAuthenticateWithBiometrics || await auth.isDeviceSupported();
-
-    debugPrint('Biometrics: $availableBiometrics');
-    debugPrint(canAuthenticate.toString());
-
-    try {
-
-      final bool didAuthenticate2 = await auth.authenticate(
-          localizedReason: 'Please authenticate to show account balance',
-          options: const AuthenticationOptions(biometricOnly: true));
-
-      debugPrint(didAuthenticate2.toString());
-      // ···
-    } on PlatformException {
-      // ...
-    }
-
     if (_formKey.currentState!.validate()) {
-      var dio = Dio(BaseOptions(
-          connectTimeout: 10000,
-          receiveTimeout: 10000,
-          sendTimeout: 10000,
-          responseType: ResponseType.plain,
-          followRedirects: false,
-          validateStatus: (status) {
-            return true;
-          })); // some dio configurations
+      try{
+        final response = await context.read<AuthProvider>().signIn(
+          phoneNumberController.text,
+          passwordController.text,
+        );
 
-      dio.interceptors.add(CookieManager(CookieJar()));
+        // login successful
 
-      var loginResponse = await dio
-          .post("https://scanningworld-server.herokuapp.com/auth/login", data: {
-        "phone": "123321123",
-        "password": "password123"
-      }); // cookies are automatically saved
-
-      debugPrint(loginResponse.data.toString());
+      }on HttpError catch(e){
+        // login failed with error
+        // TODO: show error message
+        debugPrint(e.message);
+        debugPrint(e.statusCode.toString());
+      }
     }
   }
 

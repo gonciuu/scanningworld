@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:scanning_world/data/providers/auth_provider.dart';
 import 'package:scanning_world/data/providers/scroll_provider.dart';
 import './screens/forgot_password_screen.dart';
 import './screens/wrappers/home_wrapper.dart';
@@ -24,19 +25,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return PlatformApp(
-      title: 'Flutter Demo',
-      material: (_, __) => materialTheme,
-      cupertino: (_, __) => cupertinoTheme,
-      routes: {
-        '/': (context) => const HomeWrapper(),
-        SignInScreen.routeName: (context) => const SignInScreen(),
-        RegisterScreen.routeName: (context) => const RegisterScreen(),
-        ForgotPasswordScreen.routeName: (context) =>
-             ForgotPasswordScreen(),
-        HomeWrapper.routeName: (context) => const HomeWrapper(),
-      },
-      initialRoute: '/',
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
+      child: PlatformApp(
+        title: 'Flutter Demo',
+        material: (_, __) => materialTheme,
+        cupertino: (_, __) => cupertinoTheme,
+        routes: {
+          '/': (context) => const SignInScreen(),
+          SignInScreen.routeName: (context) => const SignInScreen(),
+          RegisterScreen.routeName: (context) => const RegisterScreen(),
+          ForgotPasswordScreen.routeName: (context) =>
+               ForgotPasswordScreen(),
+          HomeWrapper.routeName: (context) => const HomeWrapper(),
+        },
+        initialRoute: '/',
+      ),
     );
   }
 }
