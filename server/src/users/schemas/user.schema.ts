@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
+
+import { Region } from 'src/regions/schemas/region.schema';
 
 export type UserDocument = User & Document;
 
@@ -14,8 +16,12 @@ export class User {
   @Prop({ unique: true })
   phone: string;
 
-  @Prop()
-  region: string;
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Region',
+    autopopulate: true,
+  })
+  region: Region;
 
   @Prop({ default: 0 })
   points: number;

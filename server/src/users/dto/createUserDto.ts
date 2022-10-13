@@ -11,7 +11,7 @@ export class CreateUserDto {
   readonly phone: string;
 
   @IsNotEmpty()
-  readonly region: string;
+  readonly regionId: string;
 
   @IsNotEmpty()
   readonly password: string;
