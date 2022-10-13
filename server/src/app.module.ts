@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { CitiesModule } from './cities/cities.module';
+import { RegionsModule } from './regions/regions.module';
 
 @Module({
   imports: [
@@ -11,7 +11,7 @@ import { CitiesModule } from './cities/cities.module';
     MongooseModule.forRoot(process.env.DATABASE_URL),
     UsersModule,
     AuthModule,
-    CitiesModule,
+    RegionsModule,
   ],
 })
 export class AppModule {}

@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class CreateCityDto {
+export class CreateRegionDto {
   @IsNotEmpty()
   readonly name: string;
 }
