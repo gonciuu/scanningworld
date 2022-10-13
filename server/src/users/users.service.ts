@@ -35,7 +35,7 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
-    return this.userModel.create({ ...createUserDto, createdAt: new Date() });
+    return this.userModel.create(createUserDto);
   }
 
   async update(
