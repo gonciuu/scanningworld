@@ -34,7 +34,10 @@ export class AuthService {
 
     await this.updateRefreshToken(newUser._id, tokens.refreshToken);
 
-    return tokens;
+    const { password, refreshToken, passwordResetToken, ...user } =
+      newUser.toObject();
+
+    return { tokens, user };
   }
 
   async login(data: AuthDto) {
@@ -50,7 +53,12 @@ export class AuthService {
 
     await this.updateRefreshToken(user._id, tokens.refreshToken);
 
-    return tokens;
+    const { password, ...userWithoutPassword } = user.toObject();
+
+    return {
+      tokens,
+      user: userWithoutPassword,
+    };
   }
 
   async refreshTokens(userId: string, refreshToken: string) {
