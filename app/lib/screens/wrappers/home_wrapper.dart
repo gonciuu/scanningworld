@@ -37,7 +37,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
     return PlatformScaffold(
       iosContentPadding: false,
       iosContentBottomPadding: false,
-      bottomNavBar: PlatformNavBar(
+      bottomNavBar:PlatformNavBar(
         material: (_, __) => MaterialNavBarData(
           showSelectedLabels: false,
           showUnselectedLabels: false,
