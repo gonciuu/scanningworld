@@ -19,4 +19,6 @@ export class CreateUserDto {
   readonly points: number;
 
   readonly refreshToken: string;
+
+  readonly passwordResetToken: string;
 }

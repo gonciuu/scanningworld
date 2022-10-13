@@ -22,11 +22,15 @@ export class UsersService {
 
   async findById(
     id: string,
-    { refreshToken }: { refreshToken?: boolean } = {},
+    {
+      refreshToken,
+      passwordResetToken,
+    }: { refreshToken?: boolean; passwordResetToken?: boolean } = {},
   ): Promise<UserDocument> {
     return this.userModel
       .findById(id)
       .select(refreshToken && '+refreshToken')
+      .select(passwordResetToken && '+passwordResetToken')
       .exec();
   }
 

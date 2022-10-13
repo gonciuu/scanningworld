@@ -11,7 +11,7 @@ export class User {
   @Prop()
   email: string;
 
-  @Prop()
+  @Prop({ unique: true })
   phone: string;
 
   @Prop()
@@ -25,6 +25,9 @@ export class User {
 
   @Prop({ select: false })
   refreshToken: string;
+
+  @Prop({ select: false })
+  passwordResetToken: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

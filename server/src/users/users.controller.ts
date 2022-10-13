@@ -36,5 +36,3 @@ export class UsersController {
     return this.usersService.update(userId, updateUserDto);
   }
 }
-
-// vDSKaUaWeQQvMUPK

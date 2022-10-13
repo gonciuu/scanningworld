@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UseGuards,
+  Req,
+  Query,
+} from '@nestjs/common';
 
 import { Request } from 'express';
 
@@ -6,6 +14,7 @@ import { CreateUserDto } from 'src/users/dto/createUserDto';
 
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
+import { PasswordResetDto } from './dto/passwordReset.dto';
 import { AccessTokenGuard } from './guards/accessToken.guard';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
 
@@ -40,5 +49,28 @@ export class AuthController {
     const refreshToken = req.user['refreshToken'];
 
     return this.authService.refreshTokens(userId, refreshToken);
+  }
+
+  @Get('forgot-password')
+  async forgotPassword(@Query('phone') phone: string) {
+    const passwordResetToken =
+      await this.authService.generatePasswordResetToken(phone);
+
+    return {
+      msg: 'Forgot password',
+      passwordResetToken,
+    };
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() data: PasswordResetDto) {
+    await this.authService.resetPassword(
+      data.passwordResetToken,
+      data.newPassword,
+    );
+
+    return {
+      msg: 'Password reset',
+    };
   }
 }
