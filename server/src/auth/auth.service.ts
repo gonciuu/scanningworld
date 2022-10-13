@@ -34,6 +34,7 @@ export class AuthService {
 
     await this.updateRefreshToken(newUser._id, tokens.refreshToken);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, refreshToken, passwordResetToken, ...user } =
       newUser.toObject();
 
@@ -53,6 +54,7 @@ export class AuthService {
 
     await this.updateRefreshToken(user._id, tokens.refreshToken);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user.toObject();
 
     return {
