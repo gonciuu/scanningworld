@@ -145,7 +145,7 @@ final cupertinoTheme = CupertinoAppData(
         textStyle: GoogleFonts.poppins().copyWith(color: Colors.black,fontSize: 16,fontWeight: FontWeight.w500),
         primaryColor: const Color(0xff32BE73),
         dateTimePickerTextStyle: GoogleFonts.poppins(),
-        navLargeTitleTextStyle: GoogleFonts.poppins(),
+        navLargeTitleTextStyle: GoogleFonts.poppins(fontSize: 24,fontWeight: FontWeight.w600),
         navActionTextStyle: GoogleFonts.poppins(),
         pickerTextStyle: GoogleFonts.poppins(),
         tabLabelTextStyle: GoogleFonts.poppins(),
