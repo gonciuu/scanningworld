@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
-import { Region } from '../../regions/schemas/region.schema';
+import { RegionDocument } from '../../regions/schemas/region.schema';
 
 export type PlaceDocument = Place & Document;
 
@@ -21,7 +21,7 @@ export class Place {
     ref: 'Region',
     autopopulate: true,
   })
-  region: Region;
+  region: RegionDocument;
 
   @Prop()
   points: number;

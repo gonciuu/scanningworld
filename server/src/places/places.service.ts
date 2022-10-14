@@ -78,7 +78,7 @@ export class PlacesService {
       throw new NotFoundException('User not found');
     }
 
-    if (user.region.toString() !== place.region.toString()) {
+    if (user.region._id.toString() !== place.region._id.toString()) {
       throw new BadRequestException(
         'User is not in the same region as the place',
       );
@@ -86,15 +86,20 @@ export class PlacesService {
 
     if (
       user.scannedPlaces.find(
-        (userPlace) => userPlace.toString() === place.toString(),
+        (userPlace) => userPlace._id.toString() === place._id.toString(),
       )
     ) {
       throw new BadRequestException('User has already visited this place');
     }
 
+    const regionId = user.region._id.toString();
+
     return await this.usersService.update(userId, {
       scannedPlaces: [...user.scannedPlaces, place._id],
-      points: user.points + place.points,
+      points: {
+        ...user.points,
+        [regionId]: (user.points[regionId] || 0) + place.points,
+      },
     });
   }
 }

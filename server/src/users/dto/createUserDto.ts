@@ -18,7 +18,7 @@ export class CreateUserDto {
 
   readonly scannedPlaces: string[];
 
-  readonly points: number;
+  readonly points: Record<string, number>;
 
   readonly refreshToken: string;
 
