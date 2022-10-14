@@ -5,6 +5,7 @@ class RegisterData {
   String confirmPassword = '';
   String name = '';
   String region = '';
+  String pinCode='';
 
 
   Map<String, dynamic> toJson() =>

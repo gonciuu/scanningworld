@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/screens/Home_screen.dart';
 import 'package:scanning_world/widgets/home/bottom_nav_items.dart';
 
@@ -34,6 +36,8 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<AuthProvider>().user;
+    debugPrint("user: ${user?.toJson().toString()}");
     return PlatformScaffold(
       iosContentPadding: false,
       iosContentBottomPadding: false,

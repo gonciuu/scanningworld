@@ -45,7 +45,7 @@ dependencies:
   local_auth: ^2.1.2
   provider: ^6.0.4
   flutter_secure_storage: ^6.0.0
-  pin_code_fields: ^7.4.0
+  pinput: ^2.2.16
 
 dev_dependencies:
   flutter_launcher_icons: ^0.10.0
@@ -86,6 +86,7 @@ flutter:
     - assets/logo_ios.png
     - assets/sample_logo.svg
     - assets/icons/
+    - assets/logo_svg.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

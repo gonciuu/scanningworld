@@ -48,6 +48,6 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
-    <string>Używamy twojego face id w celu szybszego logowania</string>
+    <string>Używamy twojego face ID w celu szybszego logowania się</string>
 </dict>
 </plist>

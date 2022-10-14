@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/screens/wrappers/home_wrapper.dart';
+import 'package:scanning_world/widgets/auth/set_auth_pin_code_bottom_sheet.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 
 import '../data/remote/http/http_exception.dart';
@@ -44,15 +45,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => step = 0);
   }
 
-  //register user
+  // function to handle change pin code
+  void onPinCodeSet(String pinCode) {
+    registerData.pinCode = pinCode;
+  }
+
+  Future<void> setPinCode() async {
+    await showPlatformModalSheet(
+        context: context,
+        cupertino: CupertinoModalSheetData(
+            barrierDismissible: false, useRootNavigator: true),
+        material: MaterialModalSheetData(
+          enableDrag: false,
+          isDismissible: false,
+          backgroundColor: Colors.white,
+          isScrollControlled: true,
+        ),
+        builder: (context) => SetAuthPinCodeBottomSheet(onPinCodeSet:onPinCodeSet ));
+  }
+
+//register user
   Future<void> _registerUser() async {
+    final authProvider = context.read<AuthProvider>();
+
     if (_formKey.currentState!.validate()) {
       try {
+        //set the pin
+        if (registerData.pinCode.length != 4) {
+          await setPinCode();
+        }
+        //bad pin code provided
+        if (registerData.pinCode.length != 4) {
+          return;
+        }
+
+        //register user
         setState(() => _isLoading = true);
-        final response = await context.read<AuthProvider>().register(
-              registerData,
-            );
-        // login successful
+        final response = await authProvider.register(
+          registerData,
+        );
         if (!mounted) return;
         Navigator.of(context).pushReplacementNamed(HomeWrapper.routeName);
       } on HttpError catch (e) {
