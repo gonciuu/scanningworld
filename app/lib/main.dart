@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/screens/Home_screen.dart';
 import './data/remote/providers/auth_provider.dart';
 import './screens/wrappers/auth_wrapper.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => RegionsProvider()),
       ],
       child: PlatformApp(
         localizationsDelegates: const <LocalizationsDelegate>[

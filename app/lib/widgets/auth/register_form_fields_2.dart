@@ -3,19 +3,17 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:scanning_world/data/remote/http/dio_client.dart';
+import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/utils/extensions.dart';
 
-import '../../data/remote/models/auth.dart';
-import '../../theme/widgtes_base_theme.dart';
+import '../../data/remote/models/auth/auth.dart';
+import '../../data/remote/models/user/region.dart';
+import '../../theme/widgets_base_theme.dart';
+import '../common/error_dialog.dart';
 
 const double _kItemExtent = 32.0;
-
-//dummy cities list for testing
-const List<String> _citiesList = <String>[
-  'Gorzyce',
-  'Wodzisław Śląski',
-  'Rybnik',
-];
 
 class RegisterFormFields2 extends StatefulWidget {
   const RegisterFormFields2({
@@ -48,17 +46,20 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
             ));
   }
 
+
+
+
   @override
   void initState() {
-    if (widget.registerData.region.isEmpty) {
-      widget.registerData.region = _citiesList[0];
+    if(widget.registerData.regionId.isEmpty) {
+      widget.registerData.regionId = context.read<RegionsProvider>().regions.first.id;
     }
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final regions = context.watch<RegionsProvider>().regions;
     final Widget usernameField = PlatformTextFormField(
       controller: TextEditingController(text: widget.registerData.name),
       validator: (value) {
@@ -137,7 +138,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
               Icons.location_city_outlined,
               color: Colors.black,
             )),
-        value: widget.registerData.region,
+        value: widget.registerData.regionId,
         icon: const Padding(
           padding: EdgeInsets.only(top: 2.0),
           child: Icon(
@@ -147,12 +148,12 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
           ),
         ),
         onChanged: (String? value) =>
-            setState(() => widget.registerData.region = value!),
-        items: _citiesList.map<DropdownMenuItem<String>>((String value) {
+            setState(() => widget.registerData.regionId = value!),
+        items: regions.map<DropdownMenuItem<String>>((Region region) {
           return DropdownMenuItem<String>(
-            value: value,
+            value: region.id,
             child: Text(
-              value,
+              region.name,
               style: const TextStyle(color: Colors.black, fontSize: 15),
             ),
           );
@@ -180,7 +181,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
                 child: Semantics(
                   inMutuallyExclusiveGroup: true,
                   selected: true,
-                  child: Text(widget.registerData.region),
+                  child: Text(regions.firstWhere((x) => x.id == widget.registerData.regionId).name),
                 ),
               ),
             ),
@@ -198,7 +199,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
       onPressed: () => _showDialog(
         CupertinoPicker(
           scrollController: FixedExtentScrollController(
-            initialItem: _citiesList.indexOf(widget.registerData.region),
+            initialItem: regions.indexOf(regions.firstWhere((x) => x.id == widget.registerData.regionId)),
           ),
           magnification: 1.22,
           squeeze: 1.2,
@@ -207,12 +208,12 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
           // This is called when selected item is changed.
           onSelectedItemChanged: (int selectedItem) {
             setState(
-                () => widget.registerData.region = _citiesList[selectedItem]);
+                () => widget.registerData.regionId = regions[selectedItem].id);
           },
-          children: List<Widget>.generate(_citiesList.length, (int index) {
+          children: List<Widget>.generate(regions.length, (int index) {
             return Center(
               child: Text(
-                _citiesList[index],
+                regions[index].name,
                 style: const TextStyle(color: Colors.black),
               ),
             );

@@ -4,7 +4,7 @@ class RegisterData {
   String password = '';
   String confirmPassword = '';
   String name = '';
-  String region = '';
+  String regionId = '';
   String pinCode='';
 
 
@@ -15,7 +15,7 @@ class RegisterData {
         'password': password,
         'confirmPassword': confirmPassword,
         'name': name,
-        'region': region,
+        'regionId': regionId,
       };
 
 }

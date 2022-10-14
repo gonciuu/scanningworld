@@ -10,6 +10,7 @@ import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/http/http_exception.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
+import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/screens/Home_screen.dart';
 import 'package:scanning_world/screens/enter_pin_code_screen.dart';
 import 'package:scanning_world/screens/sign_in_screen.dart';
@@ -19,6 +20,8 @@ import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 
 import '../../data/local/secure_storage_manager.dart';
 import 'package:local_auth/error_codes.dart' as auth_error;
+
+import '../../widgets/common/error_dialog.dart';
 
 class AuthWrapper extends StatefulWidget {
   const AuthWrapper({Key? key}) : super(key: key);
@@ -37,14 +40,26 @@ class _AuthWrapperState extends State<AuthWrapper> {
     super.initState();
   }
 
+  Future<void> fetchRegions() async {
+    try {
+      final authProvider = context.read<RegionsProvider>();
+      await authProvider.fetchRegions();
+    } on HttpException catch (error) {
+      showPlatformDialog(context: context, builder: (_) => ErrorDialog(message:error.message));
+    }
+  }
+
   Future<void> testDelete() async {
-    // await secureStorageManager.deleteRefreshToken();
+    //await secureStorageManager.deleteRefreshToken();
     // await secureStorageManager.deletePinCode();
   }
 
   Future<void> checkLocalSignIn() async {
     final authProvider = context.read<AuthProvider>();
     await testDelete();
+
+    await fetchRegions();
+
 
     final refreshToken = await secureStorageManager.getRefreshToken();
     final pinCode = await secureStorageManager.getPinCode();
@@ -53,7 +68,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
       //if access token is valid then go to home screen
       //if access token is not valid then go to sign in screen
       try {
-
         final session = await authProvider.refreshToken();
         if (!mounted) return;
         Navigator.of(context)

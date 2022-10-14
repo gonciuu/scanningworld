@@ -1,7 +1,7 @@
 
 class Session{
-  String refreshToken;
-  String accessToken;
+  final String refreshToken;
+  final String accessToken;
 
   Session({
     required this.refreshToken,

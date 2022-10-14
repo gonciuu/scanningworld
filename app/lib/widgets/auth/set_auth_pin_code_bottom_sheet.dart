@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:pinput/pinput.dart';
-
-import '../../data/local/secure_storage_manager.dart';
-import '../../data/remote/models/auth.dart';
 import '../../theme/theme.dart';
 
 class SetAuthPinCodeBottomSheet extends StatefulWidget {

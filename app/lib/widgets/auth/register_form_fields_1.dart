@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-import '../../data/remote/models/auth.dart';
-import '../../theme/widgtes_base_theme.dart';
+import '../../data/remote/models/auth/auth.dart';
+import '../../theme/widgets_base_theme.dart';
 
 class RegisterFormFields1 extends StatelessWidget {
   const RegisterFormFields1({

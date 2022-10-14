@@ -6,7 +6,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:scanning_world/utils/extensions.dart';
 
 import '../theme/theme.dart';
-import '../theme/widgtes_base_theme.dart';
+import '../theme/widgets_base_theme.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   static const String routeName = '/forgot-password';

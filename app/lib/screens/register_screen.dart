@@ -6,7 +6,7 @@ import 'package:scanning_world/widgets/auth/set_auth_pin_code_bottom_sheet.dart'
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 
 import '../data/remote/http/http_exception.dart';
-import '../data/remote/models/auth.dart';
+import '../data/remote/models/auth/auth.dart';
 import '../data/remote/providers/auth_provider.dart';
 import '../theme/theme.dart';
 import '../widgets/auth/register_form_fields_1.dart';
@@ -15,7 +15,6 @@ import '../widgets/common/error_dialog.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
-
   static const String routeName = '/register';
 
   @override
