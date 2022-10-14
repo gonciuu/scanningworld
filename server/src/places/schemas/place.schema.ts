@@ -31,6 +31,9 @@ export class Place {
     lat: number;
     lng: number;
   };
+
+  @Prop({ select: false })
+  code: string;
 }
 
 export const PlaceSchema = SchemaFactory.createForClass(Place);

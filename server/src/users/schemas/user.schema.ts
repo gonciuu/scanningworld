@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
 import { Region } from 'src/regions/schemas/region.schema';
+import { Place } from 'src/places/schemas/place.schema';
 
 export type UserDocument = User & Document;
 
@@ -22,6 +23,13 @@ export class User {
     autopopulate: true,
   })
   region: Region;
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Place' }],
+    autopopulate: true,
+    default: [],
+  })
+  scannedPlaces: Place[];
 
   @Prop({ default: 0 })
   points: number;

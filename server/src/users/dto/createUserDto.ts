@@ -16,6 +16,8 @@ export class CreateUserDto {
   @IsNotEmpty()
   readonly password: string;
 
+  readonly scannedPlaces: string[];
+
   readonly points: number;
 
   readonly refreshToken: string;

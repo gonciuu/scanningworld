@@ -7,15 +7,19 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { isValidObjectId, Model } from 'mongoose';
 
+import { RegionsService } from 'src/regions/regions.service';
+import { UsersService } from 'src/users/users.service';
+import { UserDocument } from 'src/users/schemas/user.schema';
+
 import { Place, PlaceDocument } from './schemas/place.schema';
 import { CreatePlaceDto } from './dto/createPlace.dto';
-import { RegionsService } from '../regions/regions.service';
 
 @Injectable()
 export class PlacesService {
   constructor(
     @InjectModel(Place.name) private placeModel: Model<PlaceDocument>,
     private regionsService: RegionsService,
+    private usersService: UsersService,
   ) {}
 
   async create(createPlaceDto: CreatePlaceDto): Promise<PlaceDocument> {
@@ -31,10 +35,15 @@ export class PlacesService {
       throw new NotFoundException('Region not found');
     }
 
+    const code =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15);
+
     return this.placeModel.create({
       ...place,
       region: regionId,
       location: { lat, lng },
+      code,
     });
   }
 
@@ -54,5 +63,38 @@ export class PlacesService {
     }
 
     return this.placeModel.find({ region: regionId }).exec();
+  }
+
+  async scanCode(code: string, userId: string): Promise<UserDocument> {
+    const place = await this.placeModel.findOne({ code }).exec();
+
+    if (!place) {
+      throw new NotFoundException('Place not found');
+    }
+
+    const user = await this.usersService.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.region.toString() !== place.region.toString()) {
+      throw new BadRequestException(
+        'User is not in the same region as the place',
+      );
+    }
+
+    if (
+      user.scannedPlaces.find(
+        (userPlace) => userPlace.toString() === place.toString(),
+      )
+    ) {
+      throw new BadRequestException('User has already visited this place');
+    }
+
+    return await this.usersService.update(userId, {
+      scannedPlaces: [...user.scannedPlaces, place._id],
+      points: user.points + place.points,
+    });
   }
 }
