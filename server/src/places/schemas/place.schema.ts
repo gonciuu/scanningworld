@@ -1,0 +1,36 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { Document } from 'mongoose';
+
+import { Region } from '../../regions/schemas/region.schema';
+
+export type PlaceDocument = Place & Document;
+
+@Schema()
+export class Place {
+  @Prop()
+  name: string;
+
+  @Prop()
+  description: string;
+
+  @Prop()
+  imageUri: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Region',
+    autopopulate: true,
+  })
+  region: Region;
+
+  @Prop()
+  points: number;
+
+  @Prop({ type: { lat: Number, lng: Number } })
+  location: {
+    lat: number;
+    lng: number;
+  };
+}
+
+export const PlaceSchema = SchemaFactory.createForClass(Place);

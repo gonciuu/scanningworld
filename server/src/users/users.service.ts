@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { isValidObjectId, Model } from 'mongoose';
@@ -39,19 +43,21 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
-    if (!isValidObjectId(createUserDto.regionId)) {
+    const { regionId, ...user } = createUserDto;
+
+    if (!isValidObjectId(regionId)) {
       throw new BadRequestException('Invalid region id');
     }
 
-    const region = await this.regionsService.findById(createUserDto.regionId);
+    const region = await this.regionsService.findById(regionId);
 
     if (!region) {
-      throw new BadRequestException('Region not found');
+      throw new NotFoundException('Region not found');
     }
 
     return this.userModel.create({
-      ...createUserDto,
-      region: createUserDto.regionId,
+      ...user,
+      region: regionId,
     });
   }
 
