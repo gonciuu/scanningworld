@@ -13,11 +13,10 @@ class RewardsScreen extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 28),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(),
               const BigTitle(text: 'Nagrody'),
               RichText(
                 text: TextSpan(
@@ -41,7 +40,7 @@ class RewardsScreen extends StatelessWidget {
               GridView.builder(
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 200,
-                    childAspectRatio: 3 / 4,
+                    childAspectRatio: 3 / 4.1,
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16),
                 scrollDirection: Axis.vertical,

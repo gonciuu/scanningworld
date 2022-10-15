@@ -41,12 +41,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
       debugPrint(error.toString());
     }
   }
-
-  Future<void> testDelete() async {
-    await _secureStorageManager.deleteRefreshToken();
-    await _secureStorageManager.deletePinCode();
-  }
-
+  
   void navigateToSignInScreen() {
     if (!mounted) return;
     Navigator.of(context).pushReplacementNamed(SignInScreen.routeName);

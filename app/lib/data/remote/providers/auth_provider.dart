@@ -125,4 +125,28 @@ class AuthProvider with ChangeNotifier {
       throw HttpError(err.toString());
     }
   }
+
+  // sign out
+  Future<void> signOut() async {
+    try {
+      debugPrint(accessToken!);
+      await dio.get(
+        '/auth/logout',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+      await secureStorageManager.deleteAll();
+      _accessToken = null;
+      _user = null;
+      notifyListeners();
+    } on DioError catch (e) {
+      debugPrint(e.toString());
+      throw HttpError.fromDioError(e);
+    } catch (err) {
+      throw HttpError(err.toString());
+    }
+  }
 }

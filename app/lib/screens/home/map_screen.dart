@@ -51,7 +51,13 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return PlatformScaffold(
       appBar: PlatformAppBar(
-        title: const Text('Mapa'),
+        trailingActions: [
+          PlatformIconButton(
+            icon: Icon(context.platformIcons.share,color: Colors.white,),
+            onPressed: () {},
+          ),
+        ],
+        title: const Text('Mapa kodów QR'),
         cupertino: (_, __) => CupertinoNavigationBarData(
           transitionBetweenRoutes: false,
           heroTag: 'rewards',
