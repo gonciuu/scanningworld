@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/screens/home/map_screen.dart';
+import 'package:scanning_world/screens/home/rewards_screen.dart';
 import 'package:scanning_world/widgets/home/bottom_nav_items.dart';
 
 import '../home/home_screen.dart';
@@ -31,7 +32,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   final List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
-    HomeScreen(),
+    RewardsScreen(),
     MapScreen(),
     HomeScreen(),
   ];

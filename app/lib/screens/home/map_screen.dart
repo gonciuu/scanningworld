@@ -49,62 +49,71 @@ class _MapScreenState extends State<MapScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return FlutterMap(
-          options: MapOptions(
-            center: LatLng(49.985868, 18.403585),
-            zoom: 14.0,
-            minZoom: 8.0,
-            maxZoom: 18.0,
-            onTap: (_, __) => _popupLayerController
-                .hideAllPopups(), // Hide popup when the map is tapped.
-          ),
-          nonRotatedChildren: [
-            AttributionWidget(attributionBuilder: (context) {
-              return Container(
-                padding: const EdgeInsets.all(2),
-                color: Colors.white60,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const Text(
-                      'flutter_map | ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => _launchUrl('https://www.openstreetmap.org/copyright'),
-                      child: const Text(
-                        ' © OpenStreetMap contributors',
+    return PlatformScaffold(
+      appBar: PlatformAppBar(
+        title: const Text('Mapa'),
+        cupertino: (_, __) => CupertinoNavigationBarData(
+          transitionBetweenRoutes: false,
+          heroTag: 'rewards',
+        ),
+      ),
+      body: FlutterMap(
+            options: MapOptions(
+              center: LatLng(49.985868, 18.403585),
+              zoom: 14.0,
+              minZoom: 8.0,
+              maxZoom: 18.0,
+              onTap: (_, __) => _popupLayerController
+                  .hideAllPopups(), // Hide popup when the map is tapped.
+            ),
+            nonRotatedChildren: [
+              AttributionWidget(attributionBuilder: (context) {
+                return Container(
+                  padding: const EdgeInsets.all(2),
+                  color: Colors.white60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Text(
+                        'flutter_map | ',
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontSize: 12,
                         ),
                       ),
-                    ),
-                  ],
-                )
-              );
-            },),
+                      GestureDetector(
+                        onTap: () => _launchUrl('https://www.openstreetmap.org/copyright'),
+                        child: const Text(
+                          ' © OpenStreetMap contributors',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                );
+              },),
 
-          ],
-          children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              subdomains: ['a', 'b', 'c'],
-            ),
-            PopupMarkerLayerWidget(
-              options: PopupMarkerLayerOptions(
-                popupController: _popupLayerController,
-                markers: _markers,
-                markerRotateAlignment:
-                PopupMarkerLayerOptions.rotationAlignmentFor(AnchorAlign.top),
-                popupBuilder: (BuildContext context, Marker marker) =>
-                    SizedBox(width:30,child: WhiteWrapper(child: Text('HUj'),)),
+            ],
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                subdomains: ['a', 'b', 'c'],
               ),
-            ),
-          ],
-        );
+              PopupMarkerLayerWidget(
+                options: PopupMarkerLayerOptions(
+                  popupController: _popupLayerController,
+                  markers: _markers,
+                  markerRotateAlignment:
+                  PopupMarkerLayerOptions.rotationAlignmentFor(AnchorAlign.top),
+                  popupBuilder: (BuildContext context, Marker marker) =>
+                      SizedBox(width:30,child: WhiteWrapper(child: Text('HUj'),)),
+                ),
+              ),
+            ],
+          ),
+    );
   }
 }

@@ -40,20 +40,22 @@ class HomeScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             BigTitle(
-                                text: 'Cześć, ${user?.name ?? 'Użytkowniku'}!',style: const TextStyle(fontSize: 22),),
+                              text: 'Cześć, ${user?.name ?? 'Użytkowniku'}!',
+                              style: const TextStyle(fontSize: 22),
+                            ),
                             RichText(
                               text: TextSpan(
                                 text: 'Masz ',
                                 style: DefaultTextStyle.of(context)
                                     .style
-                                    .copyWith(color: Colors.black, fontSize: 17),
+                                    .copyWith(
+                                        color: Colors.black, fontSize: 17),
                                 children: const <TextSpan>[
                                   TextSpan(
                                       text: '142 punkty',
-                                      style:
-                                          TextStyle(fontWeight: FontWeight.bold)),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
                                 ],
-
                               ),
                             )
                           ],
@@ -169,7 +171,11 @@ class HomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     scrollDirection: Axis.horizontal,
                     itemCount: 10,
-                    itemBuilder: (context, index) => const RewardCard(),
+                    itemBuilder: (context, index) => Container(
+                      margin: const EdgeInsets.only(right: 16),
+                      width: 180,
+                      child: const RewardCard(),
+                    ),
                   ),
                 ),
                 Padding(
