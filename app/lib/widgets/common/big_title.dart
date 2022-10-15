@@ -25,6 +25,7 @@ class BigTitle extends StatelessWidget {
           fontSize: style?.fontSize,
         ),
       ),
+
     );
   }
 }

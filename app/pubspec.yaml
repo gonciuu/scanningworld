@@ -47,6 +47,10 @@ dependencies:
   flutter_secure_storage: ^6.0.0
   pinput: ^2.2.16
   shared_preferences: ^2.0.15
+  flutter_map: ^3.0.0
+  latlong2: ^0.8.1
+  flutter_map_marker_popup: ^4.0.0
+  url_launcher: ^6.1.6
 
 dev_dependencies:
   flutter_launcher_icons: ^0.10.0

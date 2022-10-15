@@ -64,6 +64,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
       onChanged: (value) {
         widget.registerData.name = value;
       },
+      maxLength: 30,
       textInputAction: TextInputAction.next,
       cupertino: (_, __) => cupertinoTextFieldDecoration(
           placeholder: 'Nazwa użytkownika',
