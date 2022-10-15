@@ -34,7 +34,11 @@ export class AuthService {
 
     await this.updateRefreshToken(newUser._id, tokens.refreshToken);
 
-    return tokens;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, refreshToken, passwordResetToken, ...user } =
+      newUser.toObject();
+
+    return { tokens, user };
   }
 
   async login(data: AuthDto) {
@@ -50,7 +54,13 @@ export class AuthService {
 
     await this.updateRefreshToken(user._id, tokens.refreshToken);
 
-    return tokens;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userWithoutPassword } = user.toObject();
+
+    return {
+      tokens,
+      user: userWithoutPassword,
+    };
   }
 
   async refreshTokens(userId: string, refreshToken: string) {
@@ -80,6 +90,59 @@ export class AuthService {
 
   async logout(userId: string) {
     return this.usersService.updateRefreshToken(userId, null);
+  }
+
+  async generatePasswordResetToken(userPhone: string) {
+    const userId = (await this.usersService.findByPhone(userPhone))._id;
+
+    const token = await this.jwtService.signAsync(
+      {
+        sub: userId,
+      },
+      {
+        secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
+        expiresIn: '7d',
+      },
+    );
+
+    const hashedToken = await this.hashData(token);
+
+    await this.usersService.update(userId, {
+      passwordResetToken: hashedToken,
+    });
+
+    return token;
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    const isJWTValid = this.jwtService.verify(token, {
+      secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
+    });
+
+    if (!isJWTValid) throw new BadRequestException('Invalid token');
+
+    const { sub } = this.jwtService.decode(token) as { sub: string };
+
+    const user = await this.usersService.findById(sub, {
+      passwordResetToken: true,
+    });
+
+    if (!user || !user.passwordResetToken)
+      throw new ForbiddenException('Access Denied');
+
+    const isTokenValid = await argon2.verify(user.passwordResetToken, token);
+
+    if (!isTokenValid) throw new ForbiddenException('Access Denied');
+
+    const hashedPassword = await this.hashData(newPassword);
+
+    await this.usersService.update(sub, {
+      password: hashedPassword,
+      passwordResetToken: null,
+      refreshToken: null,
+    });
+
+    return true;
   }
 
   hashData(data: string) {

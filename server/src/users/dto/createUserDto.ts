@@ -11,12 +11,16 @@ export class CreateUserDto {
   readonly phone: string;
 
   @IsNotEmpty()
-  readonly region: string;
+  readonly regionId: string;
 
   @IsNotEmpty()
   readonly password: string;
 
-  readonly points: number;
+  readonly scannedPlaces: string[];
+
+  readonly points: Record<string, number>;
 
   readonly refreshToken: string;
+
+  readonly passwordResetToken: string;
 }
