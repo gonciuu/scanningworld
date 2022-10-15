@@ -1,13 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/local/secure_storage_manager.dart';
-
 import 'package:scanning_world/screens/forgot_password_screen.dart';
 import 'package:scanning_world/screens/wrappers/home_wrapper.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
@@ -35,11 +31,9 @@ class _SignInScreenState extends State<SignInScreen> {
   //handle sign in data
   final phoneNumberController = TextEditingController();
   final passwordController = TextEditingController();
-
   String pinCode = '';
 
   void onPinCodeSet(String pin) {
-    debugPrint("CODE WAS BEEN SET $pin");
     pinCode = pin;
   }
 
@@ -66,8 +60,9 @@ class _SignInScreenState extends State<SignInScreen> {
     if (_formKey.currentState!.validate()) {
       try {
         final curPin = await secureStorageManager.getPinCode();
+        // check if pin code is set
         if (curPin == null || curPin.length != 4) {
-          if(pinCode.length != 4){
+          if (pinCode.length != 4) {
             await _setPinCode();
           }
         } else {
@@ -78,13 +73,12 @@ class _SignInScreenState extends State<SignInScreen> {
           return;
         }
         setState(() => _isLoading = true);
-        final response = await authProvider.signIn(
+        await authProvider.signIn(
           phoneNumberController.text,
           passwordController.text,
           pinCode,
         );
-
-        debugPrint("response: ${response.toJson().toString()}");
+        //navigate to home screen
         // login successful
         if (!mounted) return;
         Navigator.of(context).pushReplacementNamed(HomeWrapper.routeName);

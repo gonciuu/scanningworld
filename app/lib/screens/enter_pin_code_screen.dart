@@ -5,13 +5,11 @@ import 'package:local_auth/local_auth.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/local/secure_storage_manager.dart';
-import 'package:scanning_world/screens/Home_screen.dart';
 import 'package:scanning_world/screens/wrappers/home_wrapper.dart';
 import 'package:scanning_world/widgets/common/error_dialog.dart';
-
 import '../data/remote/http/http_exception.dart';
 import '../data/remote/providers/auth_provider.dart';
-import '../theme/theme.dart';
+import '../theme/widgets_base_theme.dart';
 
 class EnterPinCodeScreen extends StatefulWidget {
   static const routeName = '/enter-pin-code';
@@ -23,38 +21,62 @@ class EnterPinCodeScreen extends StatefulWidget {
 }
 
 class _EnterPinCodeScreenState extends State<EnterPinCodeScreen> {
+  //auth
+  final SecureStorageManager _secureStorageManager = SecureStorageManager();
+  final LocalAuthentication _auth = LocalAuthentication();
+  String? _pinCode;
+
+  //form
   final _key = GlobalKey<FormState>();
-  final SecureStorageManager secureStorageManager = SecureStorageManager();
-  final LocalAuthentication auth = LocalAuthentication();
-
   final TextEditingController _pinCodeController = TextEditingController();
-  late FocusNode _pinCodeFocusNode;
+  final FocusNode _pinCodeFocusNode = FocusNode();
 
-  String? pinCode;
+  @override
+  void initState() {
+    super.initState();
+    getPinCode();
+    signInWithBiometric();
+  }
 
+  @override
+  void dispose() {
+    _pinCodeFocusNode.dispose();
+    _pinCodeController.dispose();
+    super.dispose();
+  }
+
+  void navigateToHomeScreen() {
+    if (!mounted) return;
+    Navigator.of(context).pushReplacementNamed(HomeWrapper.routeName);
+  }
+
+  //check if user can use biometric authentication and if he has it enabled in settings - if yes, scan biometric
+  // else sign in with pin code
   Future<void> signInWithBiometric() async {
     try {
-      final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
+      final bool canAuthenticateWithBiometrics = await _auth.canCheckBiometrics;
       final bool canAuthenticate =
-          canAuthenticateWithBiometrics || await auth.isDeviceSupported();
+          canAuthenticateWithBiometrics || await _auth.isDeviceSupported();
+
       if (canAuthenticate) {
-        final bool didAuthenticate = await auth.authenticate(
+        //sign in with biometric
+        final bool didAuthenticate = await _auth.authenticate(
             localizedReason:
                 'Zaloguj się za pomocą biometrii bez konieczności podawania kodu dostępu',
             options: const AuthenticationOptions(
                 useErrorDialogs: false, biometricOnly: true, stickyAuth: true));
 
         if (didAuthenticate) {
+          //biometric authentication successful
           await _fetchUserData();
-          // login successful
-          if (!mounted) return;
-          Navigator.of(context).pushReplacementNamed(HomeWrapper.routeName);
+          navigateToHomeScreen();
         } else {
           //biometric authentication failed
           //focus pin code text field
           _pinCodeFocusNode.requestFocus();
         }
       } else {
+        // biometric not supported
         _pinCodeFocusNode.requestFocus();
       }
     } on PlatformException catch (e) {
@@ -70,57 +92,27 @@ class _EnterPinCodeScreenState extends State<EnterPinCodeScreen> {
     }
   }
 
+  //get pin code from secure storage
   Future<void> getPinCode() async {
-    pinCode = await secureStorageManager.getPinCode();
+    _pinCode = await _secureStorageManager.getPinCode();
   }
 
+  //fetch user data from server
   Future<void> _fetchUserData() async {
     final authProvider = context.read<AuthProvider>();
     final response = await authProvider.getInfoAboutMe();
   }
 
-
+  //sign in with pin code
   Future<void> onCompletePinCode(String pinCode) async {
     if (_key.currentState!.validate()) {
       await _fetchUserData();
-      if(!mounted)return;
-      Navigator.of(context)
-          .pushReplacementNamed(HomeWrapper.routeName);
+      navigateToHomeScreen();
     }
   }
 
   @override
-  void initState() {
-    super.initState();
-    _pinCodeFocusNode = FocusNode();
-    getPinCode();
-    signInWithBiometric();
-  }
-
-  @override
-  void dispose() {
-    _pinCodeFocusNode.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final defaultPinTheme = PinTheme(
-      width: 56,
-      height: 56,
-      textStyle: const TextStyle(
-          fontSize: 20, color: Colors.black, fontWeight: FontWeight.w600),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(20),
-      ),
-    );
-
-    final focusedPinTheme = defaultPinTheme.copyDecorationWith(
-      border: Border.all(color: primary[500]!),
-      borderRadius: BorderRadius.circular(8),
-    );
-
     return PlatformScaffold(
       backgroundColor: Colors.white,
       appBar: PlatformAppBar(
@@ -155,8 +147,9 @@ class _EnterPinCodeScreenState extends State<EnterPinCodeScreen> {
                       focusNode: _pinCodeFocusNode,
                       controller: _pinCodeController,
                       validator: (value) {
-                        if (value != pinCode) {
+                        if (value != _pinCode) {
                           _pinCodeController.setText('');
+                          _pinCodeFocusNode.requestFocus();
                           return 'Nieprawidłowy PIN';
                         }
                         return null;

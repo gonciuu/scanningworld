@@ -4,16 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:scanning_world/data/remote/http/dio_client.dart';
+import 'package:scanning_world/config/app_config.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/utils/extensions.dart';
-
 import '../../data/remote/models/auth/auth.dart';
 import '../../data/remote/models/user/region.dart';
 import '../../theme/widgets_base_theme.dart';
-import '../common/error_dialog.dart';
-
-const double _kItemExtent = 32.0;
 
 class RegisterFormFields2 extends StatefulWidget {
   const RegisterFormFields2({
@@ -28,7 +24,8 @@ class RegisterFormFields2 extends StatefulWidget {
 }
 
 class _RegisterFormFields2State extends State<RegisterFormFields2> {
-  // show city cupeertino picker
+
+  // show city cupertino picker
   void _showDialog(Widget child) {
     showCupertinoModalPopup<void>(
         context: context,
@@ -46,20 +43,16 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
             ));
   }
 
-
-
-
-  @override
-  void initState() {
-    if(widget.registerData.regionId.isEmpty) {
-      widget.registerData.regionId = context.read<RegionsProvider>().regions.first.id;
-    }
-    super.initState();
-  }
+  String get _regionId => widget.registerData.regionId;
 
   @override
   Widget build(BuildContext context) {
     final regions = context.watch<RegionsProvider>().regions;
+    String regionName =
+        regions.firstWhere((Region region) => region.id == _regionId).name;
+    int selectedIndex =
+        regions.indexWhere((Region region) => region.id == _regionId);
+
     final Widget usernameField = PlatformTextFormField(
       controller: TextEditingController(text: widget.registerData.name),
       validator: (value) {
@@ -138,7 +131,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
               Icons.location_city_outlined,
               color: Colors.black,
             )),
-        value: widget.registerData.regionId,
+        value: _regionId,
         icon: const Padding(
           padding: EdgeInsets.only(top: 2.0),
           child: Icon(
@@ -170,7 +163,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
           ),
           Expanded(
             child: Container(
-              height: _kItemExtent,
+              height: K_ITEM_EXTEND,
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: DefaultTextStyle(
@@ -181,7 +174,7 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
                 child: Semantics(
                   inMutuallyExclusiveGroup: true,
                   selected: true,
-                  child: Text(regions.firstWhere((x) => x.id == widget.registerData.regionId).name),
+                  child: Text(regionName),
                 ),
               ),
             ),
@@ -199,12 +192,12 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
       onPressed: () => _showDialog(
         CupertinoPicker(
           scrollController: FixedExtentScrollController(
-            initialItem: regions.indexOf(regions.firstWhere((x) => x.id == widget.registerData.regionId)),
+            initialItem: selectedIndex,
           ),
           magnification: 1.22,
           squeeze: 1.2,
           useMagnifier: true,
-          itemExtent: _kItemExtent,
+          itemExtent: K_ITEM_EXTEND,
           // This is called when selected item is changed.
           onSelectedItemChanged: (int selectedItem) {
             setState(

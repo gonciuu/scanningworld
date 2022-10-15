@@ -46,6 +46,7 @@ dependencies:
   provider: ^6.0.4
   flutter_secure_storage: ^6.0.0
   pinput: ^2.2.16
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_launcher_icons: ^0.10.0

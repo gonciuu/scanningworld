@@ -8,6 +8,7 @@ import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import '../data/remote/http/http_exception.dart';
 import '../data/remote/models/auth/auth.dart';
 import '../data/remote/providers/auth_provider.dart';
+import '../data/remote/providers/regions_provider.dart';
 import '../theme/theme.dart';
 import '../widgets/auth/register_form_fields_1.dart';
 import '../widgets/auth/register_form_fields_2.dart';
@@ -22,26 +23,35 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  @override
+  void initState() {
+    //set initial value for region if it is not set
+    if (registerData.regionId.isEmpty) {
+      registerData.regionId = context.read<RegionsProvider>().regions.first.id;
+    }
+    super.initState();
+  }
+
   // handle register data
   final _formKey = GlobalKey<FormState>();
   final RegisterData registerData = RegisterData();
 
   //form step
-  int step = 0;
+  int _step = 0;
 
   var _isLoading = false;
 
-  // handle form submission
+  // handle form submission and go to the next step
   void _nextStep() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      setState(() => step = 1);
+      setState(() => _step = 1);
     }
   }
 
   //go to previous step
   void _previousStep() {
-    setState(() => step = 0);
+    setState(() => _step = 0);
   }
 
   // function to handle change pin code
@@ -49,21 +59,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
     registerData.pinCode = pinCode;
   }
 
+  // show set pin code bottom sheet
   Future<void> setPinCode() async {
     await showPlatformModalSheet(
         context: context,
         cupertino: CupertinoModalSheetData(
-            barrierDismissible: false, useRootNavigator: true),
+            barrierDismissible: true, useRootNavigator: true),
         material: MaterialModalSheetData(
           enableDrag: false,
           isDismissible: false,
           backgroundColor: Colors.white,
           isScrollControlled: true,
         ),
-        builder: (context) => SetAuthPinCodeBottomSheet(onPinCodeSet:onPinCodeSet ));
+        builder: (context) =>
+            SetAuthPinCodeBottomSheet(onPinCodeSet: onPinCodeSet));
   }
 
-//register user
+  //register user
   Future<void> _registerUser() async {
     final authProvider = context.read<AuthProvider>();
 
@@ -77,10 +89,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (registerData.pinCode.length != 4) {
           return;
         }
-
         //register user
         setState(() => _isLoading = true);
-        final response = await authProvider.register(
+        await authProvider.register(
           registerData,
         );
         if (!mounted) return;
@@ -99,7 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return PlatformScaffold(
       appBar: PlatformAppBar(
-        title: Text(step == 0 ? 'Zarejestruj się 1/2' : "Zarejestruj się 2/2"),
+        title: Text(_step == 0 ? 'Zarejestruj się 1/2' : "Zarejestruj się 2/2"),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -137,8 +148,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 scale: animation, child: child);
                           },
                           child: Text(
-                            '${step + 1}',
-                            key: ValueKey<int>(step),
+                            '${_step + 1}',
+                            key: ValueKey<int>(_step),
                             style: const TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 24),
                           ),
@@ -159,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return SizeTransition(
                               sizeFactor: animation, child: child);
                         },
-                        child: step == 0
+                        child: _step == 0
                             ? RegisterFormFields1(
                                 registerData: registerData, nextStep: _nextStep)
                             : RegisterFormFields2(
@@ -171,13 +182,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: PlatformElevatedButton(
                         onPressed: _isLoading
                             ? null
-                            : step == 0
+                            : _step == 0
                                 ? _nextStep
                                 : _registerUser,
                         child: _isLoading
                             ? const CustomProgressIndicator()
                             : Text(
-                                step == 0
+                                _step == 0
                                     ? 'Zarejestruj się - krok 1/2'
                                     : 'Zarejestruj się',
                                 style: const TextStyle(color: Colors.white),
@@ -189,7 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       transitionBuilder: (child, animation) {
                         return ScaleTransition(scale: animation, child: child);
                       },
-                      child: step == 0
+                      child: _step == 0
                           ? Container(
                               height: 50,
                               padding: const EdgeInsets.only(top: 4),

@@ -14,6 +14,7 @@ class AuthProvider with ChangeNotifier {
   final dio = DioClient.dio;
   final SecureStorageManager secureStorageManager = SecureStorageManager();
 
+  // user and access token needed for requests
   User? _user;
 
   User? get user => _user;
@@ -22,6 +23,7 @@ class AuthProvider with ChangeNotifier {
 
   String? get accessToken => _accessToken;
 
+  // get user info after refresh token
   Future<User> getInfoAboutMe() async {
     try {
       final response = await dio.get('/users/me',
@@ -31,11 +33,13 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       return resUser;
     } on DioError catch (e) {
-      debugPrint(e.toString());
       throw HttpError.fromDioError(e);
+    } catch (err) {
+      throw HttpError(err.toString());
     }
   }
 
+  // sign in
   Future<AuthResult> signIn(
       String phoneNumber, String password, String pinCode) async {
     try {
@@ -46,11 +50,14 @@ class AuthProvider with ChangeNotifier {
           'password': password,
         },
       );
+      //map response to AuthResult
       final authResult = AuthResult.fromJson(response.data);
       final resultSession = authResult.session;
 
+      // save refresh token and pincode
       await secureStorageManager.saveRefreshToken(resultSession.refreshToken);
       await secureStorageManager.savePinCode(pinCode);
+      //set access token and user in provider
       _accessToken = resultSession.accessToken;
       _user = authResult.user;
       notifyListeners();
@@ -62,6 +69,8 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+
+  // sign up
   Future<AuthResult> register(RegisterData registerData) async {
     try {
       final response = await dio.post(
@@ -74,27 +83,28 @@ class AuthProvider with ChangeNotifier {
           "regionId": registerData.regionId,
         },
       );
+      //map response to AuthResult
       final authResult = AuthResult.fromJson(response.data);
       final resultSession = authResult.session;
+      // save refresh token and pincode
       await secureStorageManager.saveRefreshToken(resultSession.refreshToken);
       await secureStorageManager.savePinCode(registerData.pinCode);
+      //set access token and user in provider
       _accessToken = resultSession.accessToken;
       _user = authResult.user;
       notifyListeners();
       return authResult;
     } on DioError catch (e) {
-      debugPrint("HUJ2${e.toString()}");
       throw HttpError.fromDioError(e);
     } catch (err) {
-      debugPrint("HUJ${err.toString()}");
       throw HttpError(err.toString());
     }
   }
 
+  //get new access token and refresh token with old refresh token
   Future<Session> refreshToken() async {
     try {
       final currentRefreshToken = await secureStorageManager.getRefreshToken();
-
       final response = await dio.get(
         '/auth/refresh',
         options: Options(
@@ -103,15 +113,15 @@ class AuthProvider with ChangeNotifier {
           },
         ),
       );
+      //map response to Session
       final session = Session.fromJson(response.data);
+      //save new refresh token and access token
       await secureStorageManager.saveRefreshToken(session.refreshToken);
       _accessToken = session.accessToken;
       return session;
     } on DioError catch (e) {
-      debugPrint(e.toString());
       throw HttpError.fromDioError(e);
     } catch (err) {
-      debugPrint(err.toString());
       throw HttpError(err.toString());
     }
   }
