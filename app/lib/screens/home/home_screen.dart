@@ -15,8 +15,9 @@ import '../../widgets/common/big_title.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/home';
+  final Function navigateToTab;
 
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key, required this.navigateToTab}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +62,14 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.grey.shade200,
-                        backgroundImage:
-                            const AssetImage('assets/logo_scanningworld.png'),
+                      GestureDetector(
+                        onTap: () => navigateToTab(3),
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.grey.shade200,
+                          backgroundImage:
+                              const AssetImage('assets/logo_scanningworld.png'),
+                        ),
                       ),
                     ],
                   ),
@@ -82,7 +86,7 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             BigTitle(
                                 text:
-                                    "${user != null ? user.scannedPlaces.length : 0}/100"),
+                                    "${user != null ? user.scannedPlaces.length : 0}/20"),
                             const SmallSubtitle(text: "Zwiedzonych miejsc"),
                           ],
                         ),
@@ -92,7 +96,8 @@ class HomeScreen extends StatelessWidget {
                           curve: Curves.easeInOut,
                           tween: Tween<double>(
                             begin: 0,
-                            end: 0.24,
+                            end: ((user?.scannedPlaces.length.toDouble() ?? 0) /
+                                20),
                           ),
                           builder: (context, value, _) =>
                               LinearProgressIndicator(
@@ -127,7 +132,7 @@ class HomeScreen extends StatelessWidget {
                           "Mapa kodów QR",
                           style: TextStyle(color: Colors.white),
                         ),
-                        onPressed: () {},
+                        onPressed: () => navigateToTab(2),
                       )
                     ],
                   ),
@@ -158,7 +163,7 @@ class HomeScreen extends StatelessWidget {
                               fontWeight: FontWeight.w100,
                               letterSpacing: 0),
                         ),
-                        onPressed: () {},
+                        onPressed: () => navigateToTab(1),
                       )
                     ],
                   ),

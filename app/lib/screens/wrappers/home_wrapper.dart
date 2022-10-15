@@ -31,8 +31,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
     });
   }
 
-  final List<Widget> _widgetOptions = <Widget>[
-    const HomeScreen(),
+  List<Widget> _widgetOptions ()=> <Widget>[
+    HomeScreen(
+      navigateToTab: _onItemTapped,
+    ),
     const RewardsScreen(),
     const MapScreen(),
     const ProfileScreen(),
@@ -40,7 +42,6 @@ class _HomeWrapperState extends State<HomeWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<AuthProvider>().user;
     return PlatformScaffold(
       iosContentBottomPadding: true,
       iosContentPadding: true,
@@ -69,7 +70,7 @@ class _HomeWrapperState extends State<HomeWrapper> {
       ),
       body: IndexedStack(
         index: _selectedIndex,
-        children: _widgetOptions,
+        children: _widgetOptions(),
       ),
     );
   }

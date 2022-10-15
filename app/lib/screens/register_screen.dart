@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:scanning_world/screens/sign_in_screen.dart';
 import 'package:scanning_world/screens/wrappers/home_wrapper.dart';
 import 'package:scanning_world/widgets/auth/set_auth_pin_code_bottom_sheet.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
@@ -95,7 +96,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           registerData,
         );
         if (!mounted) return;
-        Navigator.of(context).pushReplacementNamed(HomeWrapper.routeName);
+        Navigator.of(context).pushNamedAndRemoveUntil(HomeWrapper.routeName,
+                (Route<dynamic> route) => false);
       } on HttpError catch (e) {
         showPlatformDialog(
             context: context,
@@ -216,8 +218,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 4),
                                     onPressed: () {
-                                      Navigator.pushNamed(context, '/sign-in');
-                                      //Navigator.pushReplacementNamed(context, '/register');
+                                      Navigator.of(context)
+                                          .pushReplacementNamed(
+                                              SignInScreen.routeName);
                                     },
                                     child: Text(
                                       'Zaloguj się',
