@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
+import 'package:scanning_world/utils/validators.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import 'package:scanning_world/widgets/common/error_dialog.dart';
+import 'package:scanning_world/widgets/common/platform_input_group.dart';
+import 'package:scanning_world/widgets/common/platfrom_input.dart';
 
 import '../data/remote/http/http_exception.dart';
 import '../theme/theme.dart';
@@ -65,34 +68,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final emailField = PlatformTextFormField(
+    final emailField = PlatformInput(
       controller: _phoneNumberController,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'To pole nie może być puste';
-        }
-        return null;
-      },
-      keyboardType: TextInputType.emailAddress,
+      validator: checkFieldIsEmpty,
+      keyboardType: TextInputType.phone,
       textInputAction: TextInputAction.done,
-      cupertino: (_, __) => cupertinoTextFieldDecoration(
-          placeholder: 'Numer Telefonu',
-          prefix: const Padding(
-            padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 4),
-            child: Icon(
-              CupertinoIcons.phone,
-              color: Colors.black,
-            ),
-          )),
-      material: (_, __) => MaterialTextFormFieldData(
-        decoration: materialInputDecoration.copyWith(
-          prefixIcon: const Icon(
-            Icons.phone_outlined,
-            color: Colors.black,
-          ),
-          hintText: 'Numer Telefonu',
-        ),
-      ),
+      hintText: 'Nr. Telefonu',
+      prefixIcon: context.platformIcon(
+          material: Icons.phone_outlined, cupertino: CupertinoIcons.phone),
     );
 
     return PlatformScaffold(
@@ -128,10 +111,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 36),
-                    Platform.isIOS
-                        ? CupertinoFormSection.insetGrouped(
-                            margin: EdgeInsets.zero, children: [emailField])
-                        : emailField,
+                    PlatformInputGroup(children: [
+                      emailField,
+                    ]),
                     const SizedBox(height: 12),
                     SizedBox(
                       width: double.infinity,

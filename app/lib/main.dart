@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
+import 'package:scanning_world/screens/profile/change_account_data_screen.dart';
 import 'package:scanning_world/screens/profile/change_password_screen.dart';
 import 'data/remote/providers/auth_provider.dart';
 import 'screens/wrappers/auth_wrapper.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
           EnterPinCodeScreen.routeName: (context) =>
                const EnterPinCodeScreen(),
           ChangePasswordScreen.routeName: (context) => const ChangePasswordScreen(),
+          ChangeAccountDataScreen.routeName: (context) => const ChangeAccountDataScreen(),
         },
         initialRoute: '/',
       ),

@@ -7,9 +7,13 @@ import 'package:provider/provider.dart';
 import 'package:scanning_world/config/app_config.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/utils/extensions.dart';
+import 'package:scanning_world/widgets/common/platform_dropdown.dart';
+import 'package:scanning_world/widgets/common/platform_input_group.dart';
 import '../../data/remote/models/auth/auth.dart';
 import '../../data/remote/models/user/region.dart';
 import '../../theme/widgets_base_theme.dart';
+import '../../utils/validators.dart';
+import '../common/platfrom_input.dart';
 
 class RegisterFormFields2 extends StatefulWidget {
   const RegisterFormFields2({
@@ -24,7 +28,6 @@ class RegisterFormFields2 extends StatefulWidget {
 }
 
 class _RegisterFormFields2State extends State<RegisterFormFields2> {
-
   // show city cupertino picker
   void _showDialog(Widget child) {
     showCupertinoModalPopup<void>(
@@ -47,79 +50,33 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(widget.registerData.regionId);
     final regions = context.watch<RegionsProvider>().regions;
     String regionName =
         regions.firstWhere((Region region) => region.id == _regionId).name;
     int selectedIndex =
         regions.indexWhere((Region region) => region.id == _regionId);
 
-    final Widget usernameField = PlatformTextFormField(
+    final Widget usernameField = PlatformInput(
       controller: TextEditingController(text: widget.registerData.name),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'To pole nie może być puste';
-        }
-        return null;
-      },
-      onChanged: (value) {
-        widget.registerData.name = value;
-      },
-      maxLength: 30,
-      textInputAction: TextInputAction.next,
-      cupertino: (_, __) => cupertinoTextFieldDecoration(
-          placeholder: 'Nazwa użytkownika',
-          prefix: const Padding(
-            padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 4),
-            child: Icon(
-              CupertinoIcons.person,
-              color: Colors.black,
-            ),
-          )),
-      material: (_, __) => MaterialTextFormFieldData(
-        decoration: materialInputDecoration.copyWith(
-          prefixIcon: const Icon(
-            Icons.person_outline,
-            color: Colors.black,
-          ),
-          hintText: 'Nazwa użytkownika',
-        ),
-      ),
+      validator: checkFieldIsEmpty,
+      onChanged: (value) => widget.registerData.name = value,
+      hintText: 'Nazwa użytkownika',
+      prefixIcon: context.platformIcon(
+          material: Icons.person_outline_rounded,
+          cupertino: CupertinoIcons.person),
     );
 
-    final Widget emailField = PlatformTextFormField(
+    final Widget emailField = PlatformInput(
       controller: TextEditingController(text: widget.registerData.email),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'To pole nie może być puste';
-        }
-        if (!value.isValidEmail()) {
-          return 'Niepoprawny adres email';
-        }
-        return null;
-      },
-      onChanged: (value) {
-        widget.registerData.email = value;
-      },
+      validator: checkEmail,
+      onChanged: (value) => widget.registerData.email = value,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.done,
-      cupertino: (_, __) => cupertinoTextFieldDecoration(
-          placeholder: 'Email',
-          prefix: const Padding(
-            padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 4),
-            child: Icon(
-              Icons.alternate_email_outlined,
-              color: Colors.black,
-            ),
-          )),
-      material: (_, __) => MaterialTextFormFieldData(
-        decoration: materialInputDecoration.copyWith(
-          prefixIcon: const Icon(
-            Icons.alternate_email_outlined,
-            color: Colors.black,
-          ),
-          hintText: 'Email',
-        ),
-      ),
+      hintText: 'Email',
+      prefixIcon: context.platformIcon(
+          material: Icons.alternate_email_outlined,
+          cupertino: Icons.alternate_email_outlined),
     );
 
     // material dropdown city picker
@@ -216,18 +173,26 @@ class _RegisterFormFields2State extends State<RegisterFormFields2> {
       ),
     );
 
-    return Platform.isIOS
-        ? CupertinoFormSection.insetGrouped(
-            margin: EdgeInsets.zero,
-            children: [usernameField, emailField, cupertinoPicker])
-        : Column(
-            children: [
-              usernameField,
-              const SizedBox(height: 12),
-              emailField,
-              const SizedBox(height: 12),
-              dropDownField
-            ],
-          );
+    final regionsToDropdownItems = regions
+        .map((Region region) => DropdownItem(
+              value: region.id,
+              label: region.name,
+            ))
+        .toList();
+
+    return PlatformInputGroup(children: [
+      usernameField,
+      emailField,
+      // Platform.isIOS ? cupertinoPicker : dropDownField,
+      PlatformDropdown(
+        icon: context.platformIcon(
+            material: Icons.location_city_outlined,
+            cupertino: CupertinoIcons.building_2_fill),
+        value: DropdownItem(value: _regionId, label: regionName),
+        items: regionsToDropdownItems,
+        onChanged: (String? value) =>
+            setState(() => widget.registerData.regionId = value!),
+      ),
+    ]);
   }
 }

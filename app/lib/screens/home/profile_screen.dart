@@ -7,6 +7,7 @@ import 'package:scanning_world/widgets/home/profile/settings_row.dart';
 import 'package:scanning_world/widgets/home/profile/sign_out.dart';
 
 import '../../widgets/common/big_title.dart';
+import '../profile/change_account_data_screen.dart';
 import '../profile/change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -82,6 +83,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       cupertino: CupertinoIcons.settings,
                     ),
                     onTap: () {
+                      Navigator.of(context).pushNamed(
+                          ChangeAccountDataScreen.routeName);
                     },
                   ),
                   const SizedBox(

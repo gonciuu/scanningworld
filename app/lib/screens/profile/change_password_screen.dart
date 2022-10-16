@@ -4,6 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:scanning_world/theme/widgets_base_theme.dart';
+import 'package:scanning_world/utils/extensions.dart';
+import 'package:scanning_world/widgets/common/platform_input_group.dart';
+
+import '../../utils/validators.dart';
+import '../../widgets/common/platfrom_input.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({Key? key}) : super(key: key);
@@ -22,120 +27,48 @@ class ChangePasswordData {
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final ChangePasswordData _changePasswordData = ChangePasswordData();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void _submitForm() {
+    debugPrint(_changePasswordData.oldPassword);
+    debugPrint(_changePasswordData.newPassword);
+    debugPrint(_changePasswordData.newPasswordRepeat);
+    if(_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Widget oldPasswordField = PlatformTextFormField(
+    final Widget oldPasswordField = PlatformInput(
       onChanged: (value) => _changePasswordData.oldPassword = value,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'To pole nie może być puste';
-        }
-        return null;
-      },
-      cupertino: (_, __) => cupertinoTextFieldDecoration(
-          prefix: const Padding(
-        padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 4),
-        child: Icon(
-          CupertinoIcons.lock_open,
-          color: Colors.black,
-        ),
-      )),
-      material: (_, __) => MaterialTextFormFieldData(
-        decoration: materialInputDecoration.copyWith(
-          prefixIcon: const Icon(
-            Icons.lock_open_outlined,
-            color: Colors.black,
-          ),
-        ),
-      ),
+      validator: checkFieldIsEmpty,
+      prefixIcon: context.platformIcon(
+          material: Icons.lock_open_rounded,
+          cupertino: CupertinoIcons.lock_open),
       obscureText: true,
-      textInputAction: TextInputAction.next,
       hintText: 'Stare hasło',
     );
 
-    final Widget newPasswordField = PlatformTextFormField(
+    final Widget newPasswordField = PlatformInput(
       onChanged: (value) => _changePasswordData.newPassword = value,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'To pole nie może być puste';
-        }
-        if (value.length < 6) {
-          return 'Hasło musi mieć co najmniej 6 znaków';
-        }
-        return null;
-      },
+      validator: checkPassword,
       obscureText: true,
-      textInputAction: TextInputAction.next,
       hintText: 'Nowe hasło',
-      cupertino: (_, __) => cupertinoTextFieldDecoration(
-          prefix: const Padding(
-        padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 4),
-        child: Icon(
-          CupertinoIcons.lock,
-          color: Colors.black,
-        ),
-      )),
-      material: (_, __) => MaterialTextFormFieldData(
-        decoration: materialInputDecoration.copyWith(
-          prefixIcon: const Icon(
-            Icons.lock_outline,
-            color: Colors.black,
-          ),
-        ),
-      ),
+      prefixIcon: context.platformIcon(
+          material: Icons.lock_outline_rounded, cupertino: CupertinoIcons.lock),
     );
 
-    final Widget confirmNewPasswordField = PlatformTextFormField(
+    final Widget confirmNewPasswordField = PlatformInput(
       onChanged: (value) => _changePasswordData.newPasswordRepeat = value,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'To pole nie może być puste';
-        }
-        if (value != _changePasswordData.newPassword) {
-          return 'Hasła nie są takie same';
-        }
-        return null;
-      },
+      validator: (value) =>
+          checkConfirmPassword(_changePasswordData.newPassword, value),
       obscureText: true,
       textInputAction: TextInputAction.done,
-      hintText: 'Powtórz Nowe hasło',
-      cupertino: (_, __) => cupertinoTextFieldDecoration(
-          prefix: const Padding(
-        padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 4),
-        child: Icon(
-          CupertinoIcons.lock,
-          color: Colors.black,
-        ),
-      )),
-      material: (_, __) => MaterialTextFormFieldData(
-        decoration: materialInputDecoration.copyWith(
-          prefixIcon: const Icon(
-            Icons.lock_outline,
-            color: Colors.black,
-          ),
-        ),
-      ),
+      hintText: 'Powtórz nowe hasło',
+      prefixIcon: context.platformIcon(
+          material: Icons.lock_outline_rounded, cupertino: CupertinoIcons.lock),
     );
-
-    Widget platformInputGroups = Platform.isIOS
-        ? CupertinoFormSection.insetGrouped(
-            header: const Text('Zmień hasło'),
-            margin: EdgeInsets.zero,
-            children: [
-                oldPasswordField,
-                newPasswordField,
-                confirmNewPasswordField
-              ])
-        : Column(
-            children: [
-              oldPasswordField,
-              const SizedBox(height: 12),
-              newPasswordField,
-              const SizedBox(height: 12),
-              confirmNewPasswordField,
-            ],
-          );
 
     return PlatformScaffold(
       appBar: PlatformAppBar(
@@ -147,21 +80,29 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         ),
       ),
       body: Form(
+        key: _formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 36),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              platformInputGroups,
+              PlatformInputGroup(
+                cupertinoHeader: Text("fries hasło"),
+                children: [
+                  oldPasswordField,
+                  newPasswordField,
+                  confirmNewPasswordField,
+                ],
+              ),
               const Spacer(),
               SizedBox(
                 width: double.infinity,
                 child: PlatformElevatedButton(
+                  onPressed: _submitForm,
                   child: const Text(
                     'Zapisz zmiany',
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () {},
                 ),
               )
             ],
