@@ -126,10 +126,21 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  // sign out
+  // forgot password
+  Future<void> forgotPassword (String phoneNumber) async {
+    try {
+      await dio.get('/auth/forgot-password?phone=$phoneNumber');
+    } on DioError catch (e) {
+      throw HttpError.fromDioError(e);
+    } catch (err) {
+      throw HttpError(err.toString());
+    }
+  }
+
+  //sign out
+// sign out
   Future<void> signOut() async {
     try {
-      debugPrint(accessToken!);
       await dio.get(
         '/auth/logout',
         options: Options(
@@ -143,10 +154,10 @@ class AuthProvider with ChangeNotifier {
       _user = null;
       notifyListeners();
     } on DioError catch (e) {
-      debugPrint(e.toString());
       throw HttpError.fromDioError(e);
     } catch (err) {
       throw HttpError(err.toString());
     }
   }
+
 }

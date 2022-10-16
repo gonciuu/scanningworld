@@ -1,60 +1,96 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:scanning_world/utils/extensions.dart';
+import 'package:provider/provider.dart';
+import 'package:scanning_world/data/remote/providers/auth_provider.dart';
+import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
+import 'package:scanning_world/widgets/common/error_dialog.dart';
 
+import '../data/remote/http/http_exception.dart';
 import '../theme/theme.dart';
 import '../theme/widgets_base_theme.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
+class ForgotPasswordScreen extends StatefulWidget {
   static const String routeName = '/forgot-password';
 
   ForgotPasswordScreen({Key? key}) : super(key: key);
 
+  @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   // Form controller
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
 
-  // handle form submission
+  final TextEditingController _phoneNumberController = TextEditingController();
+
+  var _isLoading = false;
+
+  // handle form submission and send reset password link
   Future<void> _resetPassword() async {
+    final authProvider = context.read<AuthProvider>();
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+
+      try {
+        setState(() => _isLoading = true);
+        await authProvider.forgotPassword(_phoneNumberController.text);
+        showPlatformDialog(
+            context: context,
+            builder: (c) => PlatformAlertDialog(
+                  title: const Text('Wysłano'),
+                  content: const Text('Sprawdź swoją skrzynkę pocztową'),
+                  actions: <Widget>[
+                    PlatformDialogAction(
+                      child: Text(
+                        'OK',
+                        style: TextStyle(color: primary[700]),
+                      ),
+                      onPressed: () => Navigator.of(context)
+                        ..pop()
+                        ..pop(),
+                    ),
+                  ],
+                ));
+      } on HttpError catch (e) {
+        showPlatformDialog(
+            context: context, builder: (_) => ErrorDialog(message: e.message));
+      } finally {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final emailField = PlatformTextFormField(
-      controller: _emailController,
+      controller: _phoneNumberController,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'To pole nie może być puste';
-        }
-        if (!value.isValidEmail()) {
-          return 'Niepoprawny adres email';
         }
         return null;
       },
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.done,
       cupertino: (_, __) => cupertinoTextFieldDecoration(
-          placeholder: 'Email',
+          placeholder: 'Numer Telefonu',
           prefix: const Padding(
             padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 4),
             child: Icon(
-              Icons.alternate_email_outlined,
+              CupertinoIcons.phone,
               color: Colors.black,
             ),
           )),
       material: (_, __) => MaterialTextFormFieldData(
         decoration: materialInputDecoration.copyWith(
           prefixIcon: const Icon(
-            Icons.alternate_email_outlined,
+            Icons.phone_outlined,
             color: Colors.black,
           ),
-          hintText: 'Email',
+          hintText: 'Numer Telefonu',
         ),
       ),
     );
@@ -100,11 +136,13 @@ class ForgotPasswordScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: PlatformElevatedButton(
-                        onPressed: _resetPassword,
-                        child: const Text(
-                          'Zesetuj hasło',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                        onPressed: _isLoading ? null : _resetPassword,
+                        child: _isLoading
+                            ? const CustomProgressIndicator()
+                            : const Text(
+                                'Zesetuj hasło',
+                                style: TextStyle(color: Colors.white),
+                              ),
                       ),
                     ),
                   ],

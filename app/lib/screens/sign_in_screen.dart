@@ -82,8 +82,8 @@ class _SignInScreenState extends State<SignInScreen> {
         //navigate to home screen
         // login successful
         if (!mounted) return;
-        Navigator.of(context).pushNamedAndRemoveUntil(HomeWrapper.routeName,
-            (Route<dynamic> route) => false);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            HomeWrapper.routeName, (Route<dynamic> route) => false);
       } on HttpError catch (e) {
         showPlatformDialog(
             context: context,
@@ -178,8 +178,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           onPressed: () {
                             Navigator.of(context)
-                                .pushReplacementNamed(
-                                RegisterScreen.routeName);
+                                .pushReplacementNamed(RegisterScreen.routeName);
                           },
                           child: Text(
                             'Zarejestruj się',

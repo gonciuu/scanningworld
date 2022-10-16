@@ -68,7 +68,6 @@ class _MapScreenState extends State<MapScreen> {
               center: LatLng(49.985868, 18.403585),
               zoom: 14.0,
               minZoom: 8.0,
-              maxZoom: 18.0,
               onTap: (_, __) => _popupLayerController
                   .hideAllPopups(), // Hide popup when the map is tapped.
             ),

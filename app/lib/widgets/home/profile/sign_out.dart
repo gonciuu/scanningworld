@@ -21,12 +21,13 @@ class _SignOutState extends State<SignOut> {
 
   //show dialog to confirm sign out
 
-  Future<void> _signOut()async{
-      try{
-        await context.read<AuthProvider>().signOut();
-      }catch(e){
-        showPlatformDialog(context: context, builder: (c)=>ErrorDialog(message: e.toString()));
-      }
+  Future<void> _signOut() async {
+    try {
+      await context.read<AuthProvider>().signOut();
+    } catch (e) {
+      showPlatformDialog(
+          context: context, builder: (c) => ErrorDialog(message: e.toString()));
+    }
   }
 
   void _showLogoutDialog() {
@@ -40,28 +41,30 @@ class _SignOutState extends State<SignOut> {
             content: const Text('Czy na pewno chcesz się wylogować?'),
             actions: <Widget>[
               PlatformDialogAction(
-                  child:  Text('Anuluj',style: TextStyle(color: Colors.grey.shade800),),
+                  child: Text(
+                    'Anuluj',
+                    style: TextStyle(color: Colors.grey.shade800),
+                  ),
                   onPressed: () => Navigator.of(context).pop()),
               PlatformDialogAction(
-                child: _isLoading
-                    ? const CustomProgressIndicator()
-                    : const Text('Wyloguj',
-                        style: TextStyle(color: Colors.redAccent)),
-                onPressed: () async {
-                  setState(() {
-                    _isLoading = true;
-                  });
-
-                  setState(() {
-                    _isLoading = false;
-                  });
-                  if (!mounted) return;
-                  Navigator.of(context)
-                    ..pop()
-                    ..pushNamedAndRemoveUntil(
-                        SignInScreen.routeName, (route) => false);
-                },
-              ),
+                  child: _isLoading
+                      ? const CustomProgressIndicator()
+                      : const Text('Wyloguj',
+                          style: TextStyle(color: Colors.redAccent)),
+                  onPressed: () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    await _signOut();
+                    setState(() {
+                      _isLoading = false;
+                    });
+                    if (!mounted) return;
+                    Navigator.of(context)
+                      ..pop()
+                      ..pushNamedAndRemoveUntil(
+                          SignInScreen.routeName, (route) => false);
+                  }),
             ],
           );
         },
