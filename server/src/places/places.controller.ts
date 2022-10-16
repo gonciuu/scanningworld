@@ -23,6 +23,7 @@ export class PlacesController {
 
   @Get()
   async findAll(): Promise<Place[]> {
+    // TODO: Remove
     return this.placesService.findAll();
   }
 
@@ -31,6 +32,7 @@ export class PlacesController {
     return this.placesService.findByRegionId(regionId);
   }
 
+  // TODO: Make accessible only to admin
   @Post()
   async create(@Body() createPlaceDto: CreatePlaceDto): Promise<Place> {
     return this.placesService.create(createPlaceDto);

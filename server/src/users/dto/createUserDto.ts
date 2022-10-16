@@ -1,5 +1,7 @@
 import { IsNotEmpty, IsEmail } from 'class-validator';
 
+import { CouponDocument } from 'src/coupons/schemas/coupon.schema';
+
 export class CreateUserDto {
   @IsNotEmpty()
   readonly name: string;
@@ -17,7 +19,7 @@ export class CreateUserDto {
   readonly password: string;
 
   readonly activeCoupons: {
-    coupon: string;
+    coupon: string | CouponDocument;
     validUntil: Date;
   }[];
 

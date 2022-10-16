@@ -23,6 +23,7 @@ export class CouponsController {
     return await this.couponsService.getCouponsByRegionId(regionId);
   }
 
+  // TODO: Make accessible only to admin
   @Post()
   async createCoupon(@Body() createCouponDto: CreateCouponDto) {
     return await this.couponsService.createCoupon(createCouponDto);

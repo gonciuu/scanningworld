@@ -6,6 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 
 import { isValidObjectId, Model } from 'mongoose';
+
 import { RegionsService } from 'src/regions/regions.service';
 
 import { CreateUserDto } from './dto/createUserDto';

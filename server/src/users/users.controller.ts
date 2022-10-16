@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Patch, UseGuards, Req } from '@nestjs/common';
+
 import { Request } from 'express';
 
 import { AccessTokenGuard } from 'src/auth/guards/accessToken.guard';
@@ -11,9 +12,9 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // TODO: Remove
   @Get()
   async findAll(): Promise<User[]> {
+    // TODO: Remove
     return this.usersService.findAll();
   }
 

@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+
 import { RegionsService } from './regions.service';
 import { CreateRegionDto } from './dto/createRegion.dto';
 
@@ -6,6 +7,7 @@ import { CreateRegionDto } from './dto/createRegion.dto';
 export class RegionsController {
   constructor(private readonly regionsService: RegionsService) {}
 
+  // TODO: Make accessible only to admin
   @Post()
   async create(@Body() createRegionDto: CreateRegionDto) {
     return await this.regionsService.create(createRegionDto);
