@@ -1,73 +1,467 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# scanningworld server
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+A server for a scanningworld app and its admin dashboard. Created using NestJS.
+# Demo
 
-## Description
+https://scanningworld-server.herokuapp.com/
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+# Installation
 
 ```bash
-$ npm install
+  git clone https://github.com/gonciuu/scanningworld
+  cd scanningworld
+  cd server
+  npm i
+```
+    
+# API Reference
+
+## The dependency of the modules
+![123](https://i.imgur.com/cQUoKpV.png)
+## Auth module
+
+## `Register`
+
+```
+  POST /auth/register
 ```
 
-## Running the app
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | **Required**. User name. |
+| `email` | `string` | **Required**. User email. |
+| `password` | `string` | **Required**. User password to login. |
+| `phone` | `string` | **Required**. User phone to login. |
+| `regionId` | `string` | **Required**. User region id. |
 
-```bash
-# development
-$ npm run start
+#### Response
+    {
+        "tokens": {
+            "accessToken": "accessToken",
+            "refreshToken": "refreshToken"
+        },
+        "user": {
+            "name": "Bruno Dzięcielski",
+            "email": "brunodzi07@gmail.com",
+            "phone": "123321123",
+            "region": {
+                "_id": "63485005b9a6f084791d694a",
+                "name": "Gorzyce",
+                "__v": 0
+            },
+            "scannedPlaces": [],
+            "_id": "634c51d99c60289b62cdded9",
+            "activeCoupons": [],
+            "__v": 0
+        }
+    }
 
-# watch mode
-$ npm run start:dev
+## `Login`
 
-# production mode
-$ npm run start:prod
+```
+  POST /auth/login
 ```
 
-## Test
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `phone` | `string` | **Required**. User phone to login. |
+| `password` | `string` | **Required**. User password to login. |
 
-```bash
-# unit tests
-$ npm run test
 
-# e2e tests
-$ npm run test:e2e
+#### Response
+    {
+        "tokens": {
+            "accessToken": "accessToken",
+            "refreshToken": "refreshToken"
+        },
+        "user": {
+            "name": "Bruno Dzięcielski",
+            "email": "brunodzi07@gmail.com",
+            "phone": "123321123",
+            "region": {
+                "_id": "63485005b9a6f084791d694a",
+                "name": "Gorzyce",
+                "__v": 0
+            },
+            "scannedPlaces": [],
+            "_id": "634c51d99c60289b62cdded9",
+            "activeCoupons": [],
+            "__v": 0
+        }
+    }
 
-# test coverage
-$ npm run test:cov
+## `Refresh access token`
+
+#### You need to pass refresh token as Authorization token.
+```
+  GET /auth/refresh
 ```
 
-## Support
+#### Response
+    {
+        "accessToken": "accessToken",
+        "refreshToken": "refreshToken"
+    }
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## `Logout`
 
-## Stay in touch
+#### You need to pass access token as Authorization token.
+```
+  GET /auth/logout
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+#### Response
+    {
+        "msg": "User logged out"
+    }
 
-## License
+## `Change password`
 
-Nest is [MIT licensed](LICENSE).
+#### You need to pass access token as Authorization token.
+```
+  PATCH /auth/change-password
+```
+
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `oldPassword` | `string` | **Required**. User old password. |
+| `newPassword` | `string` | **Required**. User new password to change. |
+
+#### Response
+    {
+        "msg": "Password changed"
+    }
+
+TODO: Add forgot password documentation later
+## Users module
+
+### User object
+| Field | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | User name. |
+| `email` | `string` | User email. |
+| `phone` | `string` | User phone number. |
+| `region` | `Region` | Region object that user belongs to. |
+| `points` | `[regiondId: string]: number` | Array of user points per region. |
+| `scannedPlaces` | `Place[]` | Array of scanned places by user. |
+| `activeCoupons` | `{coupon: Coupon; validUntil: Date}[]` | Actived coupons by user. |
+| `password` | `string` | Hashed password (not selected by default). |
+| `refreshToken` | `string` | Hashed refresh token (not selected by default). |
+| `passwordResetToken` | `string` | Hashed reset password token (not selected by default). |
+| `_id` | `ObjectId (string)` | User id. |
+
+
+## `Get user details from access token`
+
+#### You need to pass access token as Authorization token.
+```
+  GET /users/me
+```
+
+#### Response
+    {
+        "_id": "634c51d99c60289b62cdded9",
+        "name": "Bruno Dzięcielski",
+        "email": "brunodzi07@gmail.com",
+        "phone": "123123122",
+        "region": {
+            "_id": "63485005b9a6f084791d694a",
+            "name": "Gorzyce",
+            "__v": 0
+        },
+        "scannedPlaces": [],
+        "activeCoupons": [],
+        "__v": 0
+    }
+
+## `Update user details by access token`
+
+#### You need to pass access token as Authorization token.
+```
+  PATCH /users/details
+```
+
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | **Required**. New user name. |
+| `email` | `string` | **Required**. New user email. |
+| `regionId` | `string` | **Required**. New user region id. |
+
+
+#### Response
+    {
+        "_id": "634c51d99c60289b62cdded9",
+        "name": "Bruno",
+        "email": "brunodzi07@gmail.com",
+        "phone": "123123122",
+        "region": {
+            "_id": "63485005b9a6f084791d694a",
+            "name": "Gorzyce",
+            "__v": 0
+        },
+        "scannedPlaces": [],
+        "activeCoupons": [],
+        "__v": 0
+    }
+## Regions module
+
+### Region object
+| Field | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | Region name. |
+| `_id` | `ObjectId (string)` | Region id. |
+
+## `Get all regions`
+
+```
+  GET /regions
+```
+
+#### Response
+    [
+        {
+            "_id": "63485005b9a6f084791d694a",
+            "name": "Gorzyce",
+            "__v": 0
+        },
+        {
+            "_id": "6348524de90df2acac0858a7",
+            "name": "Wodzisław Śląski",
+            "__v": 0
+        },
+        {
+            "_id": "63485252e90df2acac0858a9",
+            "name": "Rybnik",
+            "__v": 0
+        },
+        ...
+    ]
+
+## `Get region by id`
+
+```
+  GET /regions/:id
+```
+
+#### Request params
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `string` | **Required**. Region id. |
+
+#### Response
+    {
+        "_id": "63485005b9a6f084791d694a",
+        "name": "Gorzyce",
+        "__v": 0
+    }
+
+TODO: Add create region documentation later
+## Places module
+
+### Place object
+| Field | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | Place name. |
+| `description` | `string` | Place description. |
+| `imageUri` | `string` | Place image URI. |
+| `region` | `Region` | Place region. |
+| `points` | `number` | Place points that user gets when he scan. |
+| `location` | `{lat: number; lng: number}` | Place location. |
+| `code` | `string` | Place QR Code. |
+| `_id` | `ObjectId (string)` | Place id. |
+
+## `Get all places by region id`
+
+```
+  GET /places/:regionId
+```
+
+#### Request params
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `regionId` | `string` | **Required**. Region id. |
+
+#### Response
+    [
+        {
+            "_id": "6349524429ff8cc58c9f1275",
+            "name": "Kapliczka na Wierzbowej",
+            "description": "Super kapliczka na wierzbowej, blisko do Dino",
+            "imageUri": "https://google.com",
+            "region": {
+                "_id": "63485005b9a6f084791d694a",
+                "name": "Gorzyce",
+                "__v": 0
+            },
+            "points": 25,
+            "location": {
+                "lat": 49.96181,
+                "lng": 18.396556,
+                "_id": "6349524429ff8cc58c9f1276"
+            },
+            "__v": 0
+        },
+        ...
+    ]
+
+## `Scan place QR Code`
+
+#### You need to pass access token as Authorization token.
+```
+  POST /places/:qrCode
+```
+
+#### Request params
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `qrCode` | `string` | **Required**. Place QR Code. |
+
+#### Response
+    {
+        "_id": "6349886a3077ee6a27f80390",
+        "name": "Bruno Dzięcielski",
+        "email": "brunodzi07@gmail.com",
+        "phone": "123123123",
+        "region": {
+            "_id": "63485005b9a6f084791d694a",
+            "name": "Gorzyce",
+            "__v": 0
+        },
+        "scannedPlaces": [
+            {
+                "_id": "6349524429ff8cc58c9f1275",
+                "name": "Kapliczka na Wierzbowej",
+                "description": "Super kapliczka na wierzbowej, blisko do Dino",
+                "imageUri": "https://google.com",
+                "region": {
+                    "_id": "63485005b9a6f084791d694a",
+                    "name": "Gorzyce",
+                    "__v": 0
+                },
+                "points": 25,
+                "location": {
+                    "lat": 49.96181,
+                    "lng": 18.396556,
+                    "_id": "6349524429ff8cc58c9f1276"
+                },
+                "__v": 0
+            },
+            ...
+        ],
+        "__v": 0,
+        "points": {
+            "63485005b9a6f084791d694a": 9625
+        },
+        "activeCoupons": []
+    }
+
+TODO: Add create place to documentation
+## Coupons module
+
+### Coupon object
+| Field | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | Coupon name. |
+| `imageUri` | `string` | Coupon image URI. |
+| `points` | `number` | Coupon points cost. |
+| `region` | `Region` | Coupon region. |
+| `_id` | `ObjectId (string)` | Coupon id. |
+
+## `Get all coupons by region id`
+
+```
+  GET /coupons/:regionId
+```
+
+#### Request params
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `regionId` | `string` | **Required**. Region id. |
+
+#### Response
+    [
+        {
+            "_id": "634be2ceaf1a5d95a953d4a7",
+            "name": "30 minut darmowej jazdy w PKS Racibórz",
+            "imageUri": "https://google.com",
+            "points": 100,
+            "region": {
+                "_id": "63485005b9a6f084791d694a",
+                "name": "Gorzyce",
+                "__v": 0
+            },
+            "__v": 0
+        },
+        {
+            "_id": "634be3a4af1a5d95a953d4ae",
+            "name": "Darmowy wstęp na kąpielisko w Olzie",
+            "imageUri": "https://google.com",
+            "points": 200,
+            "region": {
+                "_id": "63485005b9a6f084791d694a",
+                "name": "Gorzyce",
+                "__v": 0
+            },
+            "__v": 0
+        },
+        ...
+    ]
+
+## `Activate coupon`
+
+#### You need to pass access token as Authorization token.
+```
+  POST /coupons/activate/:couponId
+```
+
+#### Request params
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `couponId` | `string` | **Required**. Coupon id. |
+
+#### Response
+    {
+        "_id": "6349886a3077ee6a27f80390",
+        "name": "Bruno Dzięcielski",
+        "email": "brunodzi07@gmail.com",
+        "phone": "123123123",
+        "region": {
+            "_id": "63485005b9a6f084791d694a",
+            "name": "Gorzyce",
+            "__v": 0
+        },
+        "scannedPlaces": [
+            ...
+        ],
+        "__v": 0,
+        "points": {
+            "63485005b9a6f084791d694a": 9600
+        },
+        "activeCoupons": [
+            {
+                "coupon": {
+                    "_id": "634be2ceaf1a5d95a953d4a7",
+                    "name": "30 minut darmowej jazdy w PKS Racibórz",
+                    "imageUri": "https://google.com",
+                    "points": 100,
+                    "region": {
+                        "_id": "63485005b9a6f084791d694a",
+                        "name": "Gorzyce",
+                        "__v": 0
+                    },
+                    "__v": 0
+                },
+                "validUntil": "2022-10-16T19:40:36.403Z",
+                "_id": "634c5ab09c60289b62cddf44"
+            },
+            ...
+        ]
+    }
+
+TODO: Add create coupon to documentation
