@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -140,6 +141,29 @@ export class AuthService {
       password: hashedPassword,
       passwordResetToken: null,
       refreshToken: null,
+    });
+
+    return true;
+  }
+
+  async changePassword(
+    userId: string,
+    { oldPassword, newPassword }: { oldPassword: string; newPassword: string },
+  ) {
+    const user = await this.usersService.findById(userId, {
+      password: true,
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    const isPasswordValid = await argon2.verify(user.password, oldPassword);
+
+    if (!isPasswordValid) throw new BadRequestException('Invalid password');
+
+    const hashedPassword = await this.hashData(newPassword);
+
+    await this.usersService.update(userId, {
+      password: hashedPassword,
     });
 
     return true;

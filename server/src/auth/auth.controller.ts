@@ -6,6 +6,7 @@ import {
   UseGuards,
   Req,
   Query,
+  Patch,
 } from '@nestjs/common';
 
 import { Request } from 'express';
@@ -14,6 +15,7 @@ import { CreateUserDto } from 'src/users/dto/createUserDto';
 
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
+import { PasswordChangeDto } from './dto/passwordChange.dto';
 import { PasswordResetDto } from './dto/passwordReset.dto';
 import { AccessTokenGuard } from './guards/accessToken.guard';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
@@ -71,6 +73,18 @@ export class AuthController {
 
     return {
       msg: 'Password reset',
+    };
+  }
+
+  @Patch('change-password')
+  @UseGuards(AccessTokenGuard)
+  async changePassword(@Req() req: Request, @Body() data: PasswordChangeDto) {
+    const userId = req.user['sub'];
+
+    await this.authService.changePassword(userId, data);
+
+    return {
+      msg: 'Password changed',
     };
   }
 }
