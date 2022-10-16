@@ -16,6 +16,11 @@ export class CreateUserDto {
   @IsNotEmpty()
   readonly password: string;
 
+  readonly activeCoupons: {
+    coupon: string;
+    validUntil: Date;
+  }[];
+
   readonly scannedPlaces: string[];
 
   readonly points: Record<string, number>;

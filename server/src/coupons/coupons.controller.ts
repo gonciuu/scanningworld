@@ -1,4 +1,16 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { Request } from 'express';
+
+import { AccessTokenGuard } from 'src/auth/guards/accessToken.guard';
+
 import { CouponsService } from './coupons.service';
 import { CreateCouponDto } from './dto/createCoupon.dto';
 
@@ -14,5 +26,14 @@ export class CouponsController {
   @Post()
   async createCoupon(@Body() createCouponDto: CreateCouponDto) {
     return await this.couponsService.createCoupon(createCouponDto);
+  }
+
+  @Post('activate/:couponId')
+  @UseGuards(AccessTokenGuard)
+  async activateCoupon(
+    @Param('couponId') couponId: string,
+    @Req() req: Request,
+  ) {
+    return await this.couponsService.activateCoupon(couponId, req.user['sub']);
   }
 }
