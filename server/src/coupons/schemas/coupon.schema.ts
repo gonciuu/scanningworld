@@ -4,18 +4,18 @@ import mongoose, { Document } from 'mongoose';
 
 import { RegionDocument } from 'src/regions/schemas/region.schema';
 
-export type PlaceDocument = Place & Document;
+export type CouponDocument = Coupon & Document;
 
 @Schema()
-export class Place {
+export class Coupon {
   @Prop()
   name: string;
 
   @Prop()
-  description: string;
+  imageUri: string;
 
   @Prop()
-  imageUri: string;
+  points: number;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
@@ -23,18 +23,6 @@ export class Place {
     autopopulate: true,
   })
   region: RegionDocument;
-
-  @Prop()
-  points: number;
-
-  @Prop({ type: { lat: Number, lng: Number } })
-  location: {
-    lat: number;
-    lng: number;
-  };
-
-  @Prop({ select: false })
-  code: string;
 }
 
-export const PlaceSchema = SchemaFactory.createForClass(Place);
+export const CouponSchema = SchemaFactory.createForClass(Coupon);

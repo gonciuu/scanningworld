@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+
 import { RegionsModule } from 'src/regions/regions.module';
 
 import { UserSchema } from './schemas/user.schema';

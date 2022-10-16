@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Patch, UseGuards, Req } from '@nestjs/common';
+
 import { Request } from 'express';
 
 import { AccessTokenGuard } from 'src/auth/guards/accessToken.guard';
 
-import { UpdateUserDto } from './dto/updateUserDto';
+import { UpdateUserDetailsDto } from './dto/updateUserDetailsDto';
 import { User } from './schemas/user.schema';
 import { UsersService } from './users.service';
 
@@ -11,9 +12,9 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // TODO: Remove
   @Get()
   async findAll(): Promise<User[]> {
+    // TODO: Remove
     return this.usersService.findAll();
   }
 
@@ -26,13 +27,13 @@ export class UsersController {
   }
 
   @UseGuards(AccessTokenGuard)
-  @Patch()
+  @Patch('details')
   async update(
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDetailsDto: UpdateUserDetailsDto,
     @Req() req: Request,
   ): Promise<User> {
     const userId = req.user['sub'];
 
-    return this.usersService.update(userId, updateUserDto);
+    return this.usersService.update(userId, updateUserDetailsDto);
   }
 }

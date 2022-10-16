@@ -1,8 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
 import mongoose, { Document } from 'mongoose';
 
 import { RegionDocument } from 'src/regions/schemas/region.schema';
 import { PlaceDocument } from 'src/places/schemas/place.schema';
+import { CouponDocument } from 'src/coupons/schemas/coupon.schema';
 
 export type UserDocument = User & Document;
 
@@ -30,6 +32,27 @@ export class User {
     default: [],
   })
   scannedPlaces: PlaceDocument[];
+
+  @Prop({
+    type: [
+      {
+        type: {
+          coupon: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Coupon',
+            autopopulate: true,
+          },
+          validUntil: Date,
+        },
+      },
+    ],
+  })
+  activeCoupons: [
+    {
+      coupon: CouponDocument;
+      validUntil: Date;
+    },
+  ];
 
   @Prop({ type: Object, default: {} })
   points: Record<string, number>;

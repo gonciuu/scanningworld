@@ -6,6 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 
 import { isValidObjectId, Model } from 'mongoose';
+
 import { RegionsService } from 'src/regions/regions.service';
 
 import { CreateUserDto } from './dto/createUserDto';
@@ -33,12 +34,18 @@ export class UsersService {
     {
       refreshToken,
       passwordResetToken,
-    }: { refreshToken?: boolean; passwordResetToken?: boolean } = {},
+      password,
+    }: {
+      refreshToken?: boolean;
+      passwordResetToken?: boolean;
+      password?: boolean;
+    } = {},
   ): Promise<UserDocument> {
     return this.userModel
       .findById(id)
       .select(refreshToken && '+refreshToken')
       .select(passwordResetToken && '+passwordResetToken')
+      .select(password && '+password')
       .exec();
   }
 
@@ -65,6 +72,18 @@ export class UsersService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UserDocument> {
+    const { regionId } = updateUserDto;
+
+    if (regionId && !isValidObjectId(regionId)) {
+      throw new BadRequestException('Invalid region id');
+    }
+
+    const region = regionId && (await this.regionsService.findById(regionId));
+
+    if (regionId && !region) {
+      throw new NotFoundException('Region not found');
+    }
+
     return this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .exec();
