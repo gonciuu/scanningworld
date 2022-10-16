@@ -1,16 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:provider/provider.dart';
-import 'package:scanning_world/data/remote/providers/auth_provider.dart';
-import 'package:scanning_world/screens/sign_in_screen.dart';
 import 'package:scanning_world/theme/theme.dart';
-import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import 'package:scanning_world/widgets/common/small_subtitle.dart';
 import 'package:scanning_world/widgets/home/profile/settings_row.dart';
 import 'package:scanning_world/widgets/home/profile/sign_out.dart';
 
 import '../../widgets/common/big_title.dart';
+import '../profile/change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -84,7 +81,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       material: Icons.settings_outlined,
                       cupertino: CupertinoIcons.settings,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                    },
                   ),
                   const SizedBox(
                     height: 16,
@@ -95,7 +93,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       material: Icons.lock_outline,
                       cupertino: CupertinoIcons.lock_shield,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pushNamed(ChangePasswordScreen.routeName);
+                    },
                   ),
                   const SizedBox(
                     height: 16,

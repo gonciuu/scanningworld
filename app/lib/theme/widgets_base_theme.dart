@@ -5,7 +5,7 @@ import 'package:pinput/pinput.dart';
 import 'package:scanning_world/theme/theme.dart';
 
 CupertinoTextFormFieldData cupertinoTextFieldDecoration(
-        {required String placeholder, Widget? prefix}) =>
+        {String? placeholder, Widget? prefix}) =>
     CupertinoTextFormFieldData(
         cursorColor: primary[700],
         placeholder: placeholder,

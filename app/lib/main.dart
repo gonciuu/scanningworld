@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
+import 'package:scanning_world/screens/profile/change_password_screen.dart';
 import 'data/remote/providers/auth_provider.dart';
 import 'screens/wrappers/auth_wrapper.dart';
 import 'screens/forgot_password_screen.dart';
@@ -54,7 +55,8 @@ class MyApp extends StatelessWidget {
           HomeWrapper.routeName: (context) => const HomeWrapper(),
 
           EnterPinCodeScreen.routeName: (context) =>
-               EnterPinCodeScreen(),
+               const EnterPinCodeScreen(),
+          ChangePasswordScreen.routeName: (context) => const ChangePasswordScreen(),
         },
         initialRoute: '/',
       ),
