@@ -23,6 +23,8 @@ class User {
     required this.points,
   });
 
+  num get pointsInRegion => points[region.id] ?? 0;
+
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["_id"],
         name: json["name"],

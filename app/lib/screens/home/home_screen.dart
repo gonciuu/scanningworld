@@ -27,6 +27,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User? user = context.watch<AuthProvider>().user;
+
     final tooltipKey = GlobalKey<State<Tooltip>>();
 
     void showTooltip() {
@@ -34,6 +35,8 @@ class HomeScreen extends StatelessWidget {
       tooltip.ensureTooltipVisible();
       Timer(const Duration(seconds: 2), () => tooltip.deactivate());
     }
+
+
 
     return Stack(
       children: [
@@ -64,10 +67,10 @@ class HomeScreen extends StatelessWidget {
                                     .style
                                     .copyWith(
                                         color: Colors.black, fontSize: 17),
-                                children: const <TextSpan>[
+                                children:  <TextSpan>[
                                   TextSpan(
-                                      text: '142 punkty',
-                                      style: TextStyle(
+                                      text: "esa",
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),

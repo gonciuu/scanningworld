@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/data/remote/providers/coupons_provider.dart';
 import 'package:scanning_world/theme/theme.dart';
 import 'package:scanning_world/widgets/common/big_title.dart';
@@ -11,6 +12,7 @@ class RewardsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userPoints = context.select((AuthProvider p) => p.user?.pointsInRegion);
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: SafeArea(
@@ -28,7 +30,7 @@ class RewardsScreen extends StatelessWidget {
                       .copyWith(color: Colors.black, fontSize: 17),
                   children: <TextSpan>[
                     TextSpan(
-                        text: '142 punkty',
+                        text: '${userPoints} punktów',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             decoration: TextDecoration.underline,

@@ -38,7 +38,6 @@ class AuthProvider with ChangeNotifier {
       if (error.response?.statusCode == 401) {
         try {
           final sessionRes = await refreshToken();
-          debugPrint(sessionRes.toJson().toString());
           if (origin != null) {
             try {
               final response = await dio.request(origin.path,
