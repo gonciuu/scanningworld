@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:scanning_world/data/remote/providers/coupons_provider.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/screens/profile/change_account_data_screen.dart';
 import 'package:scanning_world/screens/profile/change_password_screen.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => RegionsProvider()),
+        ChangeNotifierProvider(create: (_) => CouponsProvider()),
       ],
       child: PlatformApp(
         localizationsDelegates: const <LocalizationsDelegate>[
@@ -48,17 +50,16 @@ class MyApp extends StatelessWidget {
         material: (_, __) => materialTheme,
         cupertino: (_, __) => cupertinoTheme,
         routes: {
-          '/': (context) =>  const AuthWrapper(),
+          '/': (context) => const AuthWrapper(),
           SignInScreen.routeName: (context) => const SignInScreen(),
           RegisterScreen.routeName: (context) => const RegisterScreen(),
-          ForgotPasswordScreen.routeName: (context) =>
-               ForgotPasswordScreen(),
+          ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
           HomeWrapper.routeName: (context) => const HomeWrapper(),
-
-          EnterPinCodeScreen.routeName: (context) =>
-               const EnterPinCodeScreen(),
-          ChangePasswordScreen.routeName: (context) => const ChangePasswordScreen(),
-          ChangeAccountDataScreen.routeName: (context) => const ChangeAccountDataScreen(),
+          EnterPinCodeScreen.routeName: (context) => const EnterPinCodeScreen(),
+          ChangePasswordScreen.routeName: (context) =>
+              const ChangePasswordScreen(),
+          ChangeAccountDataScreen.routeName: (context) =>
+              const ChangeAccountDataScreen(),
         },
         initialRoute: '/',
       ),

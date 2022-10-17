@@ -9,6 +9,7 @@ import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import '../data/remote/http/http_exception.dart';
 import '../data/remote/models/auth/auth.dart';
 import '../data/remote/providers/auth_provider.dart';
+import '../data/remote/providers/coupons_provider.dart';
 import '../data/remote/providers/regions_provider.dart';
 import '../theme/theme.dart';
 import '../widgets/auth/register_form_fields_1.dart';
@@ -79,6 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   //register user
   Future<void> _registerUser() async {
     final authProvider = context.read<AuthProvider>();
+    final couponsProvider = context.read<CouponsProvider>();
 
     if (_formKey.currentState!.validate()) {
       try {
@@ -92,9 +94,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
         //register user
         setState(() => _isLoading = true);
-        await authProvider.register(
+        final authRes = await authProvider.register(
           registerData,
         );
+        await couponsProvider.getCoupons(authRes.user.region.id);
         if (!mounted) return;
         Navigator.of(context).pushNamedAndRemoveUntil(HomeWrapper.routeName,
                 (Route<dynamic> route) => false);

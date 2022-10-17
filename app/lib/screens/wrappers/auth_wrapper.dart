@@ -41,7 +41,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
       debugPrint(error.toString());
     }
   }
-  
+
   void navigateToSignInScreen() {
     if (!mounted) return;
     Navigator.of(context).pushReplacementNamed(SignInScreen.routeName);
@@ -58,6 +58,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
   Future<void> checkLocalSignIn() async {
     final authProvider = context.read<AuthProvider>();
+    authProvider.addAuthInterceptor();
     await _secureStorageManager.checkFirstSignIn();
     await fetchRegions();
 

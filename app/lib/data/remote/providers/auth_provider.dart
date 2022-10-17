@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:scanning_world/data/local/secure_storage_manager.dart';
 import 'package:scanning_world/data/remote/models/auth/auth_result.dart';
 
+import '../../../screens/profile/change_account_data_screen.dart';
 import '../http/dio_client.dart';
 import '../http/http_exception.dart';
 import '../models/auth/auth.dart';
@@ -23,11 +24,41 @@ class AuthProvider with ChangeNotifier {
 
   String? get accessToken => _accessToken;
 
+   // session needed for refresh token
+  // add auth interceptor to catch access token expiration
+  void addAuthInterceptor() {
+    dio.interceptors
+        .add(InterceptorsWrapper(onError: (DioError error, handler) async {
+      RequestOptions? origin = error.response?.requestOptions;
+      if (error.response?.statusCode == 401) {
+        debugPrint('401 error');
+        try {
+          final sessionRes = await refreshToken();
+          if (origin != null) {
+            final response = await dio.request(origin.path,
+                data: origin.data,
+                options: Options(
+                  headers: {
+                    'Authorization': 'Bearer ${sessionRes.accessToken}',
+                  },
+                  method: origin.method,
+                ));
+            return handler.resolve(response);
+          }
+        } catch (err) {
+          return handler.reject(error);
+        }
+      }
+      return handler.reject(error);
+    }));
+  }
+
   // get user info after refresh token
   Future<User> getInfoAboutMe() async {
     try {
       final response = await dio.get('/users/me',
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
+
       final resUser = User.fromJson(response.data);
       _user = resUser;
       notifyListeners();
@@ -68,7 +99,6 @@ class AuthProvider with ChangeNotifier {
       throw HttpError(err.toString());
     }
   }
-
 
   // sign up
   Future<AuthResult> register(RegisterData registerData) async {
@@ -127,7 +157,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   // forgot password
-  Future<void> forgotPassword (String phoneNumber) async {
+  Future<void> forgotPassword(String phoneNumber) async {
     try {
       await dio.get('/auth/forgot-password?phone=$phoneNumber');
     } on DioError catch (e) {
@@ -137,8 +167,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  //sign out
-// sign out
+  // sign out
   Future<void> signOut() async {
     try {
       await dio.get(
@@ -160,4 +189,51 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  // change password
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    try {
+      await dio.patch(
+        '/auth/change-password',
+        data: {
+          'oldPassword': oldPassword,
+          'newPassword': newPassword,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+    } on DioError catch (e) {
+      throw HttpError.fromDioError(e);
+    } catch (err) {
+      throw HttpError(err.toString());
+    }
+  }
+
+  Future<void> changeUserInfo(ChangeAccountData changeAccountData) async {
+    try {
+      debugPrint('changeAccountData.region.id: ${changeAccountData.region.id}');
+      final responseUser = await dio.patch(
+        '/users/details',
+        data: {
+          'name': changeAccountData.username,
+          'email': changeAccountData.email,
+          'regionId': changeAccountData.region.id
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+      final newUser = User.fromJson(responseUser.data);
+      _user = newUser;
+      notifyListeners();
+    } on DioError catch (e) {
+      throw HttpError.fromDioError(e);
+    } catch (err) {
+      throw HttpError(err.toString());
+    }
+  }
 }

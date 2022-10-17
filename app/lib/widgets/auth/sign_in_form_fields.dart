@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import 'package:scanning_world/utils/validators.dart';
 import 'package:scanning_world/widgets/common/platform_input_group.dart';
 import 'package:scanning_world/widgets/common/platfrom_input.dart';
 
-import '../../theme/widgets_base_theme.dart';
 
 class SignInFormFields extends StatelessWidget {
   final TextEditingController phoneNumberController;

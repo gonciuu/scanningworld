@@ -31,6 +31,7 @@ class PlatformInputGroup extends StatelessWidget {
             margin: EdgeInsets.zero,
             children: children)
         : Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
             children: materialChildren(),
           );
   }

@@ -9,6 +9,7 @@ import 'package:scanning_world/screens/wrappers/home_wrapper.dart';
 import 'package:scanning_world/widgets/common/error_dialog.dart';
 import '../data/remote/http/http_exception.dart';
 import '../data/remote/providers/auth_provider.dart';
+import '../data/remote/providers/coupons_provider.dart';
 import '../theme/widgets_base_theme.dart';
 
 class EnterPinCodeScreen extends StatefulWidget {
@@ -97,10 +98,12 @@ class _EnterPinCodeScreenState extends State<EnterPinCodeScreen> {
     _pinCode = await _secureStorageManager.getPinCode();
   }
 
-  //fetch user data from server
+  //fetch user data from server and coupons based on user region
   Future<void> _fetchUserData() async {
     final authProvider = context.read<AuthProvider>();
-    final response = await authProvider.getInfoAboutMe();
+    final couponsProvider = context.read<CouponsProvider>();
+    final user = await authProvider.getInfoAboutMe();
+    await couponsProvider.getCoupons(user.region.id);
   }
 
   //sign in with pin code

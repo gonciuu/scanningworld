@@ -11,6 +11,7 @@ import 'package:scanning_world/widgets/common/white_wrapper.dart';
 import 'package:scanning_world/widgets/home/rewards_card.dart';
 
 import '../../data/remote/models/user/user.dart';
+import '../../data/remote/providers/coupons_provider.dart';
 import '../../widgets/common/big_title.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -169,19 +170,27 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                SizedBox(
-                  height: 240,
-                  child: ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 10,
-                    itemBuilder: (context, index) => Container(
-                      margin: const EdgeInsets.only(right: 16),
-                      width: 180,
-                      child: const RewardCard(),
-                    ),
-                  ),
+                Consumer<CouponsProvider>(
+                  builder: (context, couponsProvider, child) {
+                    final coupons = couponsProvider.coupons.take(6).toList();
+                    return coupons.isNotEmpty ?SizedBox(
+                      height: 240,
+                      child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: coupons.length,
+                        itemBuilder: (context, index) => Container(
+                          margin: const EdgeInsets.only(right: 16),
+                          width: 180,
+                          child: RewardCard(coupon: coupons[index]),
+                        ),
+                      ),
+                    ): const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 8),
+                      child: Center(child: Text("Brak dostępnych nagród 🙁",textAlign: TextAlign.center,)),
+                    );
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),

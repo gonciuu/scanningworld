@@ -11,6 +11,7 @@ import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import 'package:scanning_world/widgets/common/error_dialog.dart';
 import '../data/remote/http/http_exception.dart';
 import '../data/remote/providers/auth_provider.dart';
+import '../data/remote/providers/coupons_provider.dart';
 import '../theme/theme.dart';
 import '../widgets/auth/set_auth_pin_code_bottom_sheet.dart';
 import '../widgets/auth/sign_in_form_fields.dart';
@@ -58,6 +59,7 @@ class _SignInScreenState extends State<SignInScreen> {
   //handle form submission
   Future<void> _onSubmit() async {
     final authProvider = context.read<AuthProvider>();
+    final couponsProvider = context.read<CouponsProvider>();
     if (_formKey.currentState!.validate()) {
       try {
         final curPin = await secureStorageManager.getPinCode();
@@ -74,11 +76,12 @@ class _SignInScreenState extends State<SignInScreen> {
           return;
         }
         setState(() => _isLoading = true);
-        await authProvider.signIn(
+        final authRes = await authProvider.signIn(
           phoneNumberController.text,
           passwordController.text,
           pinCode,
         );
+        await couponsProvider.getCoupons(authRes.user.region.id);
         //navigate to home screen
         // login successful
         if (!mounted) return;

@@ -1,12 +1,14 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:scanning_world/theme/widgets_base_theme.dart';
-import 'package:scanning_world/utils/extensions.dart';
+import 'package:provider/provider.dart';
+import 'package:scanning_world/data/remote/http/http_exception.dart';
+import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
+import 'package:scanning_world/widgets/common/error_dialog.dart';
 import 'package:scanning_world/widgets/common/platform_input_group.dart';
 
+import '../../data/remote/providers/auth_provider.dart';
+import '../../theme/theme.dart';
 import '../../utils/validators.dart';
 import '../../widgets/common/platfrom_input.dart';
 
@@ -29,12 +31,39 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final ChangePasswordData _changePasswordData = ChangePasswordData();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _submitForm() {
-    debugPrint(_changePasswordData.oldPassword);
-    debugPrint(_changePasswordData.newPassword);
-    debugPrint(_changePasswordData.newPasswordRepeat);
-    if(_formKey.currentState!.validate()) {
+  var _isLoading = false;
+
+  Future<void> _submitForm() async {
+    final authProvider = context.read<AuthProvider>();
+    if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      setState(() => _isLoading = true);
+      try {
+        await authProvider.changePassword(
+          _changePasswordData.oldPassword,
+          _changePasswordData.newPassword,
+        );
+        showPlatformDialog(
+            context: context,
+            builder: (_) => PlatformAlertDialog(
+                  title: const Text('Sukces'),
+                  content: const Text('Hasło zostało zmienione'),
+                  actions: [
+                    PlatformDialogAction(
+                      child:  Text('Ok',
+                          style: TextStyle(color: primary[700])),
+                      onPressed: () => Navigator.of(context)
+                        ..pop()
+                        ..pop(),
+                    ),
+                  ],
+                ));
+      } on HttpError catch (e) {
+        showPlatformDialog(
+            context: context, builder: (_) => ErrorDialog(message: e.message));
+      } finally {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -68,6 +97,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       hintText: 'Powtórz nowe hasło',
       prefixIcon: context.platformIcon(
           material: Icons.lock_outline_rounded, cupertino: CupertinoIcons.lock),
+      onFieldSubmitted: (_) => _submitForm(),
     );
 
     return PlatformScaffold(
@@ -87,7 +117,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               PlatformInputGroup(
-                cupertinoHeader: Text("fries hasło"),
+                cupertinoHeader: Text("Zmień hasło"),
                 children: [
                   oldPasswordField,
                   newPasswordField,
@@ -98,11 +128,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               SizedBox(
                 width: double.infinity,
                 child: PlatformElevatedButton(
-                  onPressed: _submitForm,
-                  child: const Text(
-                    'Zapisz zmiany',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  onPressed: _isLoading ? null : _submitForm,
+                  child: _isLoading
+                      ? const CustomProgressIndicator()
+                      : const Text(
+                          'Zapisz zmiany',
+                          style: TextStyle(color: Colors.white),
+                        ),
                 ),
               )
             ],
