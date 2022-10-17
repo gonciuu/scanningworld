@@ -49,5 +49,9 @@
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
     <string>Używamy twojego face ID w celu szybszego logowania się</string>
+    <key>io.flutter.embedded_views_preview</key>
+    <true/>
+    <key>NSCameraUsageDescription</key>
+    <string>Aparat jest niezbędny do zeskanowania kodu QR</string>
 </dict>
 </plist>

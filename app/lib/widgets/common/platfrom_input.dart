@@ -44,6 +44,7 @@ class PlatformInput extends StatelessWidget {
       validator: validator,
       onFieldSubmitted: onFieldSubmitted,
       obscureText: obscureText,
+      keyboardType: keyboardType,
       maxLength: maxLength,
       textInputAction: textInputAction,
       hintText: hintText,

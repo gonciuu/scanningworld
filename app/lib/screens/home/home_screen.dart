@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
+import 'package:scanning_world/screens/scan_qr_code_screen.dart';
 import 'package:scanning_world/theme/theme.dart';
 import 'package:scanning_world/utils/helpers.dart';
 import 'package:scanning_world/widgets/common/small_subtitle.dart';
@@ -232,13 +233,12 @@ class HomeScreen extends StatelessWidget {
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () async {
-                            try{
+                            try {
                               await sendEmail('kacperwojak17@gmail.com',
                                   'I love this app', 'Your feedback below: \n');
-                            }catch(e){
+                            } catch (e) {
                               showTooltip();
                             }
-
                           },
                         ),
                       ),
@@ -250,6 +250,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                       Tooltip(
                         key: tooltipKey,
+                        preferBelow: true,
                         message: 'Email skopiowany do schowka',
                         child: Container(
                           width: double.infinity,
@@ -300,7 +301,7 @@ class HomeScreen extends StatelessWidget {
                   color: primary[700],
                   padding: EdgeInsets.zero,
                   onPressed: () {
-                    debugPrint("Scan QR");
+                    Navigator.of(context).pushNamed(ScanQrCodeScreen.routeName);
                   },
                   child: Platform.isIOS
                       ? const Icon(

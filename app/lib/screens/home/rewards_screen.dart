@@ -42,7 +42,8 @@ class RewardsScreen extends StatelessWidget {
               Consumer<CouponsProvider>(
                 builder: (context, couponsProvider, child) {
                   final coupons = couponsProvider.coupons;
-                  return GridView.builder(
+
+                  return coupons.isNotEmpty ? GridView.builder(
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 200,
                   childAspectRatio: 3 / 4.1,
@@ -53,7 +54,7 @@ class RewardsScreen extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: coupons.length,
-                  );
+                  ): const Center(child: Text('Brak dostępnych nagród 🙁'));
                 },
               )
             ],

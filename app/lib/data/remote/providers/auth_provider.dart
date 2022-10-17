@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:scanning_world/data/local/secure_storage_manager.dart';
 import 'package:scanning_world/data/remote/models/auth/auth_result.dart';
+import 'package:scanning_world/data/remote/models/user/place.dart';
+import 'package:scanning_world/widgets/common/error_dialog.dart';
 
 import '../../../screens/profile/change_account_data_screen.dart';
 import '../http/dio_client.dart';
@@ -24,26 +29,33 @@ class AuthProvider with ChangeNotifier {
 
   String? get accessToken => _accessToken;
 
-   // session needed for refresh token
+  // session needed for refresh token
   // add auth interceptor to catch access token expiration
   void addAuthInterceptor() {
     dio.interceptors
         .add(InterceptorsWrapper(onError: (DioError error, handler) async {
       RequestOptions? origin = error.response?.requestOptions;
       if (error.response?.statusCode == 401) {
-        debugPrint('401 error');
         try {
           final sessionRes = await refreshToken();
+          debugPrint(sessionRes.toJson().toString());
           if (origin != null) {
-            final response = await dio.request(origin.path,
-                data: origin.data,
-                options: Options(
-                  headers: {
-                    'Authorization': 'Bearer ${sessionRes.accessToken}',
-                  },
-                  method: origin.method,
-                ));
-            return handler.resolve(response);
+            try {
+              final response = await dio.request(origin.path,
+                  data: origin.data ?? {},
+                  options: Options(
+                    headers: {
+                      'Authorization': 'Bearer ${sessionRes.accessToken}',
+                    },
+                    followRedirects: false,
+                    contentType: 'application/json',
+                    method: origin.method,
+                  ));
+              return handler.resolve(response);
+            } on DioError catch (e) {
+              // catch another error
+              return handler.reject(e);
+            }
           }
         } catch (err) {
           return handler.reject(error);
@@ -230,6 +242,31 @@ class AuthProvider with ChangeNotifier {
       final newUser = User.fromJson(responseUser.data);
       _user = newUser;
       notifyListeners();
+    } on DioError catch (e) {
+      throw HttpError.fromDioError(e);
+    } catch (err) {
+      throw HttpError(err.toString());
+    }
+  }
+
+  // on scan QR Code Correctly
+  Future<Place> scanPlace(String code) async {
+    debugPrint('scanPlace: $code');
+    try {
+      final response = await dio.post(
+        '/places/$code',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+      debugPrint('scanPlace: ${response.data}');
+      User newUser = User.fromJson(response.data);
+      debugPrint(newUser.toString());
+      _user = newUser;
+      notifyListeners();
+      return newUser.scannedPlaces.last;
     } on DioError catch (e) {
       throw HttpError.fromDioError(e);
     } catch (err) {

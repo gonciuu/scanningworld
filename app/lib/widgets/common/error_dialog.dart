@@ -9,6 +9,7 @@ class ErrorDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlatformAlertDialog(
+     
       title: const Text("Wystąpił błąd"),
       content: Text(message),
       actions: <Widget>[

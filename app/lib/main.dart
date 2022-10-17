@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:scanning_world/data/remote/providers/coupons_provider.dart';
+import 'package:scanning_world/data/remote/providers/places_provider.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/screens/profile/change_account_data_screen.dart';
 import 'package:scanning_world/screens/profile/change_password_screen.dart';
+import 'package:scanning_world/screens/scan_qr_code_screen.dart';
 import 'data/remote/providers/auth_provider.dart';
 import 'screens/wrappers/auth_wrapper.dart';
 import 'screens/forgot_password_screen.dart';
@@ -38,6 +40,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => RegionsProvider()),
         ChangeNotifierProvider(create: (_) => CouponsProvider()),
+        ChangeNotifierProvider(create: (_) => PlacesProvider()),
       ],
       child: PlatformApp(
         localizationsDelegates: const <LocalizationsDelegate>[
@@ -60,6 +63,7 @@ class MyApp extends StatelessWidget {
               const ChangePasswordScreen(),
           ChangeAccountDataScreen.routeName: (context) =>
               const ChangeAccountDataScreen(),
+          ScanQrCodeScreen.routeName: (context) => const ScanQrCodeScreen(),
         },
         initialRoute: '/',
       ),

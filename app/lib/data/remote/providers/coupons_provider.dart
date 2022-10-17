@@ -28,7 +28,11 @@ class CouponsProvider with ChangeNotifier {
   }
 
   Coupon? getCouponById(String id) {
-    return coupons.firstWhere((element) => element.id == id);
+    if (coupons.any((element) => element.id == id)) {
+      return coupons.firstWhere((element) => element.id == id);
+    } else {
+      return null;
+    }
   }
 
 }

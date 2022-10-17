@@ -52,6 +52,7 @@ dependencies:
   flutter_map_marker_popup: ^4.0.0
   url_launcher: ^6.1.6
   qr_code_scanner: ^1.0.1
+  permission_handler: ^10.1.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.10.0
