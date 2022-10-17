@@ -46,8 +46,8 @@ class RewardsScreen extends StatelessWidget {
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 200,
                   childAspectRatio: 3 / 4.1,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16),
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12),
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, i) => RewardCard( coupon: coupons[i],),
                   shrinkWrap: true,

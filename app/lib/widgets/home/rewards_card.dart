@@ -5,10 +5,9 @@ import 'package:scanning_world/data/remote/models/coupon.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
 
 class RewardCard extends StatelessWidget {
-
   final Coupon coupon;
 
-  const RewardCard({Key? key,required this.coupon}) : super(key: key);
+  const RewardCard({Key? key, required this.coupon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,21 +15,28 @@ class RewardCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Image.network(coupon.imageUri,fit: BoxFit.fill,),
+            Image.network(
+              coupon.imageUri,
+              height: 30,
+              fit: BoxFit.scaleDown,
+            ),
             const SizedBox(height: 8),
             Text(
-                coupon.name,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16,
-                    color: Colors.grey.shade900),maxLines: 4, overflow: TextOverflow.ellipsis,),
+              coupon.name,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16,
+                  color: Colors.grey.shade900),
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+            ),
             const Spacer(),
             SizedBox(
               width: double.infinity,
               child: PlatformElevatedButton(
-                padding: const EdgeInsets.only(left: 8,right: 8),
-                child:  FittedBox(
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: FittedBox(
                   child: Text(
                     '${coupon.points} punktów',
                     style: const TextStyle(color: Colors.white),

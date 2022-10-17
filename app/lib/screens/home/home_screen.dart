@@ -1,11 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/theme/theme.dart';
+import 'package:scanning_world/utils/helpers.dart';
 import 'package:scanning_world/widgets/common/small_subtitle.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
 import 'package:scanning_world/widgets/home/rewards_card.dart';
@@ -23,6 +26,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User? user = context.watch<AuthProvider>().user;
+    final tooltipKey = GlobalKey<State<Tooltip>>();
+
+    void showTooltip() {
+      final tooltip = tooltipKey.currentState as TooltipState;
+      tooltip.ensureTooltipVisible();
+      Timer(const Duration(seconds: 2), () => tooltip.deactivate());
+    }
+
     return Stack(
       children: [
         SingleChildScrollView(
@@ -173,23 +184,31 @@ class HomeScreen extends StatelessWidget {
                 Consumer<CouponsProvider>(
                   builder: (context, couponsProvider, child) {
                     final coupons = couponsProvider.coupons.take(6).toList();
-                    return coupons.isNotEmpty ?SizedBox(
-                      height: 240,
-                      child: ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: coupons.length,
-                        itemBuilder: (context, index) => Container(
-                          margin: const EdgeInsets.only(right: 16),
-                          width: 180,
-                          child: RewardCard(coupon: coupons[index]),
-                        ),
-                      ),
-                    ): const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20,vertical: 8),
-                      child: Center(child: Text("Brak dostępnych nagród 🙁",textAlign: TextAlign.center,)),
-                    );
+                    return coupons.isNotEmpty
+                        ? SizedBox(
+                            height: 240,
+                            child: ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 24),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: coupons.length,
+                              itemBuilder: (context, index) => Container(
+                                margin: const EdgeInsets.only(right: 16),
+                                width: 180,
+                                child: RewardCard(coupon: coupons[index]),
+                              ),
+                            ),
+                          )
+                        : const Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 8),
+                            child: Center(
+                                child: Text(
+                              "Brak dostępnych nagród 🙁",
+                              textAlign: TextAlign.center,
+                            )),
+                          );
                   },
                 ),
                 Padding(
@@ -212,7 +231,15 @@ class HomeScreen extends StatelessWidget {
                             "Zostań partnerem",
                             style: TextStyle(color: Colors.white),
                           ),
-                          onPressed: () {},
+                          onPressed: () async {
+                            try{
+                              await sendEmail('kacperwojak17@gmail.com',
+                                  'I love this app', 'Your feedback below: \n');
+                            }catch(e){
+                              showTooltip();
+                            }
+
+                          },
                         ),
                       ),
                       const Center(
@@ -221,18 +248,26 @@ class HomeScreen extends StatelessWidget {
                           style: TextStyle(fontSize: 13),
                         ),
                       ),
-                      Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(top: 4),
-                        child: PlatformTextButton(
-                            onPressed: () {},
-                            padding: EdgeInsets.zero,
-                            child: const Text(
-                              "xyz@gmail.com",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
-                      )
+                      Tooltip(
+                        key: tooltipKey,
+                        message: 'Email skopiowany do schowka',
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.only(top: 4),
+                          child: PlatformTextButton(
+                              onPressed: () {
+                                Clipboard.setData(const ClipboardData(
+                                    text: 'kacperwojak17@gmail.com'));
+                                showTooltip();
+                              },
+                              padding: EdgeInsets.zero,
+                              child: const Text(
+                                "xyz@gmail.com",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                        ),
+                      ),
                     ],
                   ),
                 ),
