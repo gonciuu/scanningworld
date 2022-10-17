@@ -15,6 +15,8 @@ https://scanningworld-server.herokuapp.com/
   cd server
   npm i
 ```
+
+***Don't forget to create your .env file with contents of .env.example file***
     
 # API Reference
 
