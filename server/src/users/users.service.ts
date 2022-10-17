@@ -84,6 +84,16 @@ export class UsersService {
       throw new NotFoundException('Region not found');
     }
 
+    if (regionId) {
+      return this.userModel
+        .findByIdAndUpdate(
+          id,
+          { ...updateUserDto, region: regionId },
+          { new: true },
+        )
+        .exec();
+    }
+
     return this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .exec();
