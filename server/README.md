@@ -18,8 +18,18 @@ https://scanningworld-server.herokuapp.com/
     
 # API Reference
 
+## Table of contents
+
+* [Auth module](https://github.com/gonciuu/scanningworld/tree/main/server/#auth-module)
+* [Users module](https://github.com/gonciuu/scanningworld/tree/main/server/#auth-module)
+* [Regions module](https://github.com/gonciuu/scanningworld/tree/main/server/#auth-module)
+* [Places module](https://github.com/gonciuu/scanningworld/tree/main/server/#auth-module)
+* [Coupons module](https://github.com/gonciuu/scanningworld/tree/main/server/#auth-module)
+
+
+
 ## The dependency of the modules
-![123](https://i.imgur.com/cQUoKpV.png)
+![Dependecy of modules](https://i.imgur.com/cQUoKpV.png)
 ## Auth module
 
 ## `Register`
