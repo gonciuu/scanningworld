@@ -19,8 +19,11 @@ module.exports = {
       extra: '6rem',
     },
     extend: {
-      colors: {},
+      colors: {
+        primary: '#38D380',
+      },
       width: {
+        120: '30rem',
         160: '40rem',
       },
     },
