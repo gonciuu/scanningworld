@@ -21,10 +21,10 @@ https://scanningworld-server.herokuapp.com/
 ## Table of contents
 
 * [Auth module](https://github.com/gonciuu/scanningworld/tree/main/server/#auth-module)
-* [Users module](https://github.com/gonciuu/scanningworld/tree/main/server/#auth-module)
-* [Regions module](https://github.com/gonciuu/scanningworld/tree/main/server/#auth-module)
-* [Places module](https://github.com/gonciuu/scanningworld/tree/main/server/#auth-module)
-* [Coupons module](https://github.com/gonciuu/scanningworld/tree/main/server/#auth-module)
+* [Users module](https://github.com/gonciuu/scanningworld/tree/main/server/#users-module)
+* [Regions module](https://github.com/gonciuu/scanningworld/tree/main/server/#regions-module)
+* [Places module](https://github.com/gonciuu/scanningworld/tree/main/server/#places-module)
+* [Coupons module](https://github.com/gonciuu/scanningworld/tree/main/server/#coupons-module)
 
 
 
