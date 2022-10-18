@@ -13,12 +13,12 @@ const OpenStreetMaps = () => {
 
   useEffect(() => {
     axios
-      .get(
-        'https://scanningworld-server.herokuapp.com/places/6348524de90df2acac0858a7'
-      )
+      .get('http://localhost:8080/places/63485005b9a6f084791d694a')
       .then((res) => {
-        console.log(res);
+        setPlaces(res.data);
       });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -12,7 +12,8 @@
         "singleQuote": true,
         "semi": true
       }
-    ]
+    ],
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }]
   },
   "overrides": [
     // Configuration for TypeScript files

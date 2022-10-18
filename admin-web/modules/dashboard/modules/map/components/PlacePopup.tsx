@@ -29,27 +29,29 @@ const PlacePopup = () => {
         </div>
 
         <div className="flex gap-5">
-          <img
-            src="/images/popupImage.png"
-            alt="olza"
-            className="h-48 w-48 rounded-2xl"
-          />
+          <div className="h-48 w-48">
+            <img
+              src="/images/popupImage.png"
+              alt="olza"
+              className="h-48 w-48 rounded-2xl"
+            />
 
-          <p className="h-48 flex-1 text-justify text-[.9rem] leading-6">
-            {description}
-          </p>
-        </div>
+            <button className="btn mt-3 w-full bg-black text-white hover:bg-black/80 active:bg-black">
+              Pokaż kod QR
+            </button>
+          </div>
 
-        <div className="flex justify-between gap-5">
-          <button className="btn mt-3 w-48 bg-black text-white hover:bg-black/80 active:bg-black">
-            Pokaż kod QR
-          </button>
-
-          <div className="mt-4 flex flex-1 items-center justify-between">
-            <p className="text-lg font-bold text-primary">
-              {location.lat} / {location.lng}
+          <div className="flex h-48 flex-1 flex-col justify-between">
+            <p className="flex-1 text-justify text-[.9rem] leading-6">
+              {description}
             </p>
-            <p className="text-lg font-bold">{points} punktów</p>
+
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-lg font-bold text-primary">
+                {location.lat} / {location.lng}
+              </p>
+              <p className="text-center text-lg font-bold">{points} punktów</p>
+            </div>
           </div>
         </div>
 

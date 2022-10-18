@@ -9,14 +9,14 @@ export const usePlaces = () => {
   const setPlaces = (newPlaces: Place[]) => {
     setMap((map) => ({
       ...map,
-      newPlaces,
+      places: newPlaces,
     }));
   };
 
   const setSelectedPlace = (newSelectedPlace: Place | null) => {
     setMap((map) => ({
       ...map,
-      newSelectedPlace,
+      selectedPlace: newSelectedPlace,
     }));
   };
 
