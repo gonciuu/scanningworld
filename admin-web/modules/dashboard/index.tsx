@@ -1,11 +1,15 @@
 import dynamic from 'next/dynamic';
 
+import Sidebar from './modules/sidebar';
+
 const Dashboard = () => {
   const Map = dynamic(() => import('./modules/map'), { ssr: false });
 
   return (
     <div className="flex h-full w-full">
-      <div className="w-1/3 bg-white"></div>
+      <div className="w-1/3 bg-white">
+        <Sidebar />
+      </div>
       <Map />
     </div>
   );
