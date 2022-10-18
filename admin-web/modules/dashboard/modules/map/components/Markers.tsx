@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+
 import L from 'leaflet';
 import { Marker } from 'react-leaflet';
 
@@ -17,12 +19,19 @@ const pointIcon = new L.Icon({
 const PlaceMarker = (place: Place) => {
   const { setSelectedPlace } = usePlaces();
 
+  const markerRef = useRef<L.Marker<any>>(null);
+
   return (
     <Marker
       position={place.location}
       icon={pointIcon}
+      ref={markerRef}
+      // draggable
       eventHandlers={{
-        click: () => setSelectedPlace(place),
+        click: () => {
+          setSelectedPlace(place);
+          // console.log(markerRef.current?.getLatLng());
+        },
       }}
     />
   );

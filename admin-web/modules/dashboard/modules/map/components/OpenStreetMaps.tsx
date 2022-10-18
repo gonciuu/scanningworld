@@ -9,7 +9,7 @@ import Markers from './Markers';
 import PlacePopup from './PlacePopup';
 
 const OpenStreetMaps = () => {
-  const { setPlaces } = usePlaces();
+  const { setPlaces, setSelectedPlace } = usePlaces();
 
   useEffect(() => {
     axios
@@ -27,6 +27,12 @@ const OpenStreetMaps = () => {
       zoom={13}
       scrollWheelZoom={true}
       className="h-full flex-1 rounded-l-[2.5rem] focus:ring-0"
+      // @ts-ignore
+      whenReady={(map: any) => {
+        map.target.on('click', () => {
+          setSelectedPlace(null);
+        });
+      }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

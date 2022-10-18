@@ -21,7 +21,7 @@ const PlacePopup = () => {
         <div className="mb-5 flex items-center justify-between">
           <h1 className="text-xl font-bold">{name}</h1>
           <button
-            className="btn text-xl hover:bg-zinc-200"
+            className="btn absolute -right-4 text-xl hover:bg-zinc-200"
             onClick={() => setSelectedPlace(null)}
           >
             <AiOutlineClose />
