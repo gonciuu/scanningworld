@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:scanning_world/screens/place_details_screen.dart';
 import 'package:scanning_world/theme/theme.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
 import '../../data/remote/models/user/place.dart';
@@ -15,13 +16,8 @@ class PlaceMapMarker extends Marker {
           anchorPos: AnchorPos.align(AnchorAlign.top),
           point: LatLng(
               place.location.lat.toDouble(), place.location.lng.toDouble()),
-          builder: (BuildContext ctx) => Icon(
-            ctx.platformIcon(
-                material: Icons.location_on,
-                cupertino: CupertinoIcons.location_solid),
-            size: 40,
-            color: primary[700],
-          ),
+          builder: (context) =>
+              Icon(context.platformIcons.locationSolid, size: 40,color:primary[700]),
         );
 }
 
@@ -69,12 +65,15 @@ class PlaceMapMarkerPopup extends StatelessWidget {
                           const EdgeInsets.symmetric(vertical: 4)),
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 2),
                   child: const Text(
                     'Szczegóły',
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(
+                        PlaceDetailsScreen.routeName,
+                        arguments: place.id);
+                  },
                 ),
               )
             ],

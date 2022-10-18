@@ -40,7 +40,7 @@ class Place {
     "location": location,
   };
 
-  String get locationLatLng => '${location.lat.toStringAsFixed(3)},${location.lng.toStringAsFixed(3)}';
+  String get locationLatLng => '${location.lat.toStringAsFixed(3)}, ${location.lng.toStringAsFixed(3)}';
 }
 
 class Location {

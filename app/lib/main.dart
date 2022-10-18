@@ -6,6 +6,7 @@ import 'package:scanning_world/data/remote/providers/coupons_provider.dart';
 import 'package:scanning_world/data/remote/providers/places_provider.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/screens/order_coupon_screen.dart';
+import 'package:scanning_world/screens/place_details_screen.dart';
 import 'package:scanning_world/screens/profile/change_account_data_screen.dart';
 import 'package:scanning_world/screens/profile/change_password_screen.dart';
 import 'package:scanning_world/screens/scan_qr_code_screen.dart';
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
             ScanQrCodeScreen.routeName: (context) => const ScanQrCodeScreen(),
             OrderCouponScreen.routeName: (ctx) =>
                 OrderCouponScreen(arguments: settings.arguments),
+            PlaceDetailsScreen.routeName: (ctx) => PlaceDetailsScreen(placeId: settings.arguments as String,),
           };
           WidgetBuilder builder = routes[settings.name] ?? routes['/']!;
           return MaterialPageRoute(builder: (ctx) => builder(ctx));
