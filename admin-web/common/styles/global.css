@@ -18,6 +18,10 @@ input {
   .btn-primary {
     @apply bg-primary text-white hover:bg-green-500 active:bg-primary;
   }
+
+  .btn-secondary {
+    @apply border-2 border-primary text-primary hover:bg-primary hover:text-white active:bg-white active:text-primary;
+  }
 }
 
 body {
