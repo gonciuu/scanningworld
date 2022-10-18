@@ -53,21 +53,27 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         material: (_, __) => materialTheme,
         cupertino: (_, __) => cupertinoTheme,
-        routes: {
-          '/': (context) => const AuthWrapper(),
-          SignInScreen.routeName: (context) => const SignInScreen(),
-          RegisterScreen.routeName: (context) => const RegisterScreen(),
-          ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
-          HomeWrapper.routeName: (context) => const HomeWrapper(),
-          EnterPinCodeScreen.routeName: (context) => const EnterPinCodeScreen(),
-          ChangePasswordScreen.routeName: (context) =>
-              const ChangePasswordScreen(),
-          ChangeAccountDataScreen.routeName: (context) =>
-              const ChangeAccountDataScreen(),
-          ScanQrCodeScreen.routeName: (context) => const ScanQrCodeScreen(),
-          OrderCouponScreen.routeName: (context) => const OrderCouponScreen(),
-        },
         initialRoute: '/',
+        onGenerateRoute: (settings) {
+          var routes = <String, WidgetBuilder>{
+            '/': (context) => const AuthWrapper(),
+            SignInScreen.routeName: (context) => const SignInScreen(),
+            RegisterScreen.routeName: (context) => const RegisterScreen(),
+            ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
+            HomeWrapper.routeName: (context) => const HomeWrapper(),
+            EnterPinCodeScreen.routeName: (context) =>
+                const EnterPinCodeScreen(),
+            ChangePasswordScreen.routeName: (context) =>
+                const ChangePasswordScreen(),
+            ChangeAccountDataScreen.routeName: (context) =>
+                const ChangeAccountDataScreen(),
+            ScanQrCodeScreen.routeName: (context) => const ScanQrCodeScreen(),
+            OrderCouponScreen.routeName: (ctx) =>
+                OrderCouponScreen(arguments: settings.arguments),
+          };
+          WidgetBuilder builder = routes[settings.name] ?? routes['/']!;
+          return MaterialPageRoute(builder: (ctx) => builder(ctx));
+        },
       ),
     );
   }

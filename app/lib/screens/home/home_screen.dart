@@ -202,7 +202,7 @@ class HomeScreen extends StatelessWidget {
                                 itemBuilder: (context, index) => Container(
                                   margin: const EdgeInsets.only(right: 16),
                                   width: 180,
-                                  child: RewardCard(coupon: coupons[index],heroPrefix: 'home-coupon',),
+                                  child: RewardCard(coupon: coupons[index],heroPrefix: 'home-coupon'),
                                 ),
                               ),
                             )

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,9 @@ import '../theme/theme.dart';
 
 class OrderCouponScreen extends StatefulWidget {
   static const routeName = '/order-coupon';
+  final Object? arguments;
 
-  const OrderCouponScreen({Key? key}) : super(key: key);
+  const OrderCouponScreen({Key? key, this.arguments}) : super(key: key);
 
   @override
   State<OrderCouponScreen> createState() => _OrderCouponScreenState();
@@ -53,14 +55,14 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
     );
   }
 
-  Future<void> _orderCoupon(String couponId, StateSetter setAppState) async {
+  Future<void> _orderCoupon(String couponId, StateSetter setModalState) async {
     final authProvider = context.read<AuthProvider>();
     try {
-      setAppState(() => _orderState = OrderState.loading);
+      setModalState(() => _orderState = OrderState.loading);
       final activeCoupon = await authProvider.orderCoupon(couponId);
       if (!mounted) return;
       Navigator.of(context).pop();
-      setAppState(() {
+      setState(() {
         _activeCoupon = activeCoupon;
       });
       startTimer();
@@ -149,26 +151,35 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
           ),
         );
       }),
+      cupertino:  CupertinoModalSheetData(
+        barrierDismissible: false,
+      ),
+      material: MaterialModalSheetData(
+        backgroundColor: Colors.transparent,
+        isDismissible: false,
+      ),
     );
   }
 
-  // var _isInit = false;
-  //
-  // @override
-  // void didChangeDependencies() {
-  //   //check if coupon is active
-  //   if (!_isInit) {
-  //     final couponId = ModalRoute.of(context)!.settings.arguments as String;
-  //     _isInit = true;
-  //   }
-  //   super.didChangeDependencies();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    if (widget.arguments != null &&
+        (widget.arguments as Map<String, dynamic>)['isActivated']) {
+      _activeCoupon =
+          (widget.arguments as Map<String, dynamic>)['coupon'] as ActiveCoupon;
+      startTimer();
+      setState(() {
+        _orderState = OrderState.active;
+      });
+    }
+    debugPrint(widget.arguments.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
-    final data =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    final coupon = data['coupon'] as Coupon;
+    final data = widget.arguments as Map<String, dynamic>;
+    final coupon = data['isActivated'] ? (data['coupon'] as ActiveCoupon).coupon : data['coupon'] as Coupon;
     final heroPrefix = data['heroPrefix'] as String;
 
     final timeLeft = Duration(seconds: secondsLeft);
@@ -228,19 +239,21 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
                     const SizedBox(
                       height: 4,
                     ),
-                    if(_orderState == OrderState.active)
+                    if (_orderState == OrderState.active)
                       Center(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 2),
                           margin: const EdgeInsets.only(top: 4),
                           decoration: BoxDecoration(
                             color: primary[700],
                             borderRadius: BorderRadius.circular(50),
                           ),
-                          child:  Text(
+                          child: Text(
                             'Ważny do ${_activeCoupon?.formattedValidUntil}',
                             style: const TextStyle(
-                                color: Colors.white, fontWeight: FontWeight.bold),
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),

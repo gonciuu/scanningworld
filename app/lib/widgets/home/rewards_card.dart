@@ -53,6 +53,7 @@ class RewardCard extends StatelessWidget {
                             .pushNamed(OrderCouponScreen.routeName, arguments: {
                           'coupon': coupon,
                           'heroPrefix': heroPrefix,
+                          'isActivated': false
                         })
                     : null,
                 child: FittedBox(

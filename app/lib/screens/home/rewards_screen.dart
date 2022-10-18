@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -20,6 +22,7 @@ class RewardsScreen extends StatelessWidget {
             .where((x) => DateTime.now().compareTo(x.validUntil) < 0)
             .toList() ??
         [];
+
     showPlatformModalSheet(
       context: context,
       builder: (context) {
@@ -80,7 +83,7 @@ class RewardsScreen extends StatelessWidget {
             child: SafeArea(
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 28),
+                    const EdgeInsets.fromLTRB(12,28,12,64),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -135,34 +138,48 @@ class RewardsScreen extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: GestureDetector(
-              onTap: () => _showActiveCouponsBottomSheet(context),
-              child: Container(
-                  padding: const EdgeInsets.only(top: 16, bottom: 16),
-                  color: Colors.white60,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        context.platformIcon(
-                            material: Icons.check_circle_outline,
-                            cupertino: CupertinoIcons.check_mark_circled),
-                        color: Colors.green,
-                        size: 28,
-                      ),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Aktywne nagrody',
-                        style: TextStyle(fontSize: 18),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  )),
-            ))
+        Consumer<AuthProvider>(
+          builder: (context, authProvider, child) {
+            final activeCoupons = authProvider.user?.activeCoupons ?? [];
+            if (activeCoupons.isNotEmpty) {
+              return child!;
+            }
+            return const SizedBox.shrink();
+          },
+          child: Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: GestureDetector(
+                onTap: () => _showActiveCouponsBottomSheet(context),
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
+                        padding: const EdgeInsets.only(top: 16, bottom: 16),
+                        color: Colors.white38,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              context.platformIcon(
+                                  material: Icons.check_circle_outline,
+                                  cupertino: CupertinoIcons.check_mark_circled),
+                              color: Colors.green,
+                              size: 28,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              'Aktywne nagrody',
+                              style: TextStyle(fontSize: 18),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        )),
+                  ),
+                ),
+              )),
+        )
       ],
     );
   }

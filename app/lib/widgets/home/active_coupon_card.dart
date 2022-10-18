@@ -46,8 +46,9 @@ class ActiveCouponCard extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8, right: 8),
                 onPressed: () => Navigator.of(context)
                     .pushNamed(OrderCouponScreen.routeName, arguments: {
-                  'coupon': activeCoupon.coupon,
+                  'coupon': activeCoupon,
                   'heroPrefix': heroPrefix,
+                  "isActivated": true,
                 }),
                 child:  FittedBox(
                   child: Text(
