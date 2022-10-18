@@ -1,10 +1,12 @@
 import { useModal } from '@/modules/modal';
 
+import RegisterModal from '../modals/RegisterModal';
+
 const RegisterButton = () => {
   const { openModal } = useModal();
 
   const handleOpenRegisterModal = () => {
-    openModal(<div></div>);
+    openModal(<RegisterModal />);
   };
 
   return (

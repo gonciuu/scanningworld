@@ -6,6 +6,10 @@
   @apply font-montserrat font-medium transition-colors focus:outline-none focus:ring focus:ring-black;
 }
 
+input {
+  @apply w-full rounded-md bg-zinc-200 py-1 px-2;
+}
+
 @layer components {
   .btn {
     @apply rounded-lg px-4 py-2 font-semibold;
