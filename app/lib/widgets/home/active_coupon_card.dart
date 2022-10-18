@@ -49,9 +49,9 @@ class ActiveCouponCard extends StatelessWidget {
                   'coupon': activeCoupon.coupon,
                   'heroPrefix': heroPrefix,
                 }),
-                child: const FittedBox(
+                child:  FittedBox(
                   child: Text(
-                    'Szczegóły',
+                    'Ważny do ${activeCoupon.formattedValidUntil}',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),

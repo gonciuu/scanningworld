@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:scanning_world/data/remote/models/user/region.dart';
 
 class Coupon {
@@ -55,6 +56,11 @@ class ActiveCoupon {
         "_id": id
   };
 
+  String get formattedValidUntil{
+    var formatter = DateFormat('HH:mm:ss');
+    String formattedDate = formatter.format(validUntil.add(const Duration(hours: 2)));
+    return formattedDate;
+  }
 
   int get durationInSeconds => validUntil.difference(DateTime.now()).inSeconds;
 

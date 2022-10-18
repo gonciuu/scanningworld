@@ -27,17 +27,23 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
   var _orderState = OrderState.order;
   ActiveCoupon? _activeCoupon;
 
-  late Timer _timer;
-  int secondsLeft= 0;
+  Timer? _timer;
+  int secondsLeft = 0;
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   void startTimer() {
     secondsLeft = _activeCoupon!.durationInSeconds;
     const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(oneSec,
-          (Timer timer) {
+    _timer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
         if (_activeCoupon?.durationInSeconds == 0) {
-          _timer.cancel();
+          _timer?.cancel();
         } else {
           setState(() {
             secondsLeft--;
@@ -136,7 +142,7 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
                 width: double.infinity,
                 child: PlatformTextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Anuluj'),
+                  child: const Text('Anuluj'),
                 ),
               ),
             ],
@@ -170,12 +176,11 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
         ? '0${timeLeft.inMinutes}'
         : '${timeLeft.inMinutes}';
 
-    final sec = (timeLeft.inSeconds%60) < 10
+    final sec = (timeLeft.inSeconds % 60) < 10
         ? '0${timeLeft.inSeconds % 60}'
         : '${timeLeft.inSeconds % 60}';
 
-
-    final String timeLeftString = _activeCoupon !=null ? '$min:$sec' : "15:00";
+    final String timeLeftString = _activeCoupon != null ? '$min:$sec' : "15:00";
 
     return PlatformScaffold(
         appBar: PlatformAppBar(
@@ -221,7 +226,26 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 4,
+                    ),
+                    if(_orderState == OrderState.active)
+                      Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                          margin: const EdgeInsets.only(top: 4),
+                          decoration: BoxDecoration(
+                            color: primary[700],
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child:  Text(
+                            'Ważny do ${_activeCoupon?.formattedValidUntil}',
+                            style: const TextStyle(
+                                color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 4,
                     ),
                     Text(
                       "Ofertę można zrealizować na terenie gminy/miasta ${coupon.region.name}. Wystarczy, że pokazasz zeskanowany kupon osobie obsługującej punkt.",
@@ -229,7 +253,7 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
                       textAlign: TextAlign.start,
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 12,
                     ),
                     const Text(
                       "Warunki realizacji:",
@@ -238,7 +262,7 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
                       textAlign: TextAlign.start,
                     ),
                     const SizedBox(
-                      height: 8,
+                      height: 4,
                     ),
                     const Text(
                       "• Oferta jednokrotnego użytku",
@@ -270,46 +294,53 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
                     else if (_orderState == OrderState.active)
                       Column(
                         children: [
-                          const SizedBox(height: 32,),
+                          const SizedBox(
+                            height: 20,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(context.platformIcon(
-                                  material: Icons.timer,
-                                  cupertino: CupertinoIcons.timer),color: Colors.black,size: 40,),
-                              const SizedBox(width: 8,),
+                              Icon(
+                                context.platformIcon(
+                                    material: Icons.timer,
+                                    cupertino: CupertinoIcons.timer),
+                                color: Colors.black,
+                                size: 40,
+                              ),
+                              const SizedBox(
+                                width: 8,
+                              ),
                               const Text(
                                 'Zrealizuj w ',
-                                style: TextStyle(
-                                     fontSize: 20),
+                                style: TextStyle(fontSize: 20),
                                 textAlign: TextAlign.center,
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Text(
                                 timeLeftString,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 20),
                                 textAlign: TextAlign.center,
                               ),
-
-
                             ],
                           ),
-                          const SizedBox(height: 8,),
+                          const SizedBox(
+                            height: 8,
+                          ),
                           TweenAnimationBuilder<double>(
                             duration: const Duration(milliseconds: 1000),
                             curve: Curves.easeInOut,
                             tween: Tween<double>(
-                                begin: 0,
-                                end: secondsLeft/ 900,
+                              begin: 0,
+                              end: secondsLeft / 900,
                             ),
                             builder: (context, value, _) =>
                                 LinearProgressIndicator(
-                                  value: value,
-                                  backgroundColor: primary[100],
-                                  valueColor:
+                              value: value,
+                              backgroundColor: primary[100],
+                              valueColor:
                                   AlwaysStoppedAnimation<Color>(primary[700]!),
-                                ),
+                            ),
                           ),
                         ],
                       )
