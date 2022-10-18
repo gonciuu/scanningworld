@@ -5,11 +5,12 @@ import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:scanning_world/data/remote/models/user/place.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
+import 'package:scanning_world/widgets/home/place_map_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../data/remote/models/user/place.dart';
 import '../../data/remote/providers/places_provider.dart';
 
 class MapScreen extends StatefulWidget {
@@ -56,6 +57,9 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final places = context.select<PlacesProvider, List<Place>>(
+      (provider) => provider.places,
+    );
     return PlatformScaffold(
       appBar: PlatformAppBar(
         trailingActions: [
@@ -120,16 +124,17 @@ class _MapScreenState extends State<MapScreen> {
           ),
           PopupMarkerLayerWidget(
             options: PopupMarkerLayerOptions(
-              popupController: _popupLayerController,
-              markers: _markers,
-              markerRotateAlignment:
-                  PopupMarkerLayerOptions.rotationAlignmentFor(AnchorAlign.top),
-              popupBuilder: (BuildContext context, Marker marker) => const SizedBox(
-                  width: 30,
-                  child: WhiteWrapper(
-                    child: Text('HUj'),
-                  )),
-            ),
+                popupController: _popupLayerController,
+                markers: places.map((e) => PlaceMapMarker(e)).toList(),
+                markerRotateAlignment:
+                    PopupMarkerLayerOptions.rotationAlignmentFor(
+                        AnchorAlign.top),
+                popupBuilder: (_, Marker marker) {
+                  if (marker is PlaceMapMarker) {
+                    return PlaceMapMarkerPopup(place: marker.place);
+                  }
+                  return const Card(child: Text('Not a monument'));
+                }),
           ),
         ],
       ),

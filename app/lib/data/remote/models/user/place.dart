@@ -1,3 +1,4 @@
+
 import 'package:scanning_world/data/remote/models/user/region.dart';
 
 class Place {
@@ -38,6 +39,8 @@ class Place {
     "points": points,
     "location": location,
   };
+
+  String get locationLatLng => '${location.lat.toStringAsFixed(3)},${location.lng.toStringAsFixed(3)}';
 }
 
 class Location {
@@ -57,9 +60,11 @@ class Location {
         id: json["_id"],
       );
 
+
   Map<String, dynamic> toJson() => {
         "lat": lat,
         "lng": lng,
         "_id": id,
       };
 }
+

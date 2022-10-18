@@ -67,11 +67,11 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
           barrierDismissible: false,
           context: context,
           builder: (_) => PlatformAlertDialog(
-                title: Text('Udało się!'),
+                title: const Text('Udało się!'),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Udało się zeskanować kod QR.'),
+                    const Text('Udało się zeskanować kod QR.'),
                     const SizedBox(height: 10),
                     Text(
                       'Otrzymałeś ${place.points} punktów.',
@@ -172,8 +172,8 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
       showPlatformDialog(
           context: context,
           builder: (_) => PlatformAlertDialog(
-                title: Text('Error'),
-                content: Text('Musisz udzielić uprawnień do aparatu'),
+                title: const Text('Error'),
+                content: const Text('Musisz udzielić uprawnień do aparatu'),
                 actions: [
                   PlatformDialogAction(
                     child: Text(
@@ -192,7 +192,10 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
 
   @override
   void dispose() {
-    controller?.dispose();
+    if (controller != null) {
+      if (Platform.isIOS) controller!.pauseCamera();
+      controller!.dispose();
+    }
     super.dispose();
   }
 }
