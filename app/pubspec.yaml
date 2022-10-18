@@ -39,8 +39,6 @@ dependencies:
   flutter_platform_widgets: ^2.0.0
   google_fonts: ^3.0.1
   dio: ^4.0.6
-  dio_cookie_manager: ^2.0.0
-  cookie_jar: ^3.0.1
   flutter_svg: ^1.1.5
   local_auth: ^2.1.2
   provider: ^6.0.4
@@ -53,6 +51,7 @@ dependencies:
   url_launcher: ^6.1.6
   qr_code_scanner: ^1.0.1
   permission_handler: ^10.1.0
+  flutter_lazy_indexed_stack: ^0.0.3
 
 dev_dependencies:
   flutter_launcher_icons: ^0.10.0

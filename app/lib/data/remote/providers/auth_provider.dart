@@ -14,6 +14,7 @@ import '../http/http_exception.dart';
 import '../models/auth/auth.dart';
 import '../models/auth/session.dart';
 
+import '../models/coupon.dart';
 import '../models/user/user.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -250,7 +251,6 @@ class AuthProvider with ChangeNotifier {
 
   // on scan QR Code Correctly
   Future<Place> scanPlace(String code) async {
-    debugPrint('scanPlace: $code');
     try {
       final response = await dio.post(
         '/places/$code',
@@ -260,12 +260,32 @@ class AuthProvider with ChangeNotifier {
           },
         ),
       );
-      debugPrint('scanPlace: ${response.data}');
       User newUser = User.fromJson(response.data);
-      debugPrint(newUser.toString());
       _user = newUser;
       notifyListeners();
       return newUser.scannedPlaces.last;
+    } on DioError catch (e) {
+      throw HttpError.fromDioError(e);
+    } catch (err) {
+      throw HttpError(err.toString());
+    }
+  }
+
+  //on coupon activate
+  Future<ActiveCoupon> orderCoupon(String couponId) async {
+    try {
+      final response = await dio.post(
+        '/coupons/activate/$couponId',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+      User newUser = User.fromJson(response.data);
+      _user = newUser;
+      notifyListeners();
+      return newUser.activeCoupons.last;
     } on DioError catch (e) {
       throw HttpError.fromDioError(e);
     } catch (err) {

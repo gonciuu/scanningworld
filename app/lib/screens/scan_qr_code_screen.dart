@@ -49,11 +49,12 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
     final authProvider = context.read<AuthProvider>();
     try {
       showPlatformDialog(
+          barrierDismissible: false,
           context: context,
           builder: (context) => PlatformAlertDialog(
                 content: Row(
                   children: const [
-                    Center(child: CustomProgressIndicator()),
+                    CustomProgressIndicator(),
                     SizedBox(width: 10),
                     Text('Loading...'),
                   ],
@@ -140,6 +141,11 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
         controller.pauseCamera();
       }
     });
+    if(Platform.isAndroid) {
+      controller.pauseCamera();
+      controller.resumeCamera();
+    }
+
   }
 
   Widget _buildQrView(BuildContext context) {

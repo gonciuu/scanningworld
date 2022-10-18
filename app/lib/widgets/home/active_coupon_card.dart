@@ -1,40 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/models/coupon.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/screens/order_coupon_screen.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
 
-class RewardCard extends StatelessWidget {
-  final Coupon coupon;
-
+class ActiveCouponCard extends StatelessWidget {
+  final ActiveCoupon activeCoupon;
   final String heroPrefix;
 
-  const RewardCard({Key? key, required this.coupon, required this.heroPrefix})
+  const ActiveCouponCard(
+      {Key? key, required this.activeCoupon, required this.heroPrefix})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final userPoints = context.select(
-        (AuthProvider authProvider) => authProvider.user?.pointsInRegion ?? 0);
-    final canOrder = userPoints >= coupon.points;
     return WhiteWrapper(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Hero(
-              tag: '$heroPrefix-${coupon.id}',
+              tag: '$heroPrefix-${activeCoupon.id}',
               child: Image.network(
-                coupon.imageUri,
+                activeCoupon.coupon.imageUri,
                 height: 30,
                 fit: BoxFit.scaleDown,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              coupon.name,
+              activeCoupon.coupon.name,
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontWeight: FontWeight.w400,
@@ -48,18 +44,15 @@ class RewardCard extends StatelessWidget {
               width: double.infinity,
               child: PlatformElevatedButton(
                 padding: const EdgeInsets.only(left: 8, right: 8),
-                onPressed: canOrder
-                    ? () => Navigator.of(context)
-                            .pushNamed(OrderCouponScreen.routeName, arguments: {
-                          'coupon': coupon,
-                          'heroPrefix': heroPrefix,
-                        })
-                    : null,
-                child: FittedBox(
+                onPressed: () => Navigator.of(context)
+                    .pushNamed(OrderCouponScreen.routeName, arguments: {
+                  'coupon': activeCoupon.coupon,
+                  'heroPrefix': heroPrefix,
+                }),
+                child: const FittedBox(
                   child: Text(
-                    '${coupon.points} punktów',
-                    style: TextStyle(
-                        color: canOrder ? Colors.white : Colors.grey.shade700),
+                    'Szczegóły',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),

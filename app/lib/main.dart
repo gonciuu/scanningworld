@@ -5,6 +5,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:scanning_world/data/remote/providers/coupons_provider.dart';
 import 'package:scanning_world/data/remote/providers/places_provider.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
+import 'package:scanning_world/screens/order_coupon_screen.dart';
 import 'package:scanning_world/screens/profile/change_account_data_screen.dart';
 import 'package:scanning_world/screens/profile/change_password_screen.dart';
 import 'package:scanning_world/screens/scan_qr_code_screen.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
           ChangeAccountDataScreen.routeName: (context) =>
               const ChangeAccountDataScreen(),
           ScanQrCodeScreen.routeName: (context) => const ScanQrCodeScreen(),
+          OrderCouponScreen.routeName: (context) => const OrderCouponScreen(),
         },
         initialRoute: '/',
       ),

@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -27,6 +28,10 @@ class _AuthWrapperState extends State<AuthWrapper> {
     checkLocalSignIn();
     super.initState();
   }
+
+
+
+
 
   // Fetch regions from the server for registration
   Future<void> fetchRegions() async {
@@ -67,7 +72,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
     if (refreshToken != null && pinCode != null) {
       try {
         await authProvider.refreshToken();
-        return navigateToEnterPinCodeScreen();
+        navigateToEnterPinCodeScreen();
       } catch (e) {
         navigateToSignInScreen();
       }

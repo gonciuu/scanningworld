@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/data/remote/providers/coupons_provider.dart';
@@ -12,7 +11,8 @@ class RewardsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userPoints = context.select((AuthProvider p) => p.user?.pointsInRegion);
+    final userPoints =
+        context.select((AuthProvider p) => p.user?.pointsInRegion);
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: SafeArea(
@@ -30,7 +30,7 @@ class RewardsScreen extends StatelessWidget {
                       .copyWith(color: Colors.black, fontSize: 17),
                   children: <TextSpan>[
                     TextSpan(
-                        text: '${userPoints} punktów',
+                        text: '$userPoints punktów',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             decoration: TextDecoration.underline,
@@ -45,18 +45,24 @@ class RewardsScreen extends StatelessWidget {
                 builder: (context, couponsProvider, child) {
                   final coupons = couponsProvider.coupons;
 
-                  return coupons.isNotEmpty ? GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200,
-                  childAspectRatio: 3 / 4.1,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12),
-                  scrollDirection: Axis.vertical,
-                  itemBuilder: (context, i) => RewardCard( coupon: coupons[i],),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: coupons.length,
-                  ): const Center(child: Text('Brak dostępnych nagród 🙁'));
+                  return coupons.isNotEmpty
+                      ? GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: 200,
+                                  childAspectRatio: 3 / 4.1,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 12),
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (context, i) => RewardCard(
+                            coupon: coupons[i],
+                            heroPrefix: 'coupon',
+                          ),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: coupons.length,
+                        )
+                      : const Center(child: Text('Brak dostępnych nagród 🙁'));
                 },
               )
             ],
