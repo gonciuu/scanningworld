@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 * {
-  @apply font-montserrat font-medium transition-colors focus:outline-none focus:ring focus:ring-black;
+  @apply rounded-lg font-montserrat font-medium transition-colors focus:outline-none focus:ring focus:ring-black;
 }
 
 input {
@@ -44,4 +44,25 @@ html {
 
 #portal {
   z-index: 31;
+}
+
+.leaflet-popup-content-wrapper {
+  box-shadow: none !important;
+
+  @apply h-96 w-[35rem];
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  width: 100% !important;
+
+  @apply h-full px-8 py-4;
+}
+
+.leaflet-popup-content p {
+  margin: 0 !important;
+}
+
+.leaflet-popup-tip-container {
+  visibility: hidden;
 }
