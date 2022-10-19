@@ -153,6 +153,7 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
             child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
                 itemBuilder: (c, i) {
                   return PlaceItem(
                     place: places[i],

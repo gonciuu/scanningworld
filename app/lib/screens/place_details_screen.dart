@@ -127,7 +127,7 @@ class PlaceDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        place.name,
+                        "${place.name} (${place.points} pkt)",
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
 

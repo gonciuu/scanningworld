@@ -8,6 +8,7 @@ import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/screens/order_coupon_screen.dart';
 import 'package:scanning_world/screens/place_details_screen.dart';
 import 'package:scanning_world/screens/profile/change_account_data_screen.dart';
+import 'package:scanning_world/screens/profile/change_avatar_screen.dart';
 import 'package:scanning_world/screens/profile/change_password_screen.dart';
 import 'package:scanning_world/screens/scan_qr_code_screen.dart';
 import 'data/remote/providers/auth_provider.dart';
@@ -58,20 +59,22 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: (settings) {
           var routes = <String, WidgetBuilder>{
             '/': (context) => const AuthWrapper(),
-            SignInScreen.routeName: (context) => const SignInScreen(),
-            RegisterScreen.routeName: (context) => const RegisterScreen(),
-            ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
-            HomeWrapper.routeName: (context) => const HomeWrapper(),
-            EnterPinCodeScreen.routeName: (context) =>
-                const EnterPinCodeScreen(),
-            ChangePasswordScreen.routeName: (context) =>
+            SignInScreen.routeName: (ctx) => const SignInScreen(),
+            RegisterScreen.routeName: (ctx) => const RegisterScreen(),
+            ForgotPasswordScreen.routeName: (ctx) => ForgotPasswordScreen(),
+            HomeWrapper.routeName: (ctx) => const HomeWrapper(),
+            EnterPinCodeScreen.routeName: (ctx) => const EnterPinCodeScreen(),
+            ChangePasswordScreen.routeName: (ctx) =>
                 const ChangePasswordScreen(),
-            ChangeAccountDataScreen.routeName: (context) =>
+            ChangeAccountDataScreen.routeName: (ctx) =>
                 const ChangeAccountDataScreen(),
-            ScanQrCodeScreen.routeName: (context) => const ScanQrCodeScreen(),
+            ScanQrCodeScreen.routeName: (ctx) => const ScanQrCodeScreen(),
             OrderCouponScreen.routeName: (ctx) =>
                 OrderCouponScreen(arguments: settings.arguments),
-            PlaceDetailsScreen.routeName: (ctx) => PlaceDetailsScreen(placeId: settings.arguments as String,),
+            PlaceDetailsScreen.routeName: (ctx) => PlaceDetailsScreen(
+                  placeId: settings.arguments as String,
+                ),
+            ChangeAvatarScreen.routeName: (ctx) => const ChangeAvatarScreen(),
           };
           WidgetBuilder builder = routes[settings.name] ?? routes['/']!;
           return MaterialPageRoute(builder: (ctx) => builder(ctx));
