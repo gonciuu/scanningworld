@@ -4,6 +4,7 @@ import axios from 'axios';
 import Spinner from '@/common/components/Spinner';
 
 import { Place } from '../../map/types/place.type';
+import PlaceComponent from './Place';
 
 const PlaceList = () => {
   const { data, error, isLoading } = useQuery(['places'], () =>
@@ -29,15 +30,7 @@ const PlaceList = () => {
       </div>
       <div className="flex flex-col gap-2">
         {data.map((place) => (
-          <div key={place._id} className="flex items-center gap-2">
-            <div className="h-10 w-10 rounded-full bg-gray-200" />
-            <div className="flex-1">
-              <div className="text-sm font-semibold">{place.name}</div>
-              <div className="text-xs text-gray-500">
-                {place.location.lat} \ {place.location.lng}
-              </div>
-            </div>
-          </div>
+          <PlaceComponent {...place} key={place._id} />
         ))}
       </div>
     </div>
