@@ -29,6 +29,8 @@ class User {
 
   num get pointsInRegion => points[region.id] ?? 0;
 
+  bool isPlaceScanned(String placeId) => scannedPlaces.any((element) => element.id == placeId);
+
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["_id"],
         name: json["name"],

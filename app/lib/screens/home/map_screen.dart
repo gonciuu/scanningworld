@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -6,12 +7,15 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
+import 'package:scanning_world/theme/theme.dart';
+import 'package:scanning_world/widgets/common/big_title.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
 import 'package:scanning_world/widgets/home/place_map_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/remote/models/user/place.dart';
 import '../../data/remote/providers/places_provider.dart';
+import '../../widgets/home/place_item.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -21,10 +25,11 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  late final List<Marker> _markers;
-
   /// Used to trigger showing/hiding of popups.
   final PopupController _popupLayerController = PopupController();
+
+  var _showScannedPlaces = true;
+  var _showUnscannedPlaces = true;
 
   Future<void> _launchUrl(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
@@ -32,43 +37,170 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  List<Place> filterPlaces(List<Place> places) {
+    final userScannedPlaces =
+        context.read<AuthProvider>().user?.scannedPlaces.map((e) => e.id) ?? [];
+
+
+    if(_showScannedPlaces){
+      if(_showUnscannedPlaces){
+        return places;
+      }else{
+        return places.where((element) => userScannedPlaces.contains(element.id)).toList();
+      }
+    }else{
+      if(_showUnscannedPlaces){
+        return places.where((element) => !userScannedPlaces.contains(element.id)).toList();
+      }else{
+        return [];
+      }
+    }
+
+
+  }
+
+  void _showSettingsModalBottomSheet() {
+    showPlatformModalSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (ctx, setModalState) => Container(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  BigTitle(
+                    text: 'Filtry',
+                    style: TextStyle(color: primary[700]),
+                  ),
+                  BigTitle(
+                    text: 'Pokaż punkty:',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    children: [
+                      PlatformSwitch(
+                        value: _showScannedPlaces,
+                        onChanged: (value) {
+                          setModalState(() {
+                            _showScannedPlaces = value;
+                          });
+                          setState(() {
+                            _showScannedPlaces = value;
+                          });
+                        },
+                        activeColor: primary[700],
+                      ),
+                      SizedBox(
+                        width: 2,
+                      ),
+                      const Text('Odwiedzone'),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Row(
+                    children: [
+                      PlatformSwitch(
+                        value: _showUnscannedPlaces,
+                        activeColor: primary[700],
+                        onChanged: (value) {
+                          setModalState(() {
+                            _showUnscannedPlaces = value;
+                          });
+                          setState(() {
+                            _showUnscannedPlaces = value;
+                          });
+                        },
+                      ),
+                      SizedBox(
+                        width: 2,
+                      ),
+                      const Text('Nieodwiedzone'),
+                    ],
+                  ),
+                ],
+              )),
+        );
+      },
+    );
+  }
+
+  void _showPlacesListModal() {
+    final places = filterPlaces(context.read<PlacesProvider>().places);
+    showPlatformModalSheet(
+        context: context,
+        builder: (c) {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            child: ListView.builder(
+                itemBuilder: (c, i) {
+                  return PlaceItem(
+                    place: places[i],
+                  );
+                },
+                itemCount: places.length,
+                padding: const EdgeInsets.symmetric(vertical: 20)),
+          );
+        });
+  }
+
   @override
   void initState() {
     super.initState();
-    _markers = [
-      LatLng(49.785868, 18.203585),
-      LatLng(49.885868, 18.303585),
-      LatLng(49.985868, 18.403585),
-    ]
-        .map(
-          (markerPosition) => Marker(
-            point: markerPosition,
-            width: 40,
-            height: 40,
-            builder: (_) => const Icon(Icons.location_on, size: 40),
-            anchorPos: AnchorPos.align(AnchorAlign.top),
-          ),
-        )
-        .toList();
-
     final regionId = context.read<AuthProvider>().user!.region.id;
     context.read<PlacesProvider>().fetchPlaces(regionId);
   }
 
   @override
   Widget build(BuildContext context) {
-    final places = context.select<PlacesProvider, List<Place>>(
+    final places = filterPlaces(context.select<PlacesProvider, List<Place>>(
       (provider) => provider.places,
-    );
+    ));
     return PlatformScaffold(
       appBar: PlatformAppBar(
         trailingActions: [
           PlatformIconButton(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            cupertino: (_, __) => CupertinoIconButtonData(minSize: 0),
             icon: Icon(
-              context.platformIcons.share,
+              context.platformIcon(
+                  material: Icons.filter_alt_outlined,
+                  cupertino: CupertinoIcons.slider_horizontal_3),
               color: Colors.white,
+              size: 28,
             ),
-            onPressed: () {},
+            onPressed: _showSettingsModalBottomSheet,
+          ),
+          PlatformIconButton(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            cupertino: (_, __) => CupertinoIconButtonData(minSize: 0),
+            icon: Icon(
+              context.platformIcon(
+                  material: Icons.list, cupertino: CupertinoIcons.square_list),
+              color: Colors.white,
+              size: 28,
+            ),
+            onPressed: _showPlacesListModal,
           ),
         ],
         title: const Text('Mapa kodów QR'),
