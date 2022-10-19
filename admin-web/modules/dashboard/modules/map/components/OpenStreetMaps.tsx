@@ -1,25 +1,13 @@
-import { useEffect } from 'react';
-
-import axios from 'axios';
 import { MapContainer, TileLayer } from 'react-leaflet';
 
 import 'leaflet/dist/leaflet.css';
-import { usePlaces } from '../recoil';
+import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
+
 import Markers from './Markers';
 import PlacePopup from './PlacePopup';
 
 const OpenStreetMaps = () => {
-  const { setPlaces, setSelectedPlace } = usePlaces();
-
-  useEffect(() => {
-    axios
-      .get('http://localhost:8080/places/63485005b9a6f084791d694a')
-      .then((res) => {
-        setPlaces(res.data);
-      });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { setActivePlace } = useActivePlace();
 
   return (
     <MapContainer
@@ -30,7 +18,7 @@ const OpenStreetMaps = () => {
       // @ts-ignore
       whenReady={(map: any) => {
         map.target.on('click', () => {
-          setSelectedPlace(null);
+          setActivePlace(null);
         });
       }}
     >

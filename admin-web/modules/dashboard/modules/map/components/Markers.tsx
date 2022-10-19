@@ -1,9 +1,12 @@
 import { useRef } from 'react';
 
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import L from 'leaflet';
 import { Marker } from 'react-leaflet';
 
-import { usePlaces } from '../recoil';
+import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
+
 import { Place } from '../types/place.type';
 
 const pointIcon = new L.Icon({
@@ -17,7 +20,7 @@ const pointIcon = new L.Icon({
 });
 
 const PlaceMarker = (place: Place) => {
-  const { setSelectedPlace } = usePlaces();
+  const { setActivePlace } = useActivePlace();
 
   const markerRef = useRef<L.Marker<any>>(null);
 
@@ -29,7 +32,7 @@ const PlaceMarker = (place: Place) => {
       // draggable
       eventHandlers={{
         click: () => {
-          setSelectedPlace(place);
+          setActivePlace(place);
           // console.log(markerRef.current?.getLatLng());
         },
       }}
@@ -38,11 +41,19 @@ const PlaceMarker = (place: Place) => {
 };
 
 const Markers = () => {
-  const { places } = usePlaces();
+  const { data, error, isLoading } = useQuery(['places'], () =>
+    axios
+      .get<Place[]>('places/63485005b9a6f084791d694a')
+      .then((res) => res.data)
+  );
+
+  if (isLoading) return <div>Loading...</div>;
+
+  if (error || !data) return <div>Error</div>;
 
   return (
     <>
-      {places.map((place) => (
+      {data.map((place) => (
         <PlaceMarker key={place._id} {...place} />
       ))}
     </>

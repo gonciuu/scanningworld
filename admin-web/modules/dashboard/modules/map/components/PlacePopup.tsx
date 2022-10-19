@@ -1,14 +1,14 @@
 import { AiOutlineClose } from 'react-icons/ai';
 import { Popup } from 'react-leaflet';
 
-import { usePlaces } from '../recoil';
+import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
 
 const PlacePopup = () => {
-  const { selectedPlace, setSelectedPlace } = usePlaces();
+  const { activePlace, setActivePlace } = useActivePlace();
 
-  if (!selectedPlace) return null;
+  if (!activePlace) return null;
 
-  const { location, name, description, points } = selectedPlace;
+  const { location, name, description, points } = activePlace;
 
   return (
     <Popup
@@ -22,7 +22,7 @@ const PlacePopup = () => {
           <h1 className="text-xl font-bold">{name}</h1>
           <button
             className="btn absolute -right-4 text-xl hover:bg-zinc-200"
-            onClick={() => setSelectedPlace(null)}
+            onClick={() => setActivePlace(null)}
           >
             <AiOutlineClose />
           </button>
