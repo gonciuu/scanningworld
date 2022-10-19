@@ -47,9 +47,7 @@ const Markers = () => {
       .then((res) => res.data)
   );
 
-  if (isLoading) return <div>Loading...</div>;
-
-  if (error || !data) return <div>Error</div>;
+  if (isLoading || error || !data) return null;
 
   return (
     <>

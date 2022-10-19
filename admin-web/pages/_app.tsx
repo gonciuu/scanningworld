@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import axios from 'axios';
 import { MotionConfig } from 'framer-motion';
@@ -12,12 +10,9 @@ import { ModalManager } from '@/modules/modal';
 import '../common/styles/global.css';
 
 const queryClient = new QueryClient();
+axios.defaults.baseURL = 'https://scanningworld-server.herokuapp.com';
 
 const App = ({ Component, pageProps }: AppProps) => {
-  useEffect(() => {
-    axios.defaults.baseURL = 'https://scanningworld-server.herokuapp.com';
-  }, []);
-
   return (
     <>
       <Head>
