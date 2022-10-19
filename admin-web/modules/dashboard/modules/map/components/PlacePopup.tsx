@@ -19,7 +19,7 @@ const PlacePopup = () => {
     >
       <div className="relative h-full">
         <div className="mb-5 flex items-center justify-between">
-          <h1 className="text-xl font-bold">{name}</h1>
+          <h1 className="pr-10 text-xl font-bold">{name}</h1>
           <button
             className="btn absolute -right-4 text-xl hover:bg-zinc-200"
             onClick={() => setActivePlace(null)}
@@ -29,7 +29,7 @@ const PlacePopup = () => {
         </div>
 
         <div className="flex gap-5">
-          <div className="h-48 w-48">
+          <div>
             <img
               src="/images/popupImage.png"
               alt="olza"
@@ -55,7 +55,7 @@ const PlacePopup = () => {
           </div>
         </div>
 
-        <div className="absolute bottom-0 flex w-full justify-end gap-5">
+        <div className="mt-3 flex w-full justify-end gap-5">
           <button className="btn btn-secondary">Edytuj informacje</button>
           <button className="btn btn-primary">Zmień położenie</button>
         </div>

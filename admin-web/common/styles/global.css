@@ -49,7 +49,7 @@ html {
 .leaflet-popup-content-wrapper {
   box-shadow: none !important;
 
-  @apply h-96 w-[35rem];
+  @apply h-max w-[35rem];
 }
 
 .leaflet-popup-content {
