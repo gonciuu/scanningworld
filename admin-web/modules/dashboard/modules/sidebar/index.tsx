@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import CouponList from './components/CouponList';
 import Header from './components/Header';
 import Menu from './components/Menu';
 import PlaceList from './components/PlaceList';
@@ -19,6 +20,7 @@ const Sidebar = () => {
         />
 
         {menuType === MenuType.PLACES && <PlaceList />}
+        {menuType === MenuType.COUPONS && <CouponList />}
       </div>
     </div>
   );

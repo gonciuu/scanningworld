@@ -6,8 +6,7 @@ import L from 'leaflet';
 import { Marker } from 'react-leaflet';
 
 import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
-
-import { Place } from '../types/place.type';
+import { Place } from '@/modules/dashboard/types/place.type';
 
 const pointIcon = new L.Icon({
   iconUrl: '/images/marker-icon.svg',

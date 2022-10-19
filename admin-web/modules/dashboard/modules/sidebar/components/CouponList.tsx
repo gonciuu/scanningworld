@@ -2,15 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 import Spinner from '@/common/components/Spinner';
-import { Place } from '@/modules/dashboard/types/place.type';
 
-import PlaceComponent from './Place';
+import CouponComponent from './Coupon';
 
-const PlaceList = () => {
-  const { data, error, isLoading } = useQuery(['places'], () =>
-    axios
-      .get<Place[]>('places/63485005b9a6f084791d694a')
-      .then((res) => res.data)
+const CouponList = () => {
+  const { data, error, isLoading } = useQuery(['coupons'], () =>
+    axios.get<any[]>('coupons/63485005b9a6f084791d694a').then((res) => res.data)
   );
 
   if (isLoading)
@@ -26,15 +23,15 @@ const PlaceList = () => {
     <div>
       <div className="mt-4 mb-8 flex gap-4">
         <button className="btn btn-secondary w-full">Filtruj</button>
-        <button className="btn btn-primary w-full">Dodaj miejsce</button>
+        <button className="btn btn-primary w-full">Dodaj kupon</button>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-2 gap-10 px-5">
         {data.map((place) => (
-          <PlaceComponent {...place} key={place._id} />
+          <CouponComponent {...place} key={place._id} />
         ))}
       </div>
     </div>
   );
 };
 
-export default PlaceList;
+export default CouponList;

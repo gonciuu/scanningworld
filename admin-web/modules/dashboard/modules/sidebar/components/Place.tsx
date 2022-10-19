@@ -1,6 +1,5 @@
 import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
-
-import { Place } from '../../map/types/place.type';
+import { Place } from '@/modules/dashboard/types/place.type';
 
 const PlaceComponent = (place: Place) => {
   const { setActivePlace, activePlace } = useActivePlace();
