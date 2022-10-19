@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:scanning_world/screens/sign_in_screen.dart';
 import 'package:scanning_world/screens/wrappers/home_wrapper.dart';
 import 'package:scanning_world/widgets/auth/set_auth_pin_code_bottom_sheet.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
@@ -8,6 +9,7 @@ import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import '../data/remote/http/http_exception.dart';
 import '../data/remote/models/auth/auth.dart';
 import '../data/remote/providers/auth_provider.dart';
+import '../data/remote/providers/coupons_provider.dart';
 import '../data/remote/providers/regions_provider.dart';
 import '../theme/theme.dart';
 import '../widgets/auth/register_form_fields_1.dart';
@@ -78,6 +80,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   //register user
   Future<void> _registerUser() async {
     final authProvider = context.read<AuthProvider>();
+    final couponsProvider = context.read<CouponsProvider>();
 
     if (_formKey.currentState!.validate()) {
       try {
@@ -91,11 +94,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
         //register user
         setState(() => _isLoading = true);
-        await authProvider.register(
+        final authRes = await authProvider.register(
           registerData,
         );
+        await couponsProvider.getCoupons(authRes.user.region.id);
         if (!mounted) return;
-        Navigator.of(context).pushReplacementNamed(HomeWrapper.routeName);
+        Navigator.of(context).pushNamedAndRemoveUntil(HomeWrapper.routeName,
+                (Route<dynamic> route) => false);
       } on HttpError catch (e) {
         showPlatformDialog(
             context: context,
@@ -216,8 +221,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 4),
                                     onPressed: () {
-                                      Navigator.pushNamed(context, '/sign-in');
-                                      //Navigator.pushReplacementNamed(context, '/register');
+                                      Navigator.of(context)
+                                          .pushReplacementNamed(
+                                              SignInScreen.routeName);
                                     },
                                     child: Text(
                                       'Zaloguj się',

@@ -5,11 +5,13 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/local/secure_storage_manager.dart';
 import 'package:scanning_world/screens/forgot_password_screen.dart';
+import 'package:scanning_world/screens/register_screen.dart';
 import 'package:scanning_world/screens/wrappers/home_wrapper.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import 'package:scanning_world/widgets/common/error_dialog.dart';
 import '../data/remote/http/http_exception.dart';
 import '../data/remote/providers/auth_provider.dart';
+import '../data/remote/providers/coupons_provider.dart';
 import '../theme/theme.dart';
 import '../widgets/auth/set_auth_pin_code_bottom_sheet.dart';
 import '../widgets/auth/sign_in_form_fields.dart';
@@ -57,6 +59,7 @@ class _SignInScreenState extends State<SignInScreen> {
   //handle form submission
   Future<void> _onSubmit() async {
     final authProvider = context.read<AuthProvider>();
+    final couponsProvider = context.read<CouponsProvider>();
     if (_formKey.currentState!.validate()) {
       try {
         final curPin = await secureStorageManager.getPinCode();
@@ -73,15 +76,17 @@ class _SignInScreenState extends State<SignInScreen> {
           return;
         }
         setState(() => _isLoading = true);
-        await authProvider.signIn(
+        final authRes = await authProvider.signIn(
           phoneNumberController.text,
           passwordController.text,
           pinCode,
         );
+        await couponsProvider.getCoupons(authRes.user.region.id);
         //navigate to home screen
         // login successful
         if (!mounted) return;
-        Navigator.of(context).pushReplacementNamed(HomeWrapper.routeName);
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            HomeWrapper.routeName, (Route<dynamic> route) => false);
       } on HttpError catch (e) {
         showPlatformDialog(
             context: context,
@@ -175,8 +180,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         PlatformTextButton(
                           padding: const EdgeInsets.symmetric(horizontal: 4),
                           onPressed: () {
-                            Navigator.pushNamed(context, '/register');
-                            //Navigator.pushReplacementNamed(context, '/register');
+                            Navigator.of(context)
+                                .pushReplacementNamed(RegisterScreen.routeName);
                           },
                           child: Text(
                             'Zarejestruj się',

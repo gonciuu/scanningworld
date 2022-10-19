@@ -21,6 +21,12 @@ class SecureStorageManager{
   }
 
 
+  Future<void> deleteAll() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    await storage.deleteAll();
+  }
+
   // Save the refresh token in secure storage
   Future<void> saveRefreshToken(String refresh) async {
     await storage.write(key: API_REFRESH_TOKEN_STORAGE_KEY, value: refresh);
