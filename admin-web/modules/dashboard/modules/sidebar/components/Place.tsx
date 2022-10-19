@@ -3,12 +3,16 @@ import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
 import { Place } from '../../map/types/place.type';
 
 const PlaceComponent = (place: Place) => {
-  const { setActivePlace } = useActivePlace();
+  const { setActivePlace, activePlace } = useActivePlace();
 
   const { name, location, points } = place;
 
   return (
-    <div className="flex gap-2">
+    <div
+      className={`flex gap-2 p-2 ${
+        activePlace?._id === place._id && 'bg-primary/20'
+      }`}
+    >
       <img
         src="images/popupImage.png"
         alt={`Zdjęcie ${name}`}
@@ -20,10 +24,10 @@ const PlaceComponent = (place: Place) => {
           {place.name}
         </p>
 
-        <p className="text-xs text-gray-500">
+        <p className="text-xs font-semibold text-gray-500">
           {location.lat} \ {location.lng}
         </p>
-        <p className="text-xs">{points} punktów</p>
+        <p className="text-xs font-semibold">{points} punktów</p>
 
         <button
           className="btn btn-primary w-min py-1 px-3 text-sm"
