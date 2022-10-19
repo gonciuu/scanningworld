@@ -15,6 +15,12 @@ class User {
   final Map<String, int> points;
   final List<ActiveCoupon> activeCoupons;
 
+
+  List<ActiveCoupon> get dateActiveCoupons => activeCoupons
+      .where((x) => DateTime.now().compareTo(x.validUntil) < 0)
+      .toList();
+
+
   User({
     required this.name,
     required this.email,

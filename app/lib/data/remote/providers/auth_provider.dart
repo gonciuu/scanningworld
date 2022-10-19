@@ -30,6 +30,7 @@ class AuthProvider with ChangeNotifier {
 
   String? get accessToken => _accessToken;
 
+
   // session needed for refresh token
   // add auth interceptor to catch access token expiration
   void addAuthInterceptor() {

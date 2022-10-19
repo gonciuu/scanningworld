@@ -15,13 +15,8 @@ class RewardsScreen extends StatelessWidget {
   const RewardsScreen({Key? key}) : super(key: key);
 
   void _showActiveCouponsBottomSheet(BuildContext context) {
-    final activeCoupons = context
-            .read<AuthProvider>()
-            .user
-            ?.activeCoupons
-            .where((x) => DateTime.now().compareTo(x.validUntil) < 0)
-            .toList() ??
-        [];
+    final activeCoupons =
+        context.read<AuthProvider>().user?.dateActiveCoupons ?? [];
 
     showPlatformModalSheet(
       context: context,
@@ -82,8 +77,7 @@ class RewardsScreen extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             child: SafeArea(
               child: Padding(
-                padding:
-                    const EdgeInsets.fromLTRB(12,28,12,64),
+                padding: const EdgeInsets.fromLTRB(12, 28, 12, 64),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -140,7 +134,7 @@ class RewardsScreen extends StatelessWidget {
         ),
         Consumer<AuthProvider>(
           builder: (context, authProvider, child) {
-            final activeCoupons = authProvider.user?.activeCoupons ?? [];
+            final activeCoupons = authProvider.user?.dateActiveCoupons ?? [];
             if (activeCoupons.isNotEmpty) {
               return child!;
             }
