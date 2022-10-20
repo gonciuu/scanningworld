@@ -37,10 +37,9 @@ export class CouponsService {
   }
 
   async createCoupon(
+    regionId: string,
     createCouponDto: CreateCouponDto,
   ): Promise<CouponDocument> {
-    const { regionId, ...coupon } = createCouponDto;
-
     if (!isValidObjectId(regionId)) {
       throw new BadRequestException('Invalid region id');
     }
@@ -51,7 +50,10 @@ export class CouponsService {
       throw new NotFoundException('Region not found');
     }
 
-    const newCoupon = new this.couponModel({ ...coupon, region: regionId });
+    const newCoupon = new this.couponModel({
+      ...createCouponDto,
+      region: regionId,
+    });
 
     return await newCoupon.save();
   }

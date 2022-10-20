@@ -8,6 +8,18 @@ export type RegionDocument = Region & Document;
 export class Region {
   @Prop()
   name: string;
+
+  @Prop({ default: 0 })
+  placeCount: number;
+
+  @Prop()
+  email: string;
+
+  @Prop({ select: false })
+  password: string;
+
+  @Prop({ select: false })
+  refreshToken: string;
 }
 
 export const RegionSchema = SchemaFactory.createForClass(Region);

@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -28,6 +29,10 @@ class _AuthWrapperState extends State<AuthWrapper> {
     super.initState();
   }
 
+
+
+
+
   // Fetch regions from the server for registration
   Future<void> fetchRegions() async {
     try {
@@ -40,11 +45,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
     } catch (error) {
       debugPrint(error.toString());
     }
-  }
-
-  Future<void> testDelete() async {
-    await _secureStorageManager.deleteRefreshToken();
-    await _secureStorageManager.deletePinCode();
   }
 
   void navigateToSignInScreen() {
@@ -63,6 +63,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
   Future<void> checkLocalSignIn() async {
     final authProvider = context.read<AuthProvider>();
+    authProvider.addAuthInterceptor();
     await _secureStorageManager.checkFirstSignIn();
     await fetchRegions();
 
@@ -71,7 +72,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
     if (refreshToken != null && pinCode != null) {
       try {
         await authProvider.refreshToken();
-        return navigateToEnterPinCodeScreen();
+        navigateToEnterPinCodeScreen();
       } catch (e) {
         navigateToSignInScreen();
       }

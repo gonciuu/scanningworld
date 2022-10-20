@@ -2,6 +2,8 @@ import 'package:scanning_world/data/remote/models/user/place.dart';
 import 'package:scanning_world/data/remote/models/user/region.dart';
 import 'package:scanning_world/data/remote/models/auth/session.dart';
 
+import '../coupon.dart';
+
 class User {
   final String id;
   final String name;
@@ -11,6 +13,13 @@ class User {
   final Region region;
   final List<Place> scannedPlaces;
   final Map<String, int> points;
+  final List<ActiveCoupon> activeCoupons;
+
+
+  List<ActiveCoupon> get dateActiveCoupons => activeCoupons
+      .where((x) => DateTime.now().compareTo(x.validUntil) < 0)
+      .toList();
+
 
   User({
     required this.name,
@@ -21,7 +30,12 @@ class User {
     required this.region,
     required this.scannedPlaces,
     required this.points,
+    required this.activeCoupons,
   });
+
+  num get pointsInRegion => points[region.id] ?? 0;
+
+  bool isPlaceScanned(String placeId) => scannedPlaces.any((element) => element.id == placeId);
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["_id"],
@@ -34,6 +48,8 @@ class User {
         region: Region.fromJson(json["region"]),
         scannedPlaces: List<Place>.from(
             json["scannedPlaces"].map((x) => Place.fromJson(x))),
+        activeCoupons: List<ActiveCoupon>.from(
+            json["activeCoupons"].map((x) => ActiveCoupon.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -46,5 +62,7 @@ class User {
         "places": List<dynamic>.from(scannedPlaces.map((x) => x.toJson())),
         "points": Map<String, dynamic>.from(
             points.map((x, y) => MapEntry<String, dynamic>(x, y))),
+        "activeCoupons": List<dynamic>.from(
+            activeCoupons.map((x) => x.toJson())),
       };
 }

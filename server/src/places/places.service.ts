@@ -22,8 +22,11 @@ export class PlacesService {
     private usersService: UsersService,
   ) {}
 
-  async create(createPlaceDto: CreatePlaceDto): Promise<PlaceDocument> {
-    const { regionId, lng, lat, ...place } = createPlaceDto;
+  async create(
+    regionId: string,
+    createPlaceDto: CreatePlaceDto,
+  ): Promise<PlaceDocument> {
+    const { lng, lat, ...place } = createPlaceDto;
 
     if (!isValidObjectId(regionId)) {
       throw new BadRequestException('Invalid region id');
@@ -38,6 +41,8 @@ export class PlacesService {
     const code =
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
+
+    this.regionsService.updateRegionPlacesCount(regionId, 1);
 
     return this.placeModel.create({
       ...place,

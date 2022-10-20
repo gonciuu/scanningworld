@@ -12,6 +12,7 @@ import { RegionsService } from 'src/regions/regions.service';
 import { CreateUserDto } from './dto/createUserDto';
 import { UpdateUserDto } from './dto/updateUserDto';
 import { User, UserDocument } from './schemas/user.schema';
+import { Avatar } from './types/avatar.type';
 
 @Injectable()
 export class UsersService {
@@ -19,11 +20,6 @@ export class UsersService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private regionsService: RegionsService,
   ) {}
-
-  // TODO: Remove
-  async findAll(): Promise<UserDocument[]> {
-    return this.userModel.find().exec();
-  }
 
   async findByPhone(phone: string): Promise<UserDocument> {
     return await this.userModel.findOne({ phone }).select('+password').exec();
@@ -102,6 +98,12 @@ export class UsersService {
   async updateRefreshToken(id: string, refreshToken: string | null) {
     return this.userModel
       .findByIdAndUpdate(id, { refreshToken }, { new: true })
+      .exec();
+  }
+
+  async updateAvatar(id: string, avatar: Avatar) {
+    return this.userModel
+      .findByIdAndUpdate(id, { avatar }, { new: true })
       .exec();
   }
 }

@@ -4,6 +4,7 @@ import { Request } from 'express';
 
 import { AccessTokenGuard } from 'src/auth/guards/accessToken.guard';
 
+import { UpdateUserAvatarDto } from './dto/updateUserAvatarDto';
 import { UpdateUserDetailsDto } from './dto/updateUserDetailsDto';
 import { User } from './schemas/user.schema';
 import { UsersService } from './users.service';
@@ -11,12 +12,6 @@ import { UsersService } from './users.service';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Get()
-  async findAll(): Promise<User[]> {
-    // TODO: Remove
-    return this.usersService.findAll();
-  }
 
   @UseGuards(AccessTokenGuard)
   @Get('me')
@@ -35,5 +30,16 @@ export class UsersController {
     const userId = req.user['sub'];
 
     return this.usersService.update(userId, updateUserDetailsDto);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Patch('avatar')
+  async updateAvatar(
+    @Body() updateUserAvatarDto: UpdateUserAvatarDto,
+    @Req() req: Request,
+  ): Promise<User> {
+    const userId = req.user['sub'];
+
+    return this.usersService.updateAvatar(userId, updateUserAvatarDto.avatar);
   }
 }
