@@ -13,12 +13,6 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
-  async findAll(): Promise<User[]> {
-    // TODO: Remove
-    return this.usersService.findAll();
-  }
-
   @UseGuards(AccessTokenGuard)
   @Get('me')
   async findOne(@Req() req: Request): Promise<User> {

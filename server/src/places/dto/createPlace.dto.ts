@@ -10,9 +10,6 @@ export class CreatePlaceDto {
   @IsNotEmpty()
   readonly imageUri: string;
 
-  @IsNotEmpty()
-  readonly regionId: string;
-
   @IsNumber()
   readonly points: number;
 

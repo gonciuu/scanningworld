@@ -21,11 +21,6 @@ export class UsersService {
     private regionsService: RegionsService,
   ) {}
 
-  // TODO: Remove
-  async findAll(): Promise<UserDocument[]> {
-    return this.userModel.find().exec();
-  }
-
   async findByPhone(phone: string): Promise<UserDocument> {
     return await this.userModel.findOne({ phone }).select('+password').exec();
   }
