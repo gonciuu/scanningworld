@@ -6,6 +6,8 @@ import { RegionDocument } from 'src/regions/schemas/region.schema';
 import { PlaceDocument } from 'src/places/schemas/place.schema';
 import { CouponDocument } from 'src/coupons/schemas/coupon.schema';
 
+import { Avatar } from '../types/avatar.type';
+
 export type UserDocument = User & Document;
 
 @Schema()
@@ -18,6 +20,13 @@ export class User {
 
   @Prop({ unique: true })
   phone: string;
+
+  @Prop({
+    default: 'male1',
+    type: String,
+    enum: ['male1', 'male2', 'male3', 'female1', 'female2', 'female3'],
+  })
+  avatar: Avatar;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
