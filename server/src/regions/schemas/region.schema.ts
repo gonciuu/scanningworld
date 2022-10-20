@@ -11,6 +11,15 @@ export class Region {
 
   @Prop({ default: 0 })
   placeCount: number;
+
+  @Prop()
+  email: string;
+
+  @Prop({ select: false })
+  password: string;
+
+  @Prop({ select: false })
+  refreshToken: string;
 }
 
 export const RegionSchema = SchemaFactory.createForClass(Region);

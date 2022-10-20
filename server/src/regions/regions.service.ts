@@ -20,8 +20,18 @@ export class RegionsService {
     return this.regionModel.find().exec();
   }
 
-  async findById(id: string): Promise<RegionDocument> {
-    return this.regionModel.findById(id).exec();
+  async findById(
+    id: string,
+    { refreshToken }: { refreshToken?: boolean } = {},
+  ): Promise<RegionDocument> {
+    return this.regionModel
+      .findById(id)
+      .select(refreshToken && '+refreshToken')
+      .exec();
+  }
+
+  async findByEmail(email: string): Promise<RegionDocument> {
+    return this.regionModel.findOne({ email }).select('+password').exec();
   }
 
   async updateRegionPlacesCount(
@@ -34,6 +44,12 @@ export class RegionsService {
         { $inc: { placeCount: modifier } },
         { new: true },
       )
+      .exec();
+  }
+
+  async updateRefreshToken(id: string, refreshToken: string | null) {
+    return this.regionModel
+      .findByIdAndUpdate(id, { refreshToken }, { new: true })
       .exec();
   }
 }
