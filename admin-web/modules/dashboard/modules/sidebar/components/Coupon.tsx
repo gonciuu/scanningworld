@@ -1,6 +1,6 @@
-import { Coupon } from '@/modules/dashboard/types/coupon.type';
+import { CouponType } from '@/modules/dashboard/types/coupon.type';
 
-const CouponComponent = (coupon: Coupon) => {
+const Coupon = (coupon: CouponType) => {
   const { name, imageUri, points } = coupon;
 
   return (
@@ -16,4 +16,4 @@ const CouponComponent = (coupon: Coupon) => {
   );
 };
 
-export default CouponComponent;
+export default Coupon;

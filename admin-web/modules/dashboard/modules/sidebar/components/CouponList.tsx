@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import Spinner from '@/common/components/Spinner';
 
-import CouponComponent from './Coupon';
+import Coupon from './Coupon';
 
 const CouponList = () => {
   const { data, error, isLoading } = useQuery(['coupons'], () =>
@@ -27,7 +27,7 @@ const CouponList = () => {
       </div>
       <div className="grid min-h-0 flex-1 grid-cols-2 gap-8 overflow-y-auto px-3">
         {data.map((place) => (
-          <CouponComponent {...place} key={place._id} />
+          <Coupon {...place} key={place._id} />
         ))}
       </div>
     </div>

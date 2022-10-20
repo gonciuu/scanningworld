@@ -2,14 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 import Spinner from '@/common/components/Spinner';
-import { Place } from '@/modules/dashboard/types/place.type';
+import { PlaceType } from '@/modules/dashboard/types/place.type';
 
-import PlaceComponent from './Place';
+import Place from './Place';
 
 const PlaceList = () => {
   const { data, error, isLoading } = useQuery(['places'], () =>
     axios
-      .get<Place[]>('places/63485005b9a6f084791d694a')
+      .get<PlaceType[]>('places/63485005b9a6f084791d694a')
       .then((res) => res.data)
   );
 
@@ -30,7 +30,7 @@ const PlaceList = () => {
       </div>
       <div className="flex flex-1 flex-col gap-2 overflow-x-hidden overflow-y-scroll">
         {data.map((place) => (
-          <PlaceComponent {...place} key={place._id} />
+          <Place {...place} key={place._id} />
         ))}
       </div>
     </div>

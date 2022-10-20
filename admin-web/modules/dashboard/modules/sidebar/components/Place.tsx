@@ -1,7 +1,7 @@
 import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
-import { Place } from '@/modules/dashboard/types/place.type';
+import { PlaceType } from '@/modules/dashboard/types/place.type';
 
-const PlaceComponent = (place: Place) => {
+const Place = (place: PlaceType) => {
   const { setActivePlace, activePlace } = useActivePlace();
 
   const { name, location, points } = place;
@@ -39,4 +39,4 @@ const PlaceComponent = (place: Place) => {
   );
 };
 
-export default PlaceComponent;
+export default Place;

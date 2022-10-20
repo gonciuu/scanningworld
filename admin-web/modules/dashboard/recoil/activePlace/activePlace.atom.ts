@@ -1,8 +1,8 @@
 import { atom } from 'recoil';
 
-import { Place } from '../../types/place.type';
+import { PlaceType } from '../../types/place.type';
 
-export const activePlaceAtom = atom<Place | null>({
+export const activePlaceAtom = atom<PlaceType | null>({
   key: 'activePlaceAtom',
   default: null,
 });

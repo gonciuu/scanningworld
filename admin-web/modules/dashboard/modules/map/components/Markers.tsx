@@ -6,7 +6,7 @@ import L from 'leaflet';
 import { Marker } from 'react-leaflet';
 
 import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
-import { Place } from '@/modules/dashboard/types/place.type';
+import { PlaceType } from '@/modules/dashboard/types/place.type';
 
 const pointIcon = new L.Icon({
   iconUrl: '/images/marker-icon.svg',
@@ -18,7 +18,7 @@ const pointIcon = new L.Icon({
     'focus:ring-0 focus:bg-black/50 hover:bg-black/50 active:bg-black/0',
 });
 
-const PlaceMarker = (place: Place) => {
+const PlaceMarker = (place: PlaceType) => {
   const { setActivePlace } = useActivePlace();
 
   const markerRef = useRef<L.Marker<any>>(null);
@@ -42,7 +42,7 @@ const PlaceMarker = (place: Place) => {
 const Markers = () => {
   const { data, error, isLoading } = useQuery(['places'], () =>
     axios
-      .get<Place[]>('places/63485005b9a6f084791d694a')
+      .get<PlaceType[]>('places/63485005b9a6f084791d694a')
       .then((res) => res.data)
   );
 
