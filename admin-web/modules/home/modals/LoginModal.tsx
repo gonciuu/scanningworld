@@ -1,7 +1,10 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import { Formik, Form, Field } from 'formik';
 import { useRouter } from 'next/router';
 import * as Yup from 'yup';
 
+import { setTokens } from '@/common/lib/tokens';
 import { useModal } from '@/modules/modal';
 
 const LoginSchema = Yup.object().shape({
@@ -14,6 +17,21 @@ const LoginModal = () => {
 
   const router = useRouter();
 
+  const loginMutation = useMutation(
+    (authRegionDto: { email: string; password: string }) => {
+      return axios.post<{
+        tokens: { accessToken: string; refreshToken: string };
+      }>('auth/region/login', authRegionDto);
+    },
+    {
+      onSuccess: (res) => {
+        closeModal();
+        setTokens(res.data.tokens);
+        router.push('dashboard');
+      },
+    }
+  );
+
   return (
     <div>
       <Formik
@@ -22,7 +40,7 @@ const LoginModal = () => {
           password: '',
         }}
         onSubmit={(values) => {
-          console.log(values);
+          loginMutation.mutate(values);
         }}
         validationSchema={LoginSchema}
       >
@@ -54,15 +72,16 @@ const LoginModal = () => {
               )}
             </label>
 
+            {loginMutation.isError && (
+              <div className="text-sm text-red-500">Niepoprawne dane!</div>
+            )}
+
             <button
               type="submit"
               className="btn btn-primary"
-              onClick={() => {
-                closeModal();
-                router.push('/dashboard');
-              }}
+              disabled={loginMutation.isLoading}
             >
-              Zaloguj
+              {loginMutation.isLoading ? 'Logowanie...' : 'Zaloguj'}
             </button>
           </Form>
         )}
