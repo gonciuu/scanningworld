@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
             ChangePasswordScreen.routeName: (ctx) =>
                 const ChangePasswordScreen(),
             ChangeAccountDataScreen.routeName: (ctx) =>
-                 ChangeAccountDataScreen(mapController: settings.arguments as MapController,),
+                 const ChangeAccountDataScreen(),
             ScanQrCodeScreen.routeName: (ctx) => const ScanQrCodeScreen(),
             OrderCouponScreen.routeName: (ctx) =>
                 OrderCouponScreen(arguments: settings.arguments),

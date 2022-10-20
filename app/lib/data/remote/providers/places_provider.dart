@@ -16,13 +16,9 @@ class PlacesProvider with ChangeNotifier {
 
   MapController? get mapController => _mapController;
 
-  PopupController? _popupController;
 
-  PopupController? get popupController => _popupController;
-
-  void setControllers(MapController mc, PopupController pc) {
+  void setControllers(MapController mc) {
     _mapController = mc;
-    _popupController = pc;
   }
 
   final dio = DioClient.dio;

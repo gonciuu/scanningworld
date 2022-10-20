@@ -20,9 +20,7 @@ import '../../data/remote/providers/places_provider.dart';
 import '../../widgets/home/place_item.dart';
 
 class MapScreen extends StatefulWidget {
-  final MapController mapController;
-
-  const MapScreen({Key? key, required this.mapController}) : super(key: key);
+  const MapScreen({Key? key}) : super(key: key);
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -182,7 +180,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<PlacesProvider>().setControllers(mc, _popupLayerController);
+    context.read<PlacesProvider>().setControllers(mc);
     _getPlaces();
   }
 

@@ -26,7 +26,6 @@ class HomeWrapper extends StatefulWidget {
 class _HomeWrapperState extends State<HomeWrapper> {
   int _selectedIndex = 0;
 
-  final MapController mapController = MapController();
 
   //create function to change the tab index
   void _onItemTapped(int index) {
@@ -40,8 +39,8 @@ class _HomeWrapperState extends State<HomeWrapper> {
       navigateToTab: _onItemTapped,
     ),
     const RewardsScreen(),
-    MapScreen(mapController:mapController),
-     ProfileScreen(mapController:mapController),
+    const MapScreen(),
+     const ProfileScreen(),
   ];
 
   @override

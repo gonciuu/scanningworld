@@ -15,9 +15,8 @@ import '../profile/change_account_data_screen.dart';
 import '../profile/change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  final MapController mapController;
 
-  const ProfileScreen({Key? key, required this.mapController})
+  const ProfileScreen({Key? key})
       : super(key: key);
 
   @override
@@ -99,8 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     onTap: () {
                       Navigator.of(context).pushNamed(
-                          ChangeAccountDataScreen.routeName,
-                          arguments: widget.mapController);
+                          ChangeAccountDataScreen.routeName);
                     },
                   ),
                   const SizedBox(

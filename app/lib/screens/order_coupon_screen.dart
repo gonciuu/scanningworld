@@ -24,7 +24,7 @@ class OrderCouponScreen extends StatefulWidget {
   State<OrderCouponScreen> createState() => _OrderCouponScreenState();
 }
 
-enum OrderState { order, active, loading }
+enum OrderState { order, active, loading, error }
 
 class _OrderCouponScreenState extends State<OrderCouponScreen> {
   var _orderState = OrderState.order;
@@ -46,6 +46,9 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
       oneSec,
       (Timer timer) {
         if (_activeCoupon?.durationInSeconds == 0) {
+          setState(() {
+            _orderState = OrderState.error;
+          });
           _timer?.cancel();
         } else {
           setState(() {
@@ -169,12 +172,13 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
         (widget.arguments as Map<String, dynamic>)['isActivated']) {
       _activeCoupon =
           (widget.arguments as Map<String, dynamic>)['coupon'] as ActiveCoupon;
-      startTimer();
-      setState(() {
+      if(_activeCoupon!.durationInSeconds > 0) {
+        startTimer();
         _orderState = OrderState.active;
-      });
+      } else {
+        _orderState = OrderState.error;
+      }
     }
-    debugPrint(widget.arguments.toString());
   }
 
   @override
@@ -296,6 +300,16 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
                       textAlign: TextAlign.start,
                     ),
                     if (_orderState == OrderState.order) const Spacer(),
+                    if (_orderState == OrderState.error)
+                      const Padding(
+                        padding:EdgeInsets.only(top: 16),
+                        child: Text(
+                          "Kupon jest już nieaktywny",
+                          style: TextStyle(
+                              color: Colors.red, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     if (_orderState == OrderState.order)
                       SizedBox(
                         width: double.infinity,

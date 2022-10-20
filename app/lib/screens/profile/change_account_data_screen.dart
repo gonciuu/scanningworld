@@ -19,9 +19,8 @@ import '../../widgets/common/platform_input_group.dart';
 import '../../widgets/common/platfrom_input.dart';
 
 class ChangeAccountDataScreen extends StatefulWidget {
-  final MapController mapController;
 
-  const ChangeAccountDataScreen({Key? key, required this.mapController})
+  const ChangeAccountDataScreen({Key? key})
       : super(key: key);
 
   static const routeName = '/change-account-data';
@@ -56,7 +55,6 @@ class _ChangeAccountDataScreenState extends State<ChangeAccountDataScreen> {
         await couponsProvider.getCoupons(_changeAccountDataData.region.id);
         final places =
             await placesProvider.getPlaces(_changeAccountDataData.region.id);
-        placesProvider.popupController?.hideAllPopups();
 
         if(places.isNotEmpty){
           placesProvider.mapController?.move(
