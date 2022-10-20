@@ -28,13 +28,15 @@ https://scanningworld-server.herokuapp.com/
 * [Places module](#places-module)
 * [Coupons module](#coupons-module)
 
-
-
 ## The dependency of the modules
 ![Dependecy of modules](https://i.imgur.com/cQUoKpV.png)
-## Auth module
 
-## `Register`
+## Auth module
+This module is for logging/registering/refreshing tokens for user and admins of regions.
+
+Typically you will pass access token to basically all request you will make. If the access token has expired the server will return 401 Unauthorized error and you should refresh the access with your refresh token and call the request again. The refresh request can return 403 Forbidden error - it means that the user should be logged out.
+
+## `Register user`
 
 ```
   POST /auth/register
@@ -62,16 +64,47 @@ https://scanningworld-server.herokuapp.com/
             "region": {
                 "_id": "63485005b9a6f084791d694a",
                 "name": "Gorzyce",
+                "placeCount": 0,
+                "email": "gokgorzyce@gorzyce.pl",
                 "__v": 0
             },
             "scannedPlaces": [],
             "_id": "634c51d99c60289b62cdded9",
             "activeCoupons": [],
+            "avatar": "male3"
             "__v": 0
         }
     }
 
-## `Login`
+## `Register region`
+
+```
+  POST /auth/region/register
+```
+
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | **Required**. Region name. |
+| `email` | `string` | **Required**. Region email. |
+| `password` | `string` | **Required**. Region password to login. |
+
+#### Response
+    {
+        "tokens": {
+            "accessToken": "access-region-token",
+            "refreshToken": "refresh-token"
+        },
+        "region": {
+            "name": "Gorzyce",
+            "placeCount": 0,
+            "email": "gokgorzyce@gorzyce.pl",
+            "_id": "6351810d396297886a972501",
+            "__v": 0
+        }
+    }
+
+## `Login user`
 
 ```
   POST /auth/login
@@ -97,16 +130,47 @@ https://scanningworld-server.herokuapp.com/
             "region": {
                 "_id": "63485005b9a6f084791d694a",
                 "name": "Gorzyce",
+                "placeCount": 0,
+                "email": "gokgorzyce@gorzyce.pl",
                 "__v": 0
             },
             "scannedPlaces": [],
             "_id": "634c51d99c60289b62cdded9",
             "activeCoupons": [],
+            "avatar": "male3"
             "__v": 0
         }
     }
 
-## `Refresh access token`
+## `Login admin region`
+
+```
+  POST /auth/region/login
+```
+
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `email` | `string` | **Required**. Region email to login. |
+| `password` | `string` | **Required**. Region password to login. |
+
+
+#### Response
+    {
+        "tokens": {
+            "accessToken": "access-region-token",
+            "refreshToken": "refresh-token"
+        },
+        "region": {
+            "name": "Gorzyce",
+            "placeCount": 0,
+            "email": "gokgorzyce@gorzyce.pl",
+            "_id": "6351810d396297886a972501",
+            "__v": 0
+        }
+    }
+
+## `Refresh user access token`
 
 #### You need to pass refresh token as Authorization token.
 ```
@@ -115,13 +179,26 @@ https://scanningworld-server.herokuapp.com/
 
 #### Response
     {
-        "accessToken": "accessToken",
-        "refreshToken": "refreshToken"
+        "accessToken": "new-accessToken",
+        "refreshToken": "new-refreshToken"
     }
 
-## `Logout`
+## `Refresh region access token`
 
-#### You need to pass access token as Authorization token.
+#### You need to pass refresh token as Authorization token.
+```
+  GET /auth/region/refresh
+```
+
+#### Response
+    {
+        "accessToken": "new-access-region-token",
+        "refreshToken": "new-refreshToken"
+    }
+
+## `Logout user`
+
+#### You need to pass user access token as Authorization token.
 ```
   GET /auth/logout
 ```
@@ -131,9 +208,21 @@ https://scanningworld-server.herokuapp.com/
         "msg": "User logged out"
     }
 
-## `Change password`
+## `Logout admin region`
 
-#### You need to pass access token as Authorization token.
+#### You need to pass region access token as Authorization token.
+```
+  GET /auth/region/logout
+```
+
+#### Response
+    {
+        "msg": "Region logged out"
+    }
+
+## `Change user password`
+
+#### You need to pass user access token as Authorization token.
 ```
   PATCH /auth/change-password
 ```
@@ -158,6 +247,7 @@ TODO: Add forgot password documentation later
 | `name` | `string` | User name. |
 | `email` | `string` | User email. |
 | `phone` | `string` | User phone number. |
+| `avatar` | `string enum (male1, male2, male3, female1, female2, female3)` | User avatar. |
 | `region` | `Region` | Region object that user belongs to. |
 | `points` | `[regiondId: string]: number` | Array of user points per region. |
 | `scannedPlaces` | `Place[]` | Array of scanned places by user. |
@@ -168,9 +258,9 @@ TODO: Add forgot password documentation later
 | `_id` | `ObjectId (string)` | User id. |
 
 
-## `Get user details from access token`
+## `Get user details from user access token`
 
-#### You need to pass access token as Authorization token.
+#### You need to pass user access token as Authorization token.
 ```
   GET /users/me
 ```
@@ -182,18 +272,21 @@ TODO: Add forgot password documentation later
         "email": "brunodzi07@gmail.com",
         "phone": "123123122",
         "region": {
-            "_id": "63485005b9a6f084791d694a",
-            "name": "Gorzyce",
-            "__v": 0
-        },
+                "_id": "63485005b9a6f084791d694a",
+                "name": "Gorzyce",
+                "placeCount": 0,
+                "email": "gokgorzyce@gorzyce.pl",
+                "__v": 0
+            },
         "scannedPlaces": [],
         "activeCoupons": [],
+        "avatar": "male3"
         "__v": 0
     }
 
-## `Update user details by access token`
+## `Update user details by user access token`
 
-#### You need to pass access token as Authorization token.
+#### You need to pass user access token as Authorization token.
 ```
   PATCH /users/details
 ```
@@ -213,12 +306,45 @@ TODO: Add forgot password documentation later
         "email": "brunodzi07@gmail.com",
         "phone": "123123122",
         "region": {
-            "_id": "63485005b9a6f084791d694a",
-            "name": "Gorzyce",
-            "__v": 0
-        },
+                "_id": "63485005b9a6f084791d694a",
+                "name": "Gorzyce",
+                "placeCount": 0,
+                "email": "gokgorzyce@gorzyce.pl",
+                "__v": 0
+            },
         "scannedPlaces": [],
         "activeCoupons": [],
+        "avatar": "male3"
+        "__v": 0
+    }
+
+#### You need to pass user access token as Authorization token.
+```
+  PATCH /users/avatar
+```
+
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `avatar` | `string enum (male1, male2, male3, female1, female2, female3)` | **Required**. User avatar to change. |
+
+
+#### Response
+    {
+        "_id": "634c51d99c60289b62cdded9",
+        "name": "Bruno",
+        "email": "brunodzi07@gmail.com",
+        "phone": "123123122",
+        "region": {
+                "_id": "63485005b9a6f084791d694a",
+                "name": "Gorzyce",
+                "placeCount": 0,
+                "email": "gokgorzyce@gorzyce.pl",
+                "__v": 0
+            },
+        "scannedPlaces": [],
+        "activeCoupons": [],
+        "avatar": "male3"
         "__v": 0
     }
 ## Regions module
@@ -227,6 +353,10 @@ TODO: Add forgot password documentation later
 | Field | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `name` | `string` | Region name. |
+| `email` | `string` | Region email. |
+| `placeCount` | `number` | Place count that are in the region. |
+| `password` | `string` | Hashed password (not selected by default). |
+| `refreshToken` | `string` | Hashed refresh token (not selected by default). |
 | `_id` | `ObjectId (string)` | Region id. |
 
 ## `Get all regions`
@@ -240,16 +370,22 @@ TODO: Add forgot password documentation later
         {
             "_id": "63485005b9a6f084791d694a",
             "name": "Gorzyce",
+            "placeCount": 0,
+            "email": "gokgorzyce@gorzyce.pl",
             "__v": 0
         },
         {
             "_id": "6348524de90df2acac0858a7",
             "name": "Wodzisław Śląski",
+            "placeCount": 3,
+            "email": "testEmail@email.com",
             "__v": 0
         },
         {
             "_id": "63485252e90df2acac0858a9",
             "name": "Rybnik",
+            "placeCount": 10,
+            "email": "email@email.com",
             "__v": 0
         },
         ...
@@ -270,10 +406,10 @@ TODO: Add forgot password documentation later
     {
         "_id": "63485005b9a6f084791d694a",
         "name": "Gorzyce",
+        "placeCount": 0,
+        "email": "gokgorzyce@gorzyce.pl",
         "__v": 0
-    }
-
-TODO: Add create region documentation later
+    },
 ## Places module
 
 ### Place object
@@ -309,6 +445,8 @@ TODO: Add create region documentation later
             "region": {
                 "_id": "63485005b9a6f084791d694a",
                 "name": "Gorzyce",
+                "placeCount": 3,
+                "email": "gokgorzyce@gorzyce.pl",
                 "__v": 0
             },
             "points": 25,
@@ -324,7 +462,7 @@ TODO: Add create region documentation later
 
 ## `Scan place QR Code`
 
-#### You need to pass access token as Authorization token.
+#### You need to pass user access token as Authorization token.
 ```
   POST /places/:qrCode
 ```
@@ -340,9 +478,11 @@ TODO: Add create region documentation later
         "name": "Bruno Dzięcielski",
         "email": "brunodzi07@gmail.com",
         "phone": "123123123",
-        "region": {
+        "region":{
             "_id": "63485005b9a6f084791d694a",
             "name": "Gorzyce",
+            "placeCount": 3,
+            "email": "gokgorzyce@gorzyce.pl",
             "__v": 0
         },
         "scannedPlaces": [
@@ -406,8 +546,10 @@ TODO: Add create place to documentation
             "region": {
                 "_id": "63485005b9a6f084791d694a",
                 "name": "Gorzyce",
+                "placeCount": 3,
+                "email": "gokgorzyce@gorzyce.pl",
                 "__v": 0
-            },
+            }
             "__v": 0
         },
         {
@@ -418,8 +560,10 @@ TODO: Add create place to documentation
             "region": {
                 "_id": "63485005b9a6f084791d694a",
                 "name": "Gorzyce",
+                "placeCount": 3,
+                "email": "gokgorzyce@gorzyce.pl",
                 "__v": 0
-            },
+            }
             "__v": 0
         },
         ...
@@ -427,7 +571,7 @@ TODO: Add create place to documentation
 
 ## `Activate coupon`
 
-#### You need to pass access token as Authorization token.
+#### You need to pass user access token as Authorization token.
 ```
   POST /coupons/activate/:couponId
 ```
@@ -446,8 +590,10 @@ TODO: Add create place to documentation
         "region": {
             "_id": "63485005b9a6f084791d694a",
             "name": "Gorzyce",
+            "placeCount": 3,
+            "email": "gokgorzyce@gorzyce.pl",
             "__v": 0
-        },
+        }
         "scannedPlaces": [
             ...
         ],
@@ -465,15 +611,18 @@ TODO: Add create place to documentation
                     "region": {
                         "_id": "63485005b9a6f084791d694a",
                         "name": "Gorzyce",
+                        "placeCount": 3,
+                        "email": "gokgorzyce@gorzyce.pl",
                         "__v": 0
-                    },
+                    }
                     "__v": 0
                 },
                 "validUntil": "2022-10-16T19:40:36.403Z",
                 "_id": "634c5ab09c60289b62cddf44"
             },
             ...
-        ]
+        ],
+        "avatar": "male3"
     }
 
 TODO: Add create coupon to documentation
