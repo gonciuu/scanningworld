@@ -8,6 +8,9 @@ export type RegionDocument = Region & Document;
 export class Region {
   @Prop()
   name: string;
+
+  @Prop({ default: 0 })
+  placeCount: number;
 }
 
 export const RegionSchema = SchemaFactory.createForClass(Region);
