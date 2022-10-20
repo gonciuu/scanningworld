@@ -23,4 +23,17 @@ export class RegionsService {
   async findById(id: string): Promise<RegionDocument> {
     return this.regionModel.findById(id).exec();
   }
+
+  async updateRegionPlacesCount(
+    regionId: string,
+    modifier: number,
+  ): Promise<RegionDocument> {
+    return this.regionModel
+      .findByIdAndUpdate(
+        regionId,
+        { $inc: { placeCount: modifier } },
+        { new: true },
+      )
+      .exec();
+  }
 }

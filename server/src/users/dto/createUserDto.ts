@@ -2,6 +2,8 @@ import { IsNotEmpty, IsEmail } from 'class-validator';
 
 import { CouponDocument } from 'src/coupons/schemas/coupon.schema';
 
+import { Avatar } from '../types/avatar.type';
+
 export class CreateUserDto {
   @IsNotEmpty()
   readonly name: string;
@@ -17,6 +19,8 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   readonly password: string;
+
+  readonly avatar: Avatar;
 
   readonly activeCoupons: {
     coupon: string | CouponDocument;

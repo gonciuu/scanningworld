@@ -39,6 +39,8 @@ export class PlacesService {
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
 
+    this.regionsService.updateRegionPlacesCount(regionId, 1);
+
     return this.placeModel.create({
       ...place,
       region: regionId,
