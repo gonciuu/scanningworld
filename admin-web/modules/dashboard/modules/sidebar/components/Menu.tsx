@@ -13,9 +13,9 @@ const Menu = ({
   setMenuType: (newMenuType: MenuType) => void;
 }) => {
   return (
-    <div className="flex w-full items-center justify-center gap-16 font-semibold">
+    <div className="mt-1 flex w-full items-center justify-center gap-8 font-semibold">
       <button
-        className={`flex items-center gap-2 p-2 text-lg hover:bg-gray-200 ${
+        className={`flex w-40 items-center justify-center gap-2 p-2 text-lg hover:bg-gray-200 ${
           menuType === MenuType.PLACES ? activeMenuStyle : inactiveMenuStyle
         }`}
         onClick={() => setMenuType(MenuType.PLACES)}
@@ -24,7 +24,7 @@ const Menu = ({
         Lokalizacje
       </button>
       <button
-        className={`flex items-center gap-2 p-2 text-lg hover:bg-gray-200 ${
+        className={`flex w-40 items-center justify-center gap-2 p-2 text-lg hover:bg-gray-200 ${
           menuType === MenuType.COUPONS ? activeMenuStyle : inactiveMenuStyle
         }`}
         onClick={() => setMenuType(MenuType.COUPONS)}

@@ -13,6 +13,7 @@ const OpenStreetMaps = () => {
     <MapContainer
       center={{ lat: 49.96181, lng: 18.396556 }}
       zoom={13}
+      minZoom={8}
       scrollWheelZoom={true}
       className="h-full flex-1 rounded-l-[2.5rem] focus:ring-0"
       // @ts-ignore

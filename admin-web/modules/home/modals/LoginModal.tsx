@@ -1,7 +1,12 @@
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import { Formik, Form, Field } from 'formik';
 import { useRouter } from 'next/router';
 import * as Yup from 'yup';
 
+import { setTokens } from '@/common/lib/tokens';
+import { useRegion } from '@/common/recoil/region';
+import { RegionType } from '@/common/types/region.type';
 import { useModal } from '@/modules/modal';
 
 const LoginSchema = Yup.object().shape({
@@ -11,8 +16,26 @@ const LoginSchema = Yup.object().shape({
 
 const LoginModal = () => {
   const { closeModal } = useModal();
+  const { setRegion } = useRegion();
 
   const router = useRouter();
+
+  const loginMutation = useMutation(
+    (authRegionDto: { email: string; password: string }) => {
+      return axios.post<{
+        tokens: { accessToken: string; refreshToken: string };
+        region: RegionType;
+      }>('auth/region/login', authRegionDto);
+    },
+    {
+      onSuccess: ({ data }) => {
+        closeModal();
+        setTokens(data.tokens);
+        setRegion(data.region);
+        router.push('dashboard');
+      },
+    }
+  );
 
   return (
     <div>
@@ -22,7 +45,7 @@ const LoginModal = () => {
           password: '',
         }}
         onSubmit={(values) => {
-          console.log(values);
+          loginMutation.mutate(values);
         }}
         validationSchema={LoginSchema}
       >
@@ -54,15 +77,16 @@ const LoginModal = () => {
               )}
             </label>
 
+            {loginMutation.isError && (
+              <div className="text-sm text-red-500">Niepoprawne dane!</div>
+            )}
+
             <button
               type="submit"
               className="btn btn-primary"
-              onClick={() => {
-                closeModal();
-                router.push('/dashboard');
-              }}
+              disabled={loginMutation.isLoading}
             >
-              Zaloguj
+              {loginMutation.isLoading ? 'Logowanie...' : 'Zaloguj'}
             </button>
           </Form>
         )}

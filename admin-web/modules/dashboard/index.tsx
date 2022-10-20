@@ -7,7 +7,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-full w-full">
-      <div className="w-1/3 bg-white">
+      <div className="w-[30rem] bg-white">
         <Sidebar />
       </div>
       <Map />

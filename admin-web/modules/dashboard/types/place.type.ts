@@ -1,4 +1,6 @@
-export type Place = {
+import { RegionType } from '@/common/types/region.type';
+
+export type PlaceType = {
   _id: string;
   name: string;
   location: {
@@ -9,4 +11,5 @@ export type Place = {
   imageUri: string;
   points: number;
   code: string;
+  region: RegionType;
 };

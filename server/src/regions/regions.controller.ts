@@ -1,4 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
+import { AccessTokenRegionGuard } from 'src/auth/guards/accessTokenRegion.guard';
 
 import { RegionsService } from './regions.service';
 
@@ -9,6 +11,14 @@ export class RegionsController {
   @Get()
   async findAll() {
     return await this.regionsService.findAll();
+  }
+
+  @UseGuards(AccessTokenRegionGuard)
+  @Get('by-token')
+  async findByToken(@Req() req: Request) {
+    const regionId = req.user['sub'];
+
+    return await this.regionsService.findById(regionId);
   }
 
   @Get(':id')
