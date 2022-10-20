@@ -11,6 +11,10 @@
 - You scan them and you order the points
 - Now you can exchange points for some coupons in your city (like bus ticket or discount in the restaurant)
 
+## Flow
+
+![](https://res.cloudinary.com/dybborlve/image/upload/v1666295535/Zrzut_ekranu_2022-10-20_o_21.52.09_iysodu.png)
+
 
 ## Demo (android and iOS)
 
