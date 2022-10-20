@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../data/remote/models/user/place.dart';
 import '../data/remote/providers/auth_provider.dart';
+import '../widgets/common/cached_placeholder_image.dart';
 
 class PlaceDetailsScreen extends StatelessWidget {
   final String placeId;
@@ -91,12 +92,11 @@ class PlaceDetailsScreen extends StatelessWidget {
             children: [
               Stack(
                 children: [
-                  FadeInImage.assetNetwork(
-                      placeholder: 'assets/logo_scanningworld.png',
-                      image:place.imageUri,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height * 0.4),
+                  CachedPlaceholderImage(
+                    imageUrl:place.imageUri,
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.height * 0.4,
+                  ),
                   Positioned(
                     top: 50,
                     left: 20,

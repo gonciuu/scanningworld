@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
+import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/screens/scan_qr_code_screen.dart';
 import 'package:scanning_world/theme/theme.dart';
 import 'package:scanning_world/utils/helpers.dart';
@@ -202,7 +203,9 @@ class HomeScreen extends StatelessWidget {
                                 itemBuilder: (context, index) => Container(
                                   margin: const EdgeInsets.only(right: 16),
                                   width: 180,
-                                  child: RewardCard(coupon: coupons[index],heroPrefix: 'home-coupon'),
+                                  child: RewardCard(
+                                      coupon: coupons[index],
+                                      heroPrefix: 'home-coupon'),
                                 ),
                               ),
                             )

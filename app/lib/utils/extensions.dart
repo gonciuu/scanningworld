@@ -1,3 +1,5 @@
+import 'dart:math';
+
 extension EmailValidator on String {
   bool isValidEmail() {
     return RegExp(
@@ -21,5 +23,16 @@ extension PhoneNumberValidator on String? {
       return false;
     }
     return this!.length >= 9;
+  }
+}
+
+extension RandomListItem<T> on List<T> {
+  T? randomItem() {
+    if(isEmpty) {
+      return null;
+    }else{
+      return this[Random().nextInt(this.length)];
+    }
+
   }
 }

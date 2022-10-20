@@ -11,7 +11,7 @@ class PlacesProvider with ChangeNotifier {
   List<Place> get places => [..._places];
   final dio = DioClient.dio;
 
-  Future<List<Place>> fetchPlaces(String regionId) async {
+  Future<List<Place>> getPlaces(String regionId) async {
     try {
       final response = await dio.get('/places/$regionId');
       final placesRes =

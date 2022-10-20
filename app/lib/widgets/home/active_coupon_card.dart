@@ -6,6 +6,8 @@ import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/screens/order_coupon_screen.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
 
+import '../common/cached_placeholder_image.dart';
+
 class ActiveCouponCard extends StatelessWidget {
   final ActiveCoupon activeCoupon;
   final String heroPrefix;
@@ -22,8 +24,8 @@ class ActiveCouponCard extends StatelessWidget {
           children: [
             Hero(
               tag: '$heroPrefix-${activeCoupon.id}',
-              child: Image.network(
-                activeCoupon.coupon.imageUri,
+              child: CachedPlaceholderImage(
+                imageUrl: activeCoupon.coupon.imageUri,
                 height: 30,
                 fit: BoxFit.scaleDown,
               ),
@@ -50,7 +52,7 @@ class ActiveCouponCard extends StatelessWidget {
                   'heroPrefix': heroPrefix,
                   "isActivated": true,
                 }),
-                child:  FittedBox(
+                child: FittedBox(
                   child: Text(
                     'Ważny do ${activeCoupon.formattedValidUntil}',
                     style: TextStyle(color: Colors.white),

@@ -54,6 +54,7 @@ dependencies:
   flutter_lazy_indexed_stack: ^0.0.3
   intl: ^0.17.0
   map_launcher: ^2.4.0
+  cached_network_image: ^3.2.2
 
 dev_dependencies:
   flutter_launcher_icons: ^0.10.0

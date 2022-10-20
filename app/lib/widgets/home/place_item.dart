@@ -6,6 +6,7 @@ import 'package:scanning_world/screens/place_details_screen.dart';
 
 import '../../data/remote/models/user/place.dart';
 import '../../data/remote/providers/auth_provider.dart';
+import '../common/cached_placeholder_image.dart';
 
 class PlaceItem extends StatelessWidget {
   final Place place;
@@ -24,13 +25,10 @@ class PlaceItem extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: FadeInImage(
-                      placeholder:
-                          const AssetImage('assets/logo_scanningworld.png'),
-                      image: NetworkImage(place.imageUri ?? ''),
-                      width: 100,
+                    child: CachedPlaceholderImage(
+                      imageUrl: place.imageUri,
                       height: 100,
-                      fit: BoxFit.cover,
+                      width: 100,
                     ),
                   ),
                   Consumer<AuthProvider>(

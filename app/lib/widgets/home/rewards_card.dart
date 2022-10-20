@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/models/coupon.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/screens/order_coupon_screen.dart';
+import 'package:scanning_world/widgets/common/cached_placeholder_image.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
 
 class RewardCard extends StatelessWidget {
@@ -26,8 +28,8 @@ class RewardCard extends StatelessWidget {
           children: [
             Hero(
               tag: '$heroPrefix-${coupon.id}',
-              child: Image.network(
-                coupon.imageUri,
+              child: CachedPlaceholderImage(
+                imageUrl: coupon.imageUri,
                 height: 30,
                 fit: BoxFit.scaleDown,
               ),

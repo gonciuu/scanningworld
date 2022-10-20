@@ -12,6 +12,7 @@ import 'package:scanning_world/widgets/common/error_dialog.dart';
 
 import '../data/remote/providers/auth_provider.dart';
 import '../theme/theme.dart';
+import '../widgets/common/cached_placeholder_image.dart';
 
 class OrderCouponScreen extends StatefulWidget {
   static const routeName = '/order-coupon';
@@ -151,7 +152,7 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
           ),
         );
       }),
-      cupertino:  CupertinoModalSheetData(
+      cupertino: CupertinoModalSheetData(
         barrierDismissible: false,
       ),
       material: MaterialModalSheetData(
@@ -179,7 +180,9 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
   @override
   Widget build(BuildContext context) {
     final data = widget.arguments as Map<String, dynamic>;
-    final coupon = data['isActivated'] ? (data['coupon'] as ActiveCoupon).coupon : data['coupon'] as Coupon;
+    final coupon = data['isActivated']
+        ? (data['coupon'] as ActiveCoupon).coupon
+        : data['coupon'] as Coupon;
     final heroPrefix = data['heroPrefix'] as String;
 
     final timeLeft = Duration(seconds: secondsLeft);
@@ -204,15 +207,15 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
         body: Column(
           children: [
             Container(
-              padding: const EdgeInsets.only(top: 40),
-              child: Hero(
+                padding: const EdgeInsets.only(top: 40),
+                child: Hero(
                   tag: '$heroPrefix-${coupon.id}',
-                  child: Image.network(
-                    coupon.imageUri,
-                    width: 200,
-                    fit: BoxFit.fill,
-                  )),
-            ),
+                  child: CachedPlaceholderImage(
+                    imageUrl: coupon.imageUri,
+                    height: 30,
+                    fit: BoxFit.scaleDown,
+                  ),
+                )),
             const SizedBox(
               height: 40,
             ),

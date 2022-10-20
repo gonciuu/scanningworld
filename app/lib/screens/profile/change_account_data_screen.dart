@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/http/http_exception.dart';
+import 'package:scanning_world/data/remote/providers/coupons_provider.dart';
+import 'package:scanning_world/data/remote/providers/places_provider.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/utils/validators.dart';
 import 'package:scanning_world/widgets/common/platform_dropdown.dart';
@@ -38,12 +40,16 @@ class _ChangeAccountDataScreenState extends State<ChangeAccountDataScreen> {
   var _isLoading = false;
 
   Future<void> _saveForm() async {
-    final authProvider = context.read<AuthProvider>();
+    final AuthProvider authProvider = context.read<AuthProvider>();
+    final CouponsProvider couponsProvider = context.read<CouponsProvider>();
+    final PlacesProvider placesProvider = context.read<PlacesProvider>();
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       setState(() => _isLoading = true);
       try {
         await authProvider.changeUserInfo(_changeAccountDataData);
+        await couponsProvider.getCoupons(_changeAccountDataData.region.id);
+        await placesProvider.getPlaces(_changeAccountDataData.region.id);
         showPlatformDialog(
             context: context,
             builder: (_) => PlatformAlertDialog(

@@ -8,6 +8,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/theme/theme.dart';
+import 'package:scanning_world/utils/extensions.dart';
 import 'package:scanning_world/widgets/common/big_title.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
 import 'package:scanning_world/widgets/home/place_map_popup.dart';
@@ -41,22 +42,23 @@ class _MapScreenState extends State<MapScreen> {
     final userScannedPlaces =
         context.read<AuthProvider>().user?.scannedPlaces.map((e) => e.id) ?? [];
 
-
-    if(_showScannedPlaces){
-      if(_showUnscannedPlaces){
+    if (_showScannedPlaces) {
+      if (_showUnscannedPlaces) {
         return places;
-      }else{
-        return places.where((element) => userScannedPlaces.contains(element.id)).toList();
+      } else {
+        return places
+            .where((element) => userScannedPlaces.contains(element.id))
+            .toList();
       }
-    }else{
-      if(_showUnscannedPlaces){
-        return places.where((element) => !userScannedPlaces.contains(element.id)).toList();
-      }else{
+    } else {
+      if (_showUnscannedPlaces) {
+        return places
+            .where((element) => !userScannedPlaces.contains(element.id))
+            .toList();
+      } else {
         return [];
       }
     }
-
-
   }
 
   void _showSettingsModalBottomSheet() {
@@ -153,7 +155,7 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
             child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 itemBuilder: (c, i) {
                   return PlaceItem(
                     place: places[i],
@@ -165,18 +167,38 @@ class _MapScreenState extends State<MapScreen> {
         });
   }
 
+  late MapController _mapController;
+
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
-    final regionId = context.read<AuthProvider>().user!.region.id;
-    context.read<PlacesProvider>().fetchPlaces(regionId);
+    _mapController = MapController();
+    _getPlaces();
   }
+
+  Future<void> _getPlaces() async {
+    final regionId = context.read<AuthProvider>().user!.region.id;
+    final places = await context.read<PlacesProvider>().getPlaces(regionId);
+    if(places.isNotEmpty){
+      _mapController.move(LatLng(places.first.location.lat.toDouble(), places.first.location.lng.toDouble()), 13.0);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final places = filterPlaces(context.select<PlacesProvider, List<Place>>(
       (provider) => provider.places,
     ));
+
     return PlatformScaffold(
       appBar: PlatformAppBar(
         trailingActions: [
@@ -211,8 +233,10 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ),
       body: FlutterMap(
+        mapController: _mapController,
         options: MapOptions(
-          center: LatLng(49.985868, 18.403585),
+          center: LatLng(51.107883, 17.038538),
+
           zoom: 14.0,
           minZoom: 8.0,
           onTap: (_, __) => _popupLayerController

@@ -13,7 +13,6 @@ class CouponsProvider with ChangeNotifier {
 
   Future<List<Coupon>> getCoupons(String regionId) async {
     try {
-      debugPrint('regionId: $regionId');
       final response = await dio.get('/coupons/$regionId');
       final couponsList =
           (response.data as List).map((e) => Coupon.fromJson(e)).toList();
