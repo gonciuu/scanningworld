@@ -23,13 +23,13 @@ const PlaceList = () => {
   if (error || !data) return <div>Error</div>;
 
   return (
-    <div>
+    <div className="flex flex-1 flex-col overflow-hidden">
       <div className="mt-4 mb-8 flex gap-4">
         <button className="btn btn-secondary w-full">Filtruj</button>
         <button className="btn btn-primary w-full">Dodaj miejsce</button>
       </div>
-      <div className="flex flex-col gap-2">
-        {data.map((place) => (
+      <div className="flex flex-1 flex-col gap-2 overflow-x-hidden overflow-y-scroll">
+        {[...data, ...data, ...data, ...data].map((place) => (
           <PlaceComponent {...place} key={place._id} />
         ))}
       </div>

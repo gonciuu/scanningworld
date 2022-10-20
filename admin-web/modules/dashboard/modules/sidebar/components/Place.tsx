@@ -19,7 +19,7 @@ const PlaceComponent = (place: Place) => {
       />
 
       <div className="flex flex-1 flex-col justify-between">
-        <p className="w-72 overflow-hidden truncate font-semibold">
+        <p className="w-60 overflow-hidden truncate font-semibold">
           {place.name}
         </p>
 

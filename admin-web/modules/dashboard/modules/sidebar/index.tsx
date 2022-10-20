@@ -13,7 +13,7 @@ const Sidebar = () => {
     <div className="flex h-full w-full flex-col items-center gap-5 py-8">
       <Header />
 
-      <div className="w-full px-12">
+      <div className="flex w-full flex-1 flex-col overflow-hidden px-12">
         <Menu
           menuType={menuType}
           setMenuType={(newMenuType: MenuType) => setMenuType(newMenuType)}

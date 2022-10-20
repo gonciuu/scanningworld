@@ -6,6 +6,21 @@
   @apply rounded-lg font-montserrat font-medium transition-colors focus:outline-none focus:ring focus:ring-black;
 }
 
+*::-webkit-scrollbar-track {
+  -webkit-box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+*::-webkit-scrollbar {
+  width: 6px !important;
+  position: absolute;
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply rounded bg-black/75;
+}
+
 input {
   @apply w-full rounded-md bg-zinc-200 py-1 px-2;
 }

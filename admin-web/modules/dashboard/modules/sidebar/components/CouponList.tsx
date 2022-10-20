@@ -20,12 +20,12 @@ const CouponList = () => {
   if (error || !data) return <div>Error</div>;
 
   return (
-    <div>
+    <div className="flex flex-1 flex-col overflow-hidden">
       <div className="mt-4 mb-8 flex gap-4">
         <button className="btn btn-secondary w-full">Filtruj</button>
         <button className="btn btn-primary w-full">Dodaj kupon</button>
       </div>
-      <div className="grid grid-cols-2 gap-10 px-5">
+      <div className="grid min-h-0 flex-1 grid-cols-2 gap-8 overflow-y-auto px-3">
         {data.map((place) => (
           <CouponComponent {...place} key={place._id} />
         ))}

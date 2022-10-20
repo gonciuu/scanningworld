@@ -13,7 +13,7 @@ const Menu = ({
   setMenuType: (newMenuType: MenuType) => void;
 }) => {
   return (
-    <div className="flex w-full items-center justify-center gap-8 font-semibold">
+    <div className="mt-1 flex w-full items-center justify-center gap-8 font-semibold">
       <button
         className={`flex w-40 items-center justify-center gap-2 p-2 text-lg hover:bg-gray-200 ${
           menuType === MenuType.PLACES ? activeMenuStyle : inactiveMenuStyle
