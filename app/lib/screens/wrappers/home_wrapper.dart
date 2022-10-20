@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_lazy_indexed_stack/flutter_lazy_indexed_stack.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,8 @@ class HomeWrapper extends StatefulWidget {
 class _HomeWrapperState extends State<HomeWrapper> {
   int _selectedIndex = 0;
 
+  final MapController mapController = MapController();
+
   //create function to change the tab index
   void _onItemTapped(int index) {
     setState(() {
@@ -37,8 +40,8 @@ class _HomeWrapperState extends State<HomeWrapper> {
       navigateToTab: _onItemTapped,
     ),
     const RewardsScreen(),
-    const MapScreen(),
-    const ProfileScreen(),
+    MapScreen(mapController:mapController),
+     ProfileScreen(mapController:mapController),
   ];
 
   @override
@@ -69,10 +72,10 @@ class _HomeWrapperState extends State<HomeWrapper> {
         itemChanged: _onItemTapped,
         items: bottomNavItems(_selectedIndex),
       ),
-      body: LazyIndexedStack(
-        index: _selectedIndex,
-        children: _widgetOptions(),
-      ),
+      body:  LazyIndexedStack(
+              index: _selectedIndex,
+              children: _widgetOptions(),
+            ),
     );
   }
 }

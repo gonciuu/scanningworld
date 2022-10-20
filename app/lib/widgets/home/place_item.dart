@@ -33,35 +33,30 @@ class PlaceItem extends StatelessWidget {
                   ),
                   Consumer<AuthProvider>(
                       builder: (context, authProvider, child) {
-                        final bool isPlaceScanned =
-                            authProvider.user?.isPlaceScanned(place.id) ??
-                                false;
-                        return Positioned(
-                          right: 0,
-                          top: 0,
-                          child: Container(
-                            transform: Matrix4.translationValues(5, -5, 0),
-                            decoration: BoxDecoration(
-                              color: isPlaceScanned
-                                  ? Colors.green
-                                  : Colors.red,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Icon(
-                                context.platformIcon(
-                                    material: isPlaceScanned
-                                        ? Icons.check_circle
-                                        : Icons.dangerous,
-                                    cupertino: isPlaceScanned
-                                        ? CupertinoIcons
-                                        .check_mark_circled_solid
-                                        : CupertinoIcons
-                                        .clear_thick_circled),
-                                size: 24,
-                                color: Colors.white),
-                          ),
-                        );
-                      }),
+                    final bool isPlaceScanned =
+                        authProvider.user?.isPlaceScanned(place.id) ?? false;
+                    return Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        transform: Matrix4.translationValues(5, -5, 0),
+                        decoration: BoxDecoration(
+                          color: isPlaceScanned ? Colors.green : Colors.red,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Icon(
+                            context.platformIcon(
+                                material: isPlaceScanned
+                                    ? Icons.check_circle
+                                    : Icons.dangerous,
+                                cupertino: isPlaceScanned
+                                    ? CupertinoIcons.check_mark_circled_solid
+                                    : CupertinoIcons.clear_thick_circled),
+                            size: 24,
+                            color: Colors.white),
+                      ),
+                    );
+                  }),
                 ],
               ),
               const SizedBox(width: 16),

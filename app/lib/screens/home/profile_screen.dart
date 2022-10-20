@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
@@ -14,7 +15,8 @@ import '../profile/change_account_data_screen.dart';
 import '../profile/change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  final MapController mapController;
+  const ProfileScreen({Key? key,required this.mapController}) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -91,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     onTap: () {
                       Navigator.of(context).pushNamed(
-                          ChangeAccountDataScreen.routeName);
+                          ChangeAccountDataScreen.routeName,arguments: widget.mapController);
                     },
                   ),
                   const SizedBox(

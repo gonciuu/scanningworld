@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/http/http_exception.dart';
 import 'package:scanning_world/data/remote/providers/coupons_provider.dart';
@@ -17,7 +19,10 @@ import '../../widgets/common/platform_input_group.dart';
 import '../../widgets/common/platfrom_input.dart';
 
 class ChangeAccountDataScreen extends StatefulWidget {
-  const ChangeAccountDataScreen({Key? key}) : super(key: key);
+  final MapController mapController;
+
+  const ChangeAccountDataScreen({Key? key, required this.mapController})
+      : super(key: key);
 
   static const routeName = '/change-account-data';
 
@@ -49,7 +54,14 @@ class _ChangeAccountDataScreenState extends State<ChangeAccountDataScreen> {
       try {
         await authProvider.changeUserInfo(_changeAccountDataData);
         await couponsProvider.getCoupons(_changeAccountDataData.region.id);
-        await placesProvider.getPlaces(_changeAccountDataData.region.id);
+        final places =
+            await placesProvider.getPlaces(_changeAccountDataData.region.id);
+        placesProvider.mapController?.move(
+            LatLng(places.first.location.lat.toDouble() ?? 52.229675,
+                places.first.location.lng.toDouble() ?? 21.012230),
+            16);
+        placesProvider.popupController?.hideAllPopups();
+
         showPlatformDialog(
             context: context,
             builder: (_) => PlatformAlertDialog(
@@ -187,11 +199,11 @@ class _ChangeAccountDataScreenState extends State<ChangeAccountDataScreen> {
               SizedBox(
                 width: double.infinity,
                 child: PlatformElevatedButton(
+                    onPressed: _isLoading ? null : _saveForm,
                     child: _isLoading
                         ? PlatformCircularProgressIndicator()
                         : const Text('Zapisz',
-                            style: TextStyle(color: Colors.white)),
-                    onPressed: _isLoading ? null : _saveForm),
+                            style: TextStyle(color: Colors.white))),
               )
             ],
           ),

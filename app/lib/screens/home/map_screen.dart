@@ -10,6 +10,7 @@ import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/theme/theme.dart';
 import 'package:scanning_world/utils/extensions.dart';
 import 'package:scanning_world/widgets/common/big_title.dart';
+import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
 import 'package:scanning_world/widgets/home/place_map_popup.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,7 +20,9 @@ import '../../data/remote/providers/places_provider.dart';
 import '../../widgets/home/place_item.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({Key? key}) : super(key: key);
+  final MapController mapController;
+
+  const MapScreen({Key? key, required this.mapController}) : super(key: key);
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -38,9 +41,15 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  var _isLoading = true;
+
   List<Place> filterPlaces(List<Place> places) {
     final userScannedPlaces =
-        context.read<AuthProvider>().user?.scannedPlaces.map((e) => e.id) ?? [];
+        context
+            .read<AuthProvider>()
+            .user
+            ?.scannedPlaces
+            .map((e) => e.id) ?? [];
 
     if (_showScannedPlaces) {
       if (_showUnscannedPlaces) {
@@ -66,87 +75,93 @@ class _MapScreenState extends State<MapScreen> {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
-          builder: (ctx, setModalState) => Container(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BigTitle(
-                    text: 'Filtry',
-                    style: TextStyle(color: primary[700]),
+          builder: (ctx, setModalState) =>
+              Container(
+                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      topRight: Radius.circular(16),
+                    ),
                   ),
-                  BigTitle(
-                    text: 'Pokaż punkty:',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      PlatformSwitch(
-                        value: _showScannedPlaces,
-                        onChanged: (value) {
-                          setModalState(() {
-                            _showScannedPlaces = value;
-                          });
-                          setState(() {
-                            _showScannedPlaces = value;
-                          });
-                        },
-                        activeColor: primary[700],
+                      BigTitle(
+                        text: 'Filtry',
+                        style: TextStyle(color: primary[700]),
                       ),
-                      SizedBox(
-                        width: 2,
+                      const BigTitle(
+                        text: 'Pokaż punkty:',
+                        style: TextStyle(fontSize: 16),
                       ),
-                      const Text('Odwiedzone'),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Row(
+                        children: [
+                          PlatformSwitch(
+                            value: _showScannedPlaces,
+                            onChanged: (value) {
+                              setModalState(() {
+                                _showScannedPlaces = value;
+                              });
+                              setState(() {
+                                _showScannedPlaces = value;
+                              });
+                            },
+                            activeColor: primary[700],
+                          ),
+                          const SizedBox(
+                            width: 2,
+                          ),
+                          const Text('Odwiedzone'),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Row(
+                        children: [
+                          PlatformSwitch(
+                            value: _showUnscannedPlaces,
+                            activeColor: primary[700],
+                            onChanged: (value) {
+                              setModalState(() {
+                                _showUnscannedPlaces = value;
+                              });
+                              setState(() {
+                                _showUnscannedPlaces = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(
+                            width: 2,
+                          ),
+                          const Text('Nieodwiedzone'),
+                        ],
+                      ),
                     ],
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Row(
-                    children: [
-                      PlatformSwitch(
-                        value: _showUnscannedPlaces,
-                        activeColor: primary[700],
-                        onChanged: (value) {
-                          setModalState(() {
-                            _showUnscannedPlaces = value;
-                          });
-                          setState(() {
-                            _showUnscannedPlaces = value;
-                          });
-                        },
-                      ),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      const Text('Nieodwiedzone'),
-                    ],
-                  ),
-                ],
-              )),
+                  )),
         );
       },
     );
   }
 
   void _showPlacesListModal() {
-    final places = filterPlaces(context.read<PlacesProvider>().places);
+    final places = filterPlaces(context
+        .read<PlacesProvider>()
+        .places);
     showPlatformModalSheet(
         context: context,
         builder: (c) {
           return Container(
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height * 0.6,
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -167,41 +182,48 @@ class _MapScreenState extends State<MapScreen> {
         });
   }
 
-  late MapController _mapController;
-
 
   @override
   void dispose() {
-    _mapController.dispose();
-
     super.dispose();
   }
+
+  final mc = MapController();
 
   @override
   void initState() {
     super.initState();
-    _mapController = MapController();
+    context.read<PlacesProvider>().setControllers(mc, _popupLayerController);
     _getPlaces();
   }
 
   Future<void> _getPlaces() async {
-    final regionId = context.read<AuthProvider>().user!.region.id;
+    final regionId = context
+        .read<AuthProvider>()
+        .user!
+        .region
+        .id;
     final places = await context.read<PlacesProvider>().getPlaces(regionId);
-    if(places.isNotEmpty){
-      _mapController.move(LatLng(places.first.location.lat.toDouble(), places.first.location.lng.toDouble()), 13.0);
-    }
-  }
 
+    setState(() => _isLoading = false);
+    // if (places.isNotEmpty) {
+    //   _mapController.move(
+    //       LatLng(places.first.location.lat.toDouble(),
+    //           places.first.location.lng.toDouble()),
+    //       13.0);
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final places = filterPlaces(context.select<PlacesProvider, List<Place>>(
-      (provider) => provider.places,
-    ));
+    final places = filterPlaces(context
+        .watch<PlacesProvider>()
+        .places);
 
     return PlatformScaffold(
       appBar: PlatformAppBar(
-        trailingActions: [
+        trailingActions: places.isNotEmpty && !_isLoading
+            ? [
           PlatformIconButton(
             padding: const EdgeInsets.symmetric(horizontal: 6),
             cupertino: (_, __) => CupertinoIconButtonData(minSize: 0),
@@ -219,28 +241,36 @@ class _MapScreenState extends State<MapScreen> {
             cupertino: (_, __) => CupertinoIconButtonData(minSize: 0),
             icon: Icon(
               context.platformIcon(
-                  material: Icons.list, cupertino: CupertinoIcons.square_list),
+                  material: Icons.list,
+                  cupertino: CupertinoIcons.square_list),
               color: Colors.white,
               size: 28,
             ),
             onPressed: _showPlacesListModal,
           ),
-        ],
+        ]
+            : [],
         title: const Text('Mapa kodów QR'),
-        cupertino: (_, __) => CupertinoNavigationBarData(
-          transitionBetweenRoutes: false,
-          heroTag: 'rewards',
-        ),
+        cupertino: (_, __) =>
+            CupertinoNavigationBarData(
+              transitionBetweenRoutes: false,
+              heroTag: 'rewards',
+            ),
       ),
-      body: FlutterMap(
-        mapController: _mapController,
+      body: _isLoading
+          ? const Center(
+        child: CustomProgressIndicator(),
+      )
+          : FlutterMap(
+        mapController: mc,
         options: MapOptions(
-          center: LatLng(51.107883, 17.038538),
-
-          zoom: 14.0,
+          center: places.isEmpty
+              ? null
+              : LatLng(places.first.location.lat.toDouble() ?? 0,
+              places.first.location.lng.toDouble() ?? 0),
+          zoom: 16.0,
           minZoom: 8.0,
-          onTap: (_, __) => _popupLayerController
-              .hideAllPopups(), // Hide popup when the map is tapped.
+          onTap: (_, __) => _popupLayerController.hideAllPopups(),
         ),
         nonRotatedChildren: [
           AttributionWidget(
@@ -259,8 +289,9 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () => _launchUrl(
-                            'https://www.openstreetmap.org/copyright'),
+                        onTap: () =>
+                            _launchUrl(
+                                'https://www.openstreetmap.org/copyright'),
                         child: const Text(
                           ' © OpenStreetMap contributors',
                           style: TextStyle(
@@ -284,8 +315,8 @@ class _MapScreenState extends State<MapScreen> {
                 popupController: _popupLayerController,
                 markers: places.map((e) => PlaceMapMarker(e)).toList(),
                 markerRotateAlignment:
-                    PopupMarkerLayerOptions.rotationAlignmentFor(
-                        AnchorAlign.top),
+                PopupMarkerLayerOptions.rotationAlignmentFor(
+                    AnchorAlign.top),
                 popupBuilder: (_, Marker marker) {
                   if (marker is PlaceMapMarker) {
                     return PlaceMapMarkerPopup(place: marker.place);

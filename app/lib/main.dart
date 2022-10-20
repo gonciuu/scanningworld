@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:scanning_world/data/remote/providers/coupons_provider.dart';
 import 'package:scanning_world/data/remote/providers/places_provider.dart';
@@ -67,7 +68,7 @@ class MyApp extends StatelessWidget {
             ChangePasswordScreen.routeName: (ctx) =>
                 const ChangePasswordScreen(),
             ChangeAccountDataScreen.routeName: (ctx) =>
-                const ChangeAccountDataScreen(),
+                 ChangeAccountDataScreen(mapController: settings.arguments as MapController,),
             ScanQrCodeScreen.routeName: (ctx) => const ScanQrCodeScreen(),
             OrderCouponScreen.routeName: (ctx) =>
                 OrderCouponScreen(arguments: settings.arguments),
