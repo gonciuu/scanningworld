@@ -29,7 +29,7 @@ const PlaceList = () => {
         <button className="btn btn-primary w-full">Dodaj miejsce</button>
       </div>
       <div className="flex flex-1 flex-col gap-2 overflow-x-hidden overflow-y-scroll">
-        {[...data, ...data, ...data, ...data].map((place) => (
+        {data.map((place) => (
           <PlaceComponent {...place} key={place._id} />
         ))}
       </div>
