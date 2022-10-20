@@ -11,6 +11,7 @@ import 'package:scanning_world/screens/place_details_screen.dart';
 import 'package:scanning_world/screens/profile/change_account_data_screen.dart';
 import 'package:scanning_world/screens/profile/change_avatar_screen.dart';
 import 'package:scanning_world/screens/profile/change_password_screen.dart';
+import 'package:scanning_world/screens/regulations_screen.dart';
 import 'package:scanning_world/screens/scan_qr_code_screen.dart';
 import 'data/remote/providers/auth_provider.dart';
 import 'screens/wrappers/auth_wrapper.dart';
@@ -76,6 +77,7 @@ class MyApp extends StatelessWidget {
                   placeId: settings.arguments as String,
                 ),
             ChangeAvatarScreen.routeName: (ctx) => const ChangeAvatarScreen(),
+            RegulationsScreen.routeName: (ctx) => const RegulationsScreen(),
           };
           WidgetBuilder builder = routes[settings.name] ?? routes['/']!;
           return MaterialPageRoute(builder: (ctx) => builder(ctx));

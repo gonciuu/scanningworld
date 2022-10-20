@@ -5,6 +5,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/screens/profile/change_avatar_screen.dart';
+import 'package:scanning_world/screens/regulations_screen.dart';
 import 'package:scanning_world/theme/theme.dart';
 import 'package:scanning_world/widgets/common/small_subtitle.dart';
 import 'package:scanning_world/widgets/home/profile/settings_row.dart';
@@ -113,6 +114,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () {
                       Navigator.of(context)
                           .pushNamed(ChangePasswordScreen.routeName);
+                    },
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  SettingsRow(
+                    text: 'Regulamin i źródła',
+                    icon: context.platformIcon(
+                      material: Icons.description_outlined,
+                      cupertino: CupertinoIcons.doc_text,
+                    ),
+                    onTap: () {
+                      Navigator.of(context)
+                          .pushNamed(RegulationsScreen.routeName);
                     },
                   ),
                   const SizedBox(
