@@ -38,6 +38,16 @@ class HomeScreen extends StatelessWidget {
       Timer(const Duration(seconds: 2), () => tooltip.deactivate());
     }
 
+    final email = user?.region.email ?? 'xyz@gmail.com';
+
+    double scannedPlacesPercent =
+        (user?.scannedPlacesFromRegion ?? 0).toDouble() /
+            (user?.region.placeCount ?? 1).toDouble();
+
+    if (scannedPlacesPercent.isNaN || scannedPlacesPercent.isInfinite) {
+      scannedPlacesPercent = 0;
+    }
+
     return PlatformScaffold(
       body: Stack(
         children: [
@@ -85,8 +95,9 @@ class HomeScreen extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 30,
                             backgroundColor: Colors.grey.shade200,
-                            backgroundImage: const AssetImage(
-                                'assets/logo_scanningworld.png'),
+                            backgroundImage: AssetImage(user != null
+                                ? 'assets/avatars/${user.avatar}.png'
+                                : 'assets/avatars/male2.png'),
                           ),
                         ),
                       ],
@@ -104,7 +115,7 @@ class HomeScreen extends StatelessWidget {
                             children: [
                               BigTitle(
                                   text:
-                                      "${user != null ? user.scannedPlaces.length : 0}/20"),
+                                      "${user != null ? user.scannedPlacesFromRegion : 0}/${user?.region.placeCount ?? 0}"),
                               const SmallSubtitle(text: "Zwiedzonych miejsc"),
                             ],
                           ),
@@ -113,11 +124,7 @@ class HomeScreen extends StatelessWidget {
                             duration: const Duration(milliseconds: 1500),
                             curve: Curves.easeInOut,
                             tween: Tween<double>(
-                              begin: 0,
-                              end: ((user?.scannedPlaces.length.toDouble() ??
-                                      0) /
-                                  20),
-                            ),
+                                begin: 0, end: scannedPlacesPercent),
                             builder: (context, value, _) =>
                                 LinearProgressIndicator(
                               value: value,
@@ -243,9 +250,9 @@ class HomeScreen extends StatelessWidget {
                             onPressed: () async {
                               try {
                                 await sendEmail(
-                                    'kacperwojak17@gmail.com',
-                                    'I love this app',
-                                    'Your feedback below: \n');
+                                    email,
+                                    'Chciałbym aby moja firma znalazła się w aplikacji',
+                                    'Witam,\n\nChciałbym aby moja firma znalazła się w aplikacji. Proszę o kontakt.\n\nPozdrawiam,\n\n');
                               } catch (e) {
                                 showTooltip();
                               }
@@ -267,15 +274,15 @@ class HomeScreen extends StatelessWidget {
                             margin: const EdgeInsets.only(top: 4),
                             child: PlatformTextButton(
                                 onPressed: () {
-                                  Clipboard.setData(const ClipboardData(
-                                      text: 'kacperwojak17@gmail.com'));
+                                  Clipboard.setData(ClipboardData(text: email));
                                   showTooltip();
                                 },
                                 padding: EdgeInsets.zero,
-                                child: const Text(
-                                  "xyz@gmail.com",
+                                child: Text(
+                                  email,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 )),
                           ),
                         ),

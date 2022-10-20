@@ -56,11 +56,18 @@ class _ChangeAccountDataScreenState extends State<ChangeAccountDataScreen> {
         await couponsProvider.getCoupons(_changeAccountDataData.region.id);
         final places =
             await placesProvider.getPlaces(_changeAccountDataData.region.id);
-        placesProvider.mapController?.move(
-            LatLng(places.first.location.lat.toDouble() ?? 52.229675,
-                places.first.location.lng.toDouble() ?? 21.012230),
-            16);
         placesProvider.popupController?.hideAllPopups();
+
+        if(places.isNotEmpty){
+          placesProvider.mapController?.move(
+              LatLng(places.first.location.lat.toDouble(),
+                  places.first.location.lng.toDouble()),
+              13);
+        }else{
+          placesProvider.mapController?.move(
+              LatLng(52.237049, 21.017532), 13);
+        }
+
 
         showPlatformDialog(
             context: context,

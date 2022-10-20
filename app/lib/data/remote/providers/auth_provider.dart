@@ -124,6 +124,7 @@ class AuthProvider with ChangeNotifier {
           "password": registerData.password,
           "phone": registerData.phone,
           "regionId": registerData.regionId,
+          "avatar":"male1",
         },
       );
       //map response to AuthResult
@@ -287,6 +288,30 @@ class AuthProvider with ChangeNotifier {
       _user = newUser;
       notifyListeners();
       return newUser.activeCoupons.last;
+    } on DioError catch (e) {
+      throw HttpError.fromDioError(e);
+    } catch (err) {
+      throw HttpError(err.toString());
+    }
+  }
+
+  Future<User> changeAvatar(String avatar) async{
+    try {
+      final response = await dio.patch(
+        '/users/avatar',
+        data: {
+          'avatar': avatar,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+      );
+      User newUser = User.fromJson(response.data);
+      _user = newUser;
+      notifyListeners();
+      return newUser;
     } on DioError catch (e) {
       throw HttpError.fromDioError(e);
     } catch (err) {

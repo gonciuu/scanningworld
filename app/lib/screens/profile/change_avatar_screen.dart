@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:scanning_world/data/remote/http/http_exception.dart';
+import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/widgets/common/big_title.dart';
+import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
+import 'package:scanning_world/widgets/common/error_dialog.dart';
 
 import '../../theme/theme.dart';
 
@@ -14,7 +19,36 @@ class ChangeAvatarScreen extends StatefulWidget {
 }
 
 class _ChangeAvatarScreenState extends State<ChangeAvatarScreen> {
-  String? _avatar;
+  String _avatar = 'male1';
+
+  var _isLoading = false;
+
+  Future<void> _changeAvatar() async {
+    try {
+      setState(() => _isLoading = true);
+      final authProvider = context.read<AuthProvider>();
+      await authProvider.changeAvatar(_avatar);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+    } on HttpError catch (e) {
+      showPlatformDialog(
+          context: context,
+          builder: (c) => ErrorDialog(
+                message: e.message,
+              ));
+    }finally{
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  void initState() {
+    //get user avatar from auth provider
+    setState(() {
+      _avatar = context.read<AuthProvider>().user!.avatar;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,32 +68,31 @@ class _ChangeAvatarScreenState extends State<ChangeAvatarScreen> {
               const SizedBox(height: 20),
               Row(
                 children: [
-                  _avatarImage('assets/avatars/male2.png'),
+                  _avatarImage('male2'),
                   const SizedBox(width: 20),
-                  _avatarImage('assets/avatars/male3.png'),
+                  _avatarImage('male3'),
                   const SizedBox(width: 20),
-                  _avatarImage('assets/avatars/male1.png'),
+                  _avatarImage('male1'),
                 ],
               ),
               const SizedBox(height: 16),
               Row(
                 children: [
-                  _avatarImage('assets/avatars/female1.png'),
+                  _avatarImage('female1'),
                   const SizedBox(width: 20),
-                  _avatarImage('assets/avatars/female2.png'),
+                  _avatarImage('female2'),
                   const SizedBox(width: 20),
-                  _avatarImage('assets/avatars/female3.png'),
+                  _avatarImage('female3'),
                 ],
               ),
               const Spacer(),
               SizedBox(
                 width: double.infinity,
                 child: PlatformElevatedButton(
-                  child: const Text(
-                    'Zapisz',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: () {},
+                  onPressed: _isLoading ? null : _changeAvatar,
+                  child: _isLoading
+                      ? const CustomProgressIndicator()
+                      : const Text('Zapisz avatar',style: TextStyle(color: Colors.white),),
                 ),
               ),
             ],
@@ -79,7 +112,7 @@ class _ChangeAvatarScreenState extends State<ChangeAvatarScreen> {
               shape: BoxShape.circle,
             ),
             child: Image.asset(
-              name,
+              'assets/avatars/$name.png',
             )),
       ));
 }

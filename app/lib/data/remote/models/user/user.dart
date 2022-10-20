@@ -9,23 +9,28 @@ class User {
   final String name;
   final String email;
   final String phone;
-  final String? image;
+  final String avatar;
   final Region region;
   final List<Place> scannedPlaces;
   final Map<String, int> points;
   final List<ActiveCoupon> activeCoupons;
 
-
   List<ActiveCoupon> get dateActiveCoupons => activeCoupons
       .where((x) => DateTime.now().compareTo(x.validUntil) < 0)
       .toList();
+
+   num get scannedPlacesFromRegion {
+     return scannedPlaces
+         .where((x) => x.region.id == region.id)
+         .length;
+   }
 
 
   User({
     required this.name,
     required this.email,
     required this.phone,
-    this.image,
+    required this.avatar,
     required this.id,
     required this.region,
     required this.scannedPlaces,
@@ -35,14 +40,15 @@ class User {
 
   num get pointsInRegion => points[region.id] ?? 0;
 
-  bool isPlaceScanned(String placeId) => scannedPlaces.any((element) => element.id == placeId);
+  bool isPlaceScanned(String placeId) =>
+      scannedPlaces.any((element) => element.id == placeId);
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["_id"],
         name: json["name"],
         email: json["email"],
         phone: json["phone"],
-        image: json["image"],
+        avatar: json["avatar"],
         points:
             json["points"] == null ? {} : Map<String, int>.from(json["points"]),
         region: Region.fromJson(json["region"]),
@@ -57,12 +63,12 @@ class User {
         "name": name,
         "email": email,
         "phone": phone,
-        "image": image,
+        "image": avatar,
         "region": region.toJson(),
         "places": List<dynamic>.from(scannedPlaces.map((x) => x.toJson())),
         "points": Map<String, dynamic>.from(
             points.map((x, y) => MapEntry<String, dynamic>(x, y))),
-        "activeCoupons": List<dynamic>.from(
-            activeCoupons.map((x) => x.toJson())),
+        "activeCoupons":
+            List<dynamic>.from(activeCoupons.map((x) => x.toJson())),
       };
 }

@@ -45,11 +45,7 @@ class _MapScreenState extends State<MapScreen> {
 
   List<Place> filterPlaces(List<Place> places) {
     final userScannedPlaces =
-        context
-            .read<AuthProvider>()
-            .user
-            ?.scannedPlaces
-            .map((e) => e.id) ?? [];
+        context.read<AuthProvider>().user?.scannedPlaces.map((e) => e.id) ?? [];
 
     if (_showScannedPlaces) {
       if (_showUnscannedPlaces) {
@@ -75,93 +71,87 @@ class _MapScreenState extends State<MapScreen> {
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
-          builder: (ctx, setModalState) =>
-              Container(
-                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16),
-                    ),
+          builder: (ctx, setModalState) => Container(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  BigTitle(
+                    text: 'Filtry',
+                    style: TextStyle(color: primary[700]),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+                  const BigTitle(
+                    text: 'Pokaż punkty:',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(
                     children: [
-                      BigTitle(
-                        text: 'Filtry',
-                        style: TextStyle(color: primary[700]),
-                      ),
-                      const BigTitle(
-                        text: 'Pokaż punkty:',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Row(
-                        children: [
-                          PlatformSwitch(
-                            value: _showScannedPlaces,
-                            onChanged: (value) {
-                              setModalState(() {
-                                _showScannedPlaces = value;
-                              });
-                              setState(() {
-                                _showScannedPlaces = value;
-                              });
-                            },
-                            activeColor: primary[700],
-                          ),
-                          const SizedBox(
-                            width: 2,
-                          ),
-                          const Text('Odwiedzone'),
-                        ],
+                      PlatformSwitch(
+                        value: _showScannedPlaces,
+                        onChanged: (value) {
+                          setModalState(() {
+                            _showScannedPlaces = value;
+                          });
+                          setState(() {
+                            _showScannedPlaces = value;
+                          });
+                        },
+                        activeColor: primary[700],
                       ),
                       const SizedBox(
-                        height: 4,
+                        width: 2,
                       ),
-                      Row(
-                        children: [
-                          PlatformSwitch(
-                            value: _showUnscannedPlaces,
-                            activeColor: primary[700],
-                            onChanged: (value) {
-                              setModalState(() {
-                                _showUnscannedPlaces = value;
-                              });
-                              setState(() {
-                                _showUnscannedPlaces = value;
-                              });
-                            },
-                          ),
-                          const SizedBox(
-                            width: 2,
-                          ),
-                          const Text('Nieodwiedzone'),
-                        ],
-                      ),
+                      const Text('Odwiedzone'),
                     ],
-                  )),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Row(
+                    children: [
+                      PlatformSwitch(
+                        value: _showUnscannedPlaces,
+                        activeColor: primary[700],
+                        onChanged: (value) {
+                          setModalState(() {
+                            _showUnscannedPlaces = value;
+                          });
+                          setState(() {
+                            _showUnscannedPlaces = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(
+                        width: 2,
+                      ),
+                      const Text('Nieodwiedzone'),
+                    ],
+                  ),
+                ],
+              )),
         );
       },
     );
   }
 
   void _showPlacesListModal() {
-    final places = filterPlaces(context
-        .read<PlacesProvider>()
-        .places);
+    final places = filterPlaces(context.read<PlacesProvider>().places);
     showPlatformModalSheet(
         context: context,
         builder: (c) {
           return Container(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.6,
             decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.only(
@@ -182,7 +172,6 @@ class _MapScreenState extends State<MapScreen> {
         });
   }
 
-
   @override
   void dispose() {
     super.dispose();
@@ -198,134 +187,120 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> _getPlaces() async {
-    final regionId = context
-        .read<AuthProvider>()
-        .user!
-        .region
-        .id;
-    final places = await context.read<PlacesProvider>().getPlaces(regionId);
-
+    final regionId = context.read<AuthProvider>().user!.region.id;
+    await context.read<PlacesProvider>().getPlaces(regionId);
     setState(() => _isLoading = false);
-    // if (places.isNotEmpty) {
-    //   _mapController.move(
-    //       LatLng(places.first.location.lat.toDouble(),
-    //           places.first.location.lng.toDouble()),
-    //       13.0);
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
-    final places = filterPlaces(context
-        .watch<PlacesProvider>()
-        .places);
+    final places = filterPlaces(context.watch<PlacesProvider>().places);
+    _popupLayerController.hideAllPopups();
 
     return PlatformScaffold(
       appBar: PlatformAppBar(
-        trailingActions: places.isNotEmpty && !_isLoading
+        trailingActions: !_isLoading
             ? [
-          PlatformIconButton(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            cupertino: (_, __) => CupertinoIconButtonData(minSize: 0),
-            icon: Icon(
-              context.platformIcon(
-                  material: Icons.filter_alt_outlined,
-                  cupertino: CupertinoIcons.slider_horizontal_3),
-              color: Colors.white,
-              size: 28,
-            ),
-            onPressed: _showSettingsModalBottomSheet,
-          ),
-          PlatformIconButton(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            cupertino: (_, __) => CupertinoIconButtonData(minSize: 0),
-            icon: Icon(
-              context.platformIcon(
-                  material: Icons.list,
-                  cupertino: CupertinoIcons.square_list),
-              color: Colors.white,
-              size: 28,
-            ),
-            onPressed: _showPlacesListModal,
-          ),
-        ]
+                PlatformIconButton(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  cupertino: (_, __) => CupertinoIconButtonData(minSize: 0),
+                  icon: Icon(
+                    context.platformIcon(
+                        material: Icons.filter_alt_outlined,
+                        cupertino: CupertinoIcons.slider_horizontal_3),
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                  onPressed: _showSettingsModalBottomSheet,
+                ),
+                PlatformIconButton(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  cupertino: (_, __) => CupertinoIconButtonData(minSize: 0),
+                  icon: Icon(
+                    context.platformIcon(
+                        material: Icons.list,
+                        cupertino: CupertinoIcons.square_list),
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                  onPressed: _showPlacesListModal,
+                ),
+              ]
             : [],
         title: const Text('Mapa kodów QR'),
-        cupertino: (_, __) =>
-            CupertinoNavigationBarData(
-              transitionBetweenRoutes: false,
-              heroTag: 'rewards',
-            ),
+        cupertino: (_, __) => CupertinoNavigationBarData(
+          transitionBetweenRoutes: false,
+          heroTag: 'rewards',
+        ),
       ),
       body: _isLoading
           ? const Center(
-        child: CustomProgressIndicator(),
-      )
+              child: CustomProgressIndicator(),
+            )
           : FlutterMap(
-        mapController: mc,
-        options: MapOptions(
-          center: places.isEmpty
-              ? null
-              : LatLng(places.first.location.lat.toDouble() ?? 0,
-              places.first.location.lng.toDouble() ?? 0),
-          zoom: 16.0,
-          minZoom: 8.0,
-          onTap: (_, __) => _popupLayerController.hideAllPopups(),
-        ),
-        nonRotatedChildren: [
-          AttributionWidget(
-            attributionBuilder: (context) {
-              return Container(
-                  padding: const EdgeInsets.all(2),
-                  color: Colors.white60,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Text(
-                        'flutter_map | ',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () =>
-                            _launchUrl(
-                                'https://www.openstreetmap.org/copyright'),
-                        child: const Text(
-                          ' © OpenStreetMap contributors',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ));
-            },
-          ),
-        ],
-        children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            subdomains: ['a', 'b', 'c'],
-          ),
-          PopupMarkerLayerWidget(
-            options: PopupMarkerLayerOptions(
-                popupController: _popupLayerController,
-                markers: places.map((e) => PlaceMapMarker(e)).toList(),
-                markerRotateAlignment:
-                PopupMarkerLayerOptions.rotationAlignmentFor(
-                    AnchorAlign.top),
-                popupBuilder: (_, Marker marker) {
-                  if (marker is PlaceMapMarker) {
-                    return PlaceMapMarkerPopup(place: marker.place);
-                  }
-                  return const Card(child: Text('Not a monument'));
-                }),
-          ),
-        ],
-      ),
+              mapController: mc,
+              options: MapOptions(
+                center: places.isEmpty
+                    ? LatLng(52.237049, 21.017532)
+                    : LatLng(places.first.location.lat.toDouble(),
+                        places.first.location.lng.toDouble()),
+                zoom: 16.0,
+                minZoom: 8.0,
+                onTap: (_, __) => _popupLayerController.hideAllPopups(),
+              ),
+              nonRotatedChildren: [
+                AttributionWidget(
+                  attributionBuilder: (context) {
+                    return Container(
+                        padding: const EdgeInsets.all(2),
+                        color: Colors.white60,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const Text(
+                              'flutter_map | ',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 12,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () => _launchUrl(
+                                  'https://www.openstreetmap.org/copyright'),
+                              child: const Text(
+                                ' © OpenStreetMap contributors',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ));
+                  },
+                ),
+              ],
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  subdomains: ['a', 'b', 'c'],
+                ),
+                PopupMarkerLayerWidget(
+                  options: PopupMarkerLayerOptions(
+                      popupController: _popupLayerController,
+                      markers: places.map((e) => PlaceMapMarker(e)).toList(),
+                      markerRotateAlignment:
+                          PopupMarkerLayerOptions.rotationAlignmentFor(
+                              AnchorAlign.top),
+                      popupBuilder: (_, Marker marker) {
+                        if (marker is PlaceMapMarker) {
+                          return PlaceMapMarkerPopup(place: marker.place);
+                        }
+                        return const Card(child: Text('Not a monument'));
+                      }),
+                ),
+              ],
+            ),
     );
   }
 }

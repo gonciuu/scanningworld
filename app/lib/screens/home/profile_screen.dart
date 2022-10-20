@@ -16,18 +16,22 @@ import '../profile/change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final MapController mapController;
-  const ProfileScreen({Key? key,required this.mapController}) : super(key: key);
+
+  const ProfileScreen({Key? key, required this.mapController})
+      : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
-
   @override
   Widget build(BuildContext context) {
-    final points = context.select((AuthProvider auth) => auth.user?.points[auth.user?.region.id]) ?? 0;
+    final points = context.select(
+            (AuthProvider auth) => auth.user?.points[auth.user?.region.id]) ??
+        0;
+    final String? avatar =
+        context.select((AuthProvider auth) => auth.user?.avatar);
     return SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: SafeArea(
@@ -41,14 +45,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SmallSubtitle(text: 'Edytuj profil'),
                   const SizedBox(height: 24),
                   GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(ChangeAvatarScreen.routeName),
+                    onTap: () => Navigator.of(context)
+                        .pushNamed(ChangeAvatarScreen.routeName),
                     child: Stack(
                       children: [
                         CircleAvatar(
                           radius: 60,
                           backgroundColor: Colors.grey.shade200,
-                          backgroundImage:
-                              const AssetImage('assets/logo_scanningworld.png'),
+                          backgroundImage: AssetImage(avatar != null
+                              ? 'assets/avatars/$avatar.png'
+                              : 'assets/avatars/male2.png'),
                         ),
                         Positioned(
                           bottom: 1,
@@ -93,7 +99,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     onTap: () {
                       Navigator.of(context).pushNamed(
-                          ChangeAccountDataScreen.routeName,arguments: widget.mapController);
+                          ChangeAccountDataScreen.routeName,
+                          arguments: widget.mapController);
                     },
                   ),
                   const SizedBox(
@@ -106,7 +113,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       cupertino: CupertinoIcons.lock_shield,
                     ),
                     onTap: () {
-                      Navigator.of(context).pushNamed(ChangePasswordScreen.routeName);
+                      Navigator.of(context)
+                          .pushNamed(ChangePasswordScreen.routeName);
                     },
                   ),
                   const SizedBox(
