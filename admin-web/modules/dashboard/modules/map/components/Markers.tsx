@@ -5,6 +5,7 @@ import axios from 'axios';
 import L from 'leaflet';
 import { Marker } from 'react-leaflet';
 
+import { useRegion } from '@/common/recoil/region';
 import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
 import { PlaceType } from '@/modules/dashboard/types/place.type';
 
@@ -40,10 +41,14 @@ const PlaceMarker = (place: PlaceType) => {
 };
 
 const Markers = () => {
-  const { data, error, isLoading } = useQuery(['places'], () =>
-    axios
-      .get<PlaceType[]>('places/63485005b9a6f084791d694a')
-      .then((res) => res.data)
+  const {
+    region: { _id },
+  } = useRegion();
+
+  const { data, error, isLoading } = useQuery(
+    ['places', _id],
+    () => axios.get<PlaceType[]>(`places/${_id}`).then((res) => res.data),
+    { enabled: !!_id }
   );
 
   if (isLoading || error || !data) return null;

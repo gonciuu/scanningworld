@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import * as Yup from 'yup';
 
 import { setTokens } from '@/common/lib/tokens';
+import { useRegion } from '@/common/recoil/region';
+import { RegionType } from '@/common/types/region.type';
 import { useModal } from '@/modules/modal';
 
 const RegisterSchema = Yup.object().shape({
@@ -19,6 +21,7 @@ const RegisterSchema = Yup.object().shape({
 
 const RegisterModal = () => {
   const { closeModal } = useModal();
+  const { setRegion } = useRegion();
 
   const router = useRouter();
 
@@ -26,12 +29,14 @@ const RegisterModal = () => {
     (registerRegionDto: { name: string; email: string; password: string }) => {
       return axios.post<{
         tokens: { accessToken: string; refreshToken: string };
+        region: RegionType;
       }>('auth/region/register', registerRegionDto);
     },
     {
-      onSuccess: (res) => {
+      onSuccess: ({ data }) => {
         closeModal();
-        setTokens(res.data.tokens);
+        setTokens(data.tokens);
+        setRegion(data.region);
         router.push('dashboard');
       },
     }
