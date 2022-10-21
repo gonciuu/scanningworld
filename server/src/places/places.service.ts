@@ -13,6 +13,7 @@ import { UserDocument } from 'src/users/schemas/user.schema';
 
 import { Place, PlaceDocument } from './schemas/place.schema';
 import { CreatePlaceDto } from './dto/createPlace.dto';
+import { calcDistance } from './lib/distance';
 
 @Injectable()
 export class PlacesService {
@@ -70,7 +71,11 @@ export class PlacesService {
     return this.placeModel.find({ region: regionId }).exec();
   }
 
-  async scanCode(code: string, userId: string): Promise<UserDocument> {
+  async scanCode(
+    code: string,
+    userId: string,
+    location: { lat: number; lng: number },
+  ): Promise<UserDocument> {
     const place = await this.placeModel.findOne({ code }).exec();
 
     if (!place) {
@@ -95,6 +100,17 @@ export class PlacesService {
       )
     ) {
       throw new BadRequestException('User has already visited this place');
+    }
+
+    const distance = calcDistance(
+      place.location.lat,
+      place.location.lng,
+      location.lat,
+      location.lng,
+    );
+
+    if (distance > 0.5) {
+      throw new BadRequestException('User is not close enough to the place');
     }
 
     const regionId = user.region._id.toString();
