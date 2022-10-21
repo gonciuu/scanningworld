@@ -116,7 +116,7 @@ export class AuthRegionService {
           secret: this.configService.get<string>(
             'JWT_ACCESS_TOKEN_REGION_SECRET',
           ),
-          expiresIn: '5s',
+          expiresIn: '2min',
         },
       ),
       this.jwtService.signAsync(
