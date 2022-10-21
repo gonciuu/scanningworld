@@ -7,6 +7,7 @@ import 'package:scanning_world/screens/home/profile_screen.dart';
 import 'package:scanning_world/screens/home/coupons_screen.dart';
 import 'package:scanning_world/widgets/home/bottom_nav_items.dart';
 
+import '../../services/permission_service.dart';
 import '../home/home_screen.dart';
 
 class HomeWrapper extends StatefulWidget {
@@ -19,6 +20,14 @@ class HomeWrapper extends StatefulWidget {
 }
 
 class _HomeWrapperState extends State<HomeWrapper> {
+
+
+  @override
+  void initState() {
+    PermissionService.checkInitPermissions();
+    super.initState();
+  }
+
   int _selectedIndex = 0;
 
   //create function to change the tab index

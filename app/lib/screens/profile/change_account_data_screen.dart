@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +9,7 @@ import 'package:scanning_world/data/remote/providers/places_provider.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/utils/validators.dart';
 import 'package:scanning_world/widgets/common/platform_dropdown.dart';
-
+import 'package:scanning_world/widgets/common/success_dialog.dart';
 import '../../data/remote/models/user/region.dart';
 import '../../data/remote/providers/auth_provider.dart';
 import '../../theme/theme.dart';
@@ -19,9 +18,7 @@ import '../../widgets/common/platform_input_group.dart';
 import '../../widgets/common/platfrom_input.dart';
 
 class ChangeAccountDataScreen extends StatefulWidget {
-
-  const ChangeAccountDataScreen({Key? key})
-      : super(key: key);
+  const ChangeAccountDataScreen({Key? key}) : super(key: key);
 
   static const routeName = '/change-account-data';
 
@@ -41,8 +38,10 @@ class _ChangeAccountDataScreenState extends State<ChangeAccountDataScreen> {
 
   final ChangeAccountData _changeAccountDataData = ChangeAccountData();
 
+  //is loading after save
   var _isLoading = false;
 
+  // save form - fetch new places and coupons from region
   Future<void> _saveForm() async {
     final AuthProvider authProvider = context.read<AuthProvider>();
     final CouponsProvider couponsProvider = context.read<CouponsProvider>();
@@ -52,35 +51,25 @@ class _ChangeAccountDataScreenState extends State<ChangeAccountDataScreen> {
       setState(() => _isLoading = true);
       try {
         await authProvider.changeUserInfo(_changeAccountDataData);
+        // fetch new places and coupons from region
         await couponsProvider.getCoupons(_changeAccountDataData.region.id);
         final places =
             await placesProvider.getPlaces(_changeAccountDataData.region.id);
 
-        if(places.isNotEmpty){
+        // set center of the map
+        if (places.isNotEmpty) {
           placesProvider.mapController?.move(
               LatLng(places.first.location.lat.toDouble(),
                   places.first.location.lng.toDouble()),
               13);
-        }else{
-          placesProvider.mapController?.move(
-              LatLng(52.237049, 21.017532), 13);
+        } else {
+          placesProvider.mapController?.move(LatLng(52.237049, 21.017532), 13);
         }
-
-
         showPlatformDialog(
             context: context,
-            builder: (_) => PlatformAlertDialog(
-                  title: const Text('Sukces'),
-                  content: const Text('Dane zostały zmienione'),
-                  actions: [
-                    PlatformDialogAction(
-                      child: Text('Ok', style: TextStyle(color: primary[700])),
-                      onPressed: () => Navigator.of(context)
-                        ..pop()
-                        ..pop(),
-                    ),
-                  ],
-                ));
+            builder: (_) => SuccessDialog(
+                content: 'Dane zostały zmienione',
+                onButtonPressed: () => Navigator.of(context).pop()));
       } on HttpError catch (e) {
         showPlatformDialog(
             context: context, builder: (_) => ErrorDialog(message: e.message));
@@ -94,7 +83,8 @@ class _ChangeAccountDataScreenState extends State<ChangeAccountDataScreen> {
   void initState() {
     super.initState();
     final user = context.read<AuthProvider>().user;
-    debugPrint(user?.region.toJson().toString());
+
+    //set initial values
     if (user != null) {
       _changeAccountDataData.username = user.name;
       _changeAccountDataData.email = user.email;
@@ -104,12 +94,6 @@ class _ChangeAccountDataScreenState extends State<ChangeAccountDataScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select((AuthProvider auth) => auth.user);
-    final regions = context
-        .select((RegionsProvider regionsProvider) => regionsProvider.regions)
-        .map((e) => DropdownItem(value: e.id, label: e.name))
-        .toList();
-
     final usernameInput = PlatformInput(
       onChanged: (value) => _changeAccountDataData.username = value,
       controller: TextEditingController(text: _changeAccountDataData.username),
@@ -178,28 +162,35 @@ class _ChangeAccountDataScreenState extends State<ChangeAccountDataScreen> {
                 style: labelStyle,
               ),
               const SizedBox(height: 4),
-              PlatformInputGroup(
-                children: [
-                  PlatformDropdown(
-                    items: regions,
-                    value: _changeAccountDataData.region.id.isEmpty
-                        ? regions.first
-                        : regions.firstWhere((element) =>
-                            element.value == _changeAccountDataData.region.id),
-                    onChanged: (value) {
-                      setState(() {
-                        final region = regions
-                            .firstWhere((element) => element.value == value);
-                        _changeAccountDataData.region =
-                            Region(id: region.value, name: region.label);
-                      });
-                    },
-                    icon: context.platformIcon(
-                        material: Icons.location_city_outlined,
-                        cupertino: CupertinoIcons.building_2_fill),
-                  ),
-                ],
-              ),
+              Consumer<RegionsProvider>(
+                  builder: (context, placesProvider, child) {
+                final regions = placesProvider.regions
+                    .map((e) => DropdownItem(value: e.id, label: e.name))
+                    .toList();
+                return PlatformInputGroup(
+                  children: [
+                    PlatformDropdown(
+                      items: regions,
+                      value: _changeAccountDataData.region.id.isEmpty
+                          ? regions.first
+                          : regions.firstWhere((element) =>
+                              element.value ==
+                              _changeAccountDataData.region.id),
+                      onChanged: (value) {
+                        setState(() {
+                          final region = regions
+                              .firstWhere((element) => element.value == value);
+                          _changeAccountDataData.region =
+                              Region(id: region.value, name: region.label);
+                        });
+                      },
+                      icon: context.platformIcon(
+                          material: Icons.location_city_outlined,
+                          cupertino: CupertinoIcons.building_2_fill),
+                    ),
+                  ],
+                );
+              }),
               const Spacer(),
               SizedBox(
                 width: double.infinity,

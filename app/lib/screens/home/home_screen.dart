@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
-import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/screens/scan_qr_code_screen.dart';
 import 'package:scanning_world/theme/theme.dart';
 import 'package:scanning_world/utils/helpers.dart';
@@ -18,7 +17,6 @@ import 'package:scanning_world/widgets/home/rewards_card.dart';
 import '../../data/remote/models/user/user.dart';
 import '../../data/remote/providers/coupons_provider.dart';
 import '../../widgets/common/big_title.dart';
-import '../../widgets/common/custom_progress_indicator.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/home';
@@ -30,6 +28,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final User? user = context.watch<AuthProvider>().user;
 
+
+    // control tooltip for show copy email text
     final tooltipKey = GlobalKey<State<Tooltip>>();
 
     void showTooltip() {
@@ -38,12 +38,16 @@ class HomeScreen extends StatelessWidget {
       Timer(const Duration(seconds: 2), () => tooltip.deactivate());
     }
 
+    // get region email
     final email = user?.region.email ?? 'xyz@gmail.com';
 
+    //get scanned places Percent
     double scannedPlacesPercent =
         (user?.scannedPlacesFromRegion ?? 0).toDouble() /
             (user?.region.placeCount ?? 1).toDouble();
 
+
+    // set zero if it's NaN or Infinity
     if (scannedPlacesPercent.isNaN || scannedPlacesPercent.isInfinite) {
       scannedPlacesPercent = 0;
     }

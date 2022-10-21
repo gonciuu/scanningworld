@@ -8,7 +8,6 @@ import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/screens/enter_pin_code_screen.dart';
 import 'package:scanning_world/screens/sign_in_screen.dart';
-import 'package:scanning_world/services/permission_service.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 
 import '../../data/local/secure_storage_manager.dart';
@@ -25,7 +24,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
   @override
   void initState() {
-    PermissionService.checkInitPermissions();
     checkLocalSignIn();
     super.initState();
   }

@@ -8,15 +8,12 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/services/url_service.dart';
-import 'package:scanning_world/theme/theme.dart';
-import 'package:scanning_world/widgets/common/big_title.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import 'package:scanning_world/widgets/home/map/place_map_popup.dart';
 import 'package:scanning_world/widgets/home/map/places_list_modal_sheet.dart';
 import 'package:scanning_world/widgets/home/map/set_filter_modal_sheet.dart';
 import '../../data/remote/models/user/place.dart';
 import '../../data/remote/providers/places_provider.dart';
-import '../../widgets/home/map/place_item.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -26,6 +23,17 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+
+  final mc = MapController();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<PlacesProvider>().setControllers(mc);
+    _getPlaces();
+  }
+
+
   /// Used to trigger showing/hiding of popups.
   final PopupController _popupLayerController = PopupController();
 
@@ -91,6 +99,7 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  // show places on click list icon on top appbar
   void _showPlacesListModal() {
     final places = filterPlaces(context.read<PlacesProvider>().places);
     showPlatformModalSheet(
@@ -100,20 +109,11 @@ class _MapScreenState extends State<MapScreen> {
         });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
-  final mc = MapController();
 
-  @override
-  void initState() {
-    super.initState();
-    context.read<PlacesProvider>().setControllers(mc);
-    _getPlaces();
-  }
 
+
+  // get places from server for region
   Future<void> _getPlaces() async {
     final regionId = context.read<AuthProvider>().user!.region.id;
     await context.read<PlacesProvider>().getPlaces(regionId);
