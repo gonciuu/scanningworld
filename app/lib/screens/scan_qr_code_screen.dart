@@ -88,8 +88,7 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
                       'OK',
                       style: TextStyle(color: primary[700]),
                     ),
-                    onPressed: () => Navigator.of(context).popUntil((route) =>
-                        route.settings.name == HomeWrapper.routeName),
+                    onPressed: () => Navigator.of(context)..pop()..pop(),
                   ),
                 ],
               ));
@@ -133,7 +132,7 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
         // Android's shouldShowRequestPermissionRationale
         // returned true. According to Android guidelines
         // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
+        throw const PermissionDeniedException('Location permissions are denied');
       }
     }
 
@@ -146,9 +145,6 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     final Position position = await Geolocator.getCurrentPosition();
-
-
-
 
 
     return position;

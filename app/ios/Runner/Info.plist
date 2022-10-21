@@ -71,6 +71,9 @@
     <string>Aparat jest niezbędny do zeskanowania kodu QR</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Potrzebujemy twojej lokalizacji w celu zweryfikowania czy znajdujesz się z pobliżu punktu QR</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Potrzebujemy twojej lokalizacji, aby aplikacja mogła działać w tle</string>
+
 
 </dict>
 </plist>

@@ -22,6 +22,7 @@ class AuthProvider with ChangeNotifier {
   final dio = DioClient.dio;
   final SecureStorageManager secureStorageManager = SecureStorageManager();
 
+
   // user and access token needed for requests
   User? _user;
 

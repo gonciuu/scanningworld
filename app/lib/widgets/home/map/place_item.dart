@@ -4,9 +4,9 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/screens/place_details_screen.dart';
 
-import '../../data/remote/models/user/place.dart';
-import '../../data/remote/providers/auth_provider.dart';
-import '../common/cached_placeholder_image.dart';
+import '../../../data/remote/models/user/place.dart';
+import '../../../data/remote/providers/auth_provider.dart';
+import '../../common/cached_placeholder_image.dart';
 
 class PlaceItem extends StatelessWidget {
   final Place place;

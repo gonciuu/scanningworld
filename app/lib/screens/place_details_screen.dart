@@ -2,17 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:map_launcher/map_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/places_provider.dart';
-import 'package:map_launcher/map_launcher.dart' as MapLauncher;
+import 'package:scanning_world/services/url_service.dart';
 import 'package:scanning_world/theme/theme.dart';
-import 'package:url_launcher/url_launcher.dart';
-
+import 'package:scanning_world/widgets/home/map/pick_map_bottom_sheet.dart';
 import '../data/remote/models/user/place.dart';
 import '../data/remote/providers/auth_provider.dart';
 import '../widgets/common/cached_placeholder_image.dart';
+import '../widgets/common/error_dialog.dart';
 
 class PlaceDetailsScreen extends StatelessWidget {
   final String placeId;
@@ -21,64 +21,20 @@ class PlaceDetailsScreen extends StatelessWidget {
 
   static const routeName = '/place-details';
 
-  openMapsSheet(context, double lat, double lng, String title) async {
+  Future<void> _openMapsSheet(
+      context, double lat, double lng, String title) async {
     try {
-      final availableMaps = await MapLauncher.MapLauncher.installedMaps;
-
+      final availableMaps = await MapLauncher.installedMaps;
       showPlatformModalSheet(
         context: context,
         builder: (BuildContext context) {
-          return SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(12, 20, 12, 32),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
-              ),
-              child: Wrap(
-                children: <Widget>[
-                  Text(
-                    'Wybierz aplikację do nawigacji',
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  for (var map in availableMaps)
-                    PlatformTextButton(
-                      onPressed: () => map.showMarker(
-                        coords: MapLauncher.Coords(lat, lng),
-                        title: title,
-                      ),
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(
-                            map.icon,
-                            height: 30.0,
-                            width: 30.0,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            map.mapName,
-                            style: TextStyle(color: Colors.grey.shade800),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          );
+          return PickMapBottomSheet(
+              availableMaps: availableMaps, title: title, lat: lat, lng: lng);
         },
       );
     } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> _launchUrl(String url) async {
-    if (!await launchUrl(Uri.parse(url))) {
-      throw 'Could not launch $url';
+      showPlatformDialog(
+          context: context, builder: (c) => ErrorDialog(message:e.toString()));
     }
   }
 
@@ -93,7 +49,7 @@ class PlaceDetailsScreen extends StatelessWidget {
               Stack(
                 children: [
                   CachedPlaceholderImage(
-                    imageUrl:place.imageUri,
+                    imageUrl: place.imageUri,
                     width: double.infinity,
                     height: MediaQuery.of(context).size.height * 0.4,
                   ),
@@ -130,7 +86,6 @@ class PlaceDetailsScreen extends StatelessWidget {
                         "${place.name} (${place.points} pkt)",
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
-
                       ),
                       const SizedBox(
                         height: 2,
@@ -221,7 +176,7 @@ class PlaceDetailsScreen extends StatelessWidget {
                                           ),
                                         ),
                                         GestureDetector(
-                                          onTap: () => _launchUrl(
+                                          onTap: () => UrlService.launchLink(
                                               'https://www.openstreetmap.org/copyright'),
                                           child: const Text(
                                             ' © OpenStreetMap contributors',
@@ -240,7 +195,7 @@ class PlaceDetailsScreen extends StatelessWidget {
                             TileLayer(
                               urlTemplate:
                                   'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                              subdomains: ['a', 'b', 'c'],
+                              subdomains: const ['a', 'b', 'c'],
                             ),
                             MarkerLayer(
                               markers: [
@@ -270,7 +225,7 @@ class PlaceDetailsScreen extends StatelessWidget {
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () async {
-                            openMapsSheet(
+                            _openMapsSheet(
                                 context,
                                 place.location.lat.toDouble(),
                                 place.location.lng.toDouble(),

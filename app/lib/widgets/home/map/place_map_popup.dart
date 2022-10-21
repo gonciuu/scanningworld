@@ -8,7 +8,7 @@ import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/screens/place_details_screen.dart';
 import 'package:scanning_world/theme/theme.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
-import '../../data/remote/models/user/place.dart';
+import '../../../data/remote/models/user/place.dart';
 
 class PlaceMapMarker extends Marker {
   final Place place;

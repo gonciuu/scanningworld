@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/models/coupon.dart';
-import 'package:scanning_world/data/remote/providers/auth_provider.dart';
 import 'package:scanning_world/screens/order_coupon_screen.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
-
 import '../common/cached_placeholder_image.dart';
 
 class ActiveCouponCard extends StatelessWidget {
@@ -55,7 +52,7 @@ class ActiveCouponCard extends StatelessWidget {
                 child: FittedBox(
                   child: Text(
                     'Ważny do ${activeCoupon.formattedValidUntil}',
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ),
