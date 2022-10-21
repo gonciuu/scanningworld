@@ -3,14 +3,20 @@ import axios from 'axios';
 
 import Spinner from '@/common/components/Spinner';
 import { useRegion } from '@/common/recoil/region';
+import PlaceModal from '@/modules/dashboard/modals/PlaceModal';
+import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
 import { PlaceType } from '@/modules/dashboard/types/place.type';
+import { Write } from '@/modules/dashboard/types/write.type';
+import { useModal } from '@/modules/modal';
 
 import Place from './Place';
 
 const PlaceList = () => {
+  const { openModal } = useModal();
   const {
     region: { _id },
   } = useRegion();
+  const { setActivePlace } = useActivePlace();
 
   const { data, error, isLoading } = useQuery(
     ['places', _id],
@@ -31,7 +37,15 @@ const PlaceList = () => {
     <div className="flex flex-1 flex-col overflow-hidden px-1">
       <div className="mt-4 mb-8 flex gap-4">
         <button className="btn btn-secondary w-full">Filtruj</button>
-        <button className="btn btn-primary w-full">Dodaj miejsce</button>
+        <button
+          className="btn btn-primary w-full"
+          onClick={() => {
+            setActivePlace(null);
+            openModal(<PlaceModal type={Write.POST} />);
+          }}
+        >
+          Dodaj miejsce
+        </button>
       </div>
 
       {data.length === 0 && (

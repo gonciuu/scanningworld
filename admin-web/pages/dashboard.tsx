@@ -1,32 +1,36 @@
-// import { useEffect } from 'react';
-
-// import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import { NextPage } from 'next';
 
-// import Spinner from '@/common/components/Spinner';
-// import { useRegion } from '@/common/recoil/region';
+import Spinner from '@/common/components/Spinner';
+import { useRegion } from '@/common/recoil/region';
+import { RegionType } from '@/common/types/region.type';
 import Dashboard from '@/modules/dashboard';
 
 const DashboardPage: NextPage = () => {
-  // const {
-  //   region: { _id },
-  //   setRegion,
-  // } = useRegion();
+  const {
+    region: { _id },
+    setRegion,
+  } = useRegion();
 
-  // useEffect(() => {
-  //   if (!_id) {
-  //     axios.get('regions/by-token').then((res) => {
-  //       setRegion(res.data);
-  //     });
-  //   }
-  // }, [_id, setRegion]);
+  const regionQuery = useQuery(
+    ['region'],
+    () => {
+      return axios.get<RegionType>('/regions/by-token').then((res) => res.data);
+    },
+    {
+      onSuccess: (data) => setRegion(data),
+      refetchInterval: 0,
+      refetchOnWindowFocus: false,
+    }
+  );
 
-  // if (!_id)
-  //   return (
-  //     <div className="flex h-full w-full items-center justify-center">
-  //       <Spinner />
-  //     </div>
-  //   );
+  if (!_id || regionQuery.isLoading)
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Spinner />
+      </div>
+    );
 
   return <Dashboard />;
 };

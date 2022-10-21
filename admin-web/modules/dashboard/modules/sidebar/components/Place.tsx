@@ -4,7 +4,7 @@ import { PlaceType } from '@/modules/dashboard/types/place.type';
 const Place = (place: PlaceType) => {
   const { setActivePlace, activePlace } = useActivePlace();
 
-  const { name, location, points } = place;
+  const { name, location, points, imageUri } = place;
 
   return (
     <div
@@ -13,9 +13,9 @@ const Place = (place: PlaceType) => {
       }`}
     >
       <img
-        src="images/popupImage.png"
+        src={imageUri || 'images/placeholder.jpg'}
         alt={`Zdjęcie ${name}`}
-        className="h-24 w-24 rounded-2xl"
+        className="h-24 w-24 rounded-2xl object-cover"
       />
 
       <div className="flex flex-1 flex-col justify-between">
