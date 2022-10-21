@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
+import { v2 } from 'cloudinary';
 import { isValidObjectId, Model } from 'mongoose';
 
 import { RegionsService } from 'src/regions/regions.service';
@@ -45,11 +46,22 @@ export class PlacesService {
 
     this.regionsService.updateRegionPlacesCount(regionId, 1);
 
+    const imageUri = !place.imageBase64
+      ? ''
+      : await v2.uploader
+          .upload(place.imageBase64, {
+            folder: 'scanningworld',
+          })
+          .then((result) => {
+            return result.url;
+          });
+
     return this.placeModel.create({
       ...place,
       region: regionId,
       location: { lat, lng },
       code,
+      imageUri,
     });
   }
 

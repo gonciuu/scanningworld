@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -23,6 +25,12 @@ type PlaceValues = {
   location: { lat: number; lng: number };
   imageUri: string;
 };
+
+interface PostPlace extends Omit<PlaceValues, 'imageUri' | 'location'> {
+  imageBase64: string;
+  lat: number;
+  lng: number;
+}
 
 const PlaceModal = ({
   place,
@@ -49,6 +57,13 @@ const PlaceModal = ({
     }
   );
 
+  const createMutation = useMutation(
+    (newPlace: PostPlace) => {
+      return axios.post('places', newPlace);
+    },
+    { retry: 2 }
+  );
+
   const handleChangeImage = () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -69,7 +84,6 @@ const PlaceModal = ({
   };
 
   const handlePlaceLocationChange = () => {
-    console.log(tempPlace);
     closeModal();
     setPlaceToActiveLocation((newLocation) => {
       openModal(
@@ -91,9 +105,15 @@ const PlaceModal = ({
         points: place?.points || activePlace?.points || 0,
       }}
       onSubmit={(values) => {
-        if (location) {
+        if (location && type === Write.POST) {
           const points = Math.max(0, values.points);
-          console.log({ ...values, location, points, imageUri });
+
+          createMutation.mutate({
+            ...values,
+            ...location,
+            points,
+            imageBase64: imageUri,
+          });
         }
       }}
       validationSchema={PlaceSchema}
