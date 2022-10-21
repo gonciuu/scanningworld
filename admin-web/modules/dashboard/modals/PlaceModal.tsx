@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
@@ -57,11 +57,19 @@ const PlaceModal = ({
     }
   );
 
+  const queryClient = useQueryClient();
+
   const createMutation = useMutation(
     (newPlace: PostPlace) => {
       return axios.post('places', newPlace);
     },
-    { retry: 2 }
+    {
+      retry: 2,
+      onSuccess: () => {
+        queryClient.invalidateQueries(['places']);
+        closeModal();
+      },
+    }
   );
 
   const handleChangeImage = () => {
@@ -203,9 +211,9 @@ const PlaceModal = ({
               <button
                 className="btn btn-primary w-36"
                 type="submit"
-                disabled={!location}
+                disabled={!location || createMutation.isLoading}
               >
-                Zapisz
+                {createMutation.isLoading ? 'Zapisywanie...' : 'Zapisz'}
               </button>
             </div>
             <p className="mt-2 text-right text-xs">

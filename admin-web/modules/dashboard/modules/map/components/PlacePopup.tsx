@@ -13,7 +13,7 @@ const PlacePopup = () => {
 
   if (!activePlace || placeLocation.active) return null;
 
-  const { location, name, description, points } = activePlace;
+  const { location, name, description, points, imageUri } = activePlace;
 
   const handleChangeLocation = () => {
     setPlaceToActiveLocation(
@@ -43,9 +43,9 @@ const PlacePopup = () => {
         <div className="flex gap-5">
           <div>
             <img
-              src="/images/popupImage.png"
+              src={imageUri || 'images/placeholder.jpg'}
               alt="olza"
-              className="h-48 w-48 rounded-2xl"
+              className="h-48 w-48 rounded-2xl object-cover"
             />
 
             <button className="btn mt-3 w-full bg-black text-white hover:bg-black/80 active:bg-black">
