@@ -156,7 +156,6 @@ const PlaceModal = ({
           }
 
           if (location && location !== activePlace?.location) {
-            console.log('change location');
             editObject.lat = location.lat;
             editObject.lng = location.lng;
           }

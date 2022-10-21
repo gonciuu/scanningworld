@@ -17,6 +17,7 @@ const PlacePopup = () => {
 
   const handleChangeLocation = () => {
     setPlaceToActiveLocation(
+      // TODO: Change location to active location
       (newLocation) => console.log(newLocation),
       activePlace._id
     );
