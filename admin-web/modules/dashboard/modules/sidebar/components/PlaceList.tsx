@@ -4,7 +4,9 @@ import axios from 'axios';
 import Spinner from '@/common/components/Spinner';
 import { useRegion } from '@/common/recoil/region';
 import PlaceModal from '@/modules/dashboard/modals/PlaceModal';
+import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
 import { PlaceType } from '@/modules/dashboard/types/place.type';
+import { Write } from '@/modules/dashboard/types/write.type';
 import { useModal } from '@/modules/modal';
 
 import Place from './Place';
@@ -14,6 +16,7 @@ const PlaceList = () => {
   const {
     region: { _id },
   } = useRegion();
+  const { setActivePlace } = useActivePlace();
 
   const { data, error, isLoading } = useQuery(
     ['places', _id],
@@ -36,7 +39,10 @@ const PlaceList = () => {
         <button className="btn btn-secondary w-full">Filtruj</button>
         <button
           className="btn btn-primary w-full"
-          onClick={() => openModal(<PlaceModal />)}
+          onClick={() => {
+            setActivePlace(null);
+            openModal(<PlaceModal type={Write.POST} />);
+          }}
         >
           Dodaj miejsce
         </button>

@@ -8,6 +8,7 @@ import { useModal } from '@/modules/modal';
 
 import { useActivePlace } from '../recoil/activePlace';
 import { useChangePlaceLocation } from '../recoil/placeLocation';
+import { Write } from '../types/write.type';
 
 const PlaceSchema = Yup.object().shape({
   name: Yup.string().required('Wymagane'),
@@ -23,7 +24,13 @@ type PlaceValues = {
   imageUri: string;
 };
 
-const PlaceModal = ({ place }: { place?: PlaceValues }) => {
+const PlaceModal = ({
+  place,
+  type = Write.EDIT,
+}: {
+  place?: PlaceValues;
+  type?: Write;
+}) => {
   const { activePlace } = useActivePlace();
   const { setPlaceToActiveLocation } = useChangePlaceLocation();
   const { closeModal, openModal } = useModal();
@@ -66,7 +73,10 @@ const PlaceModal = ({ place }: { place?: PlaceValues }) => {
     closeModal();
     setPlaceToActiveLocation((newLocation) => {
       openModal(
-        <PlaceModal place={{ ...tempPlace, location: newLocation, imageUri }} />
+        <PlaceModal
+          place={{ ...tempPlace, location: newLocation, imageUri }}
+          type={type}
+        />
       );
     }, activePlace?._id);
   };
@@ -81,7 +91,10 @@ const PlaceModal = ({ place }: { place?: PlaceValues }) => {
         points: place?.points || activePlace?.points || 0,
       }}
       onSubmit={(values) => {
-        console.log(values);
+        if (location) {
+          const points = Math.max(0, values.points);
+          console.log({ ...values, location, points, imageUri });
+        }
       }}
       validationSchema={PlaceSchema}
     >
@@ -89,6 +102,9 @@ const PlaceModal = ({ place }: { place?: PlaceValues }) => {
         <Form>
           <FormObserver onChange={setTempPlace} />
           <div>
+            <h1 className="mb-3 text-center text-lg font-semibold">
+              {type === Write.EDIT ? 'Edytuj miejsce' : 'Dodaj miejsce'}
+            </h1>
             <div className="flex gap-5">
               <div className="flex w-96 flex-col gap-5">
                 <label className="relative">
@@ -115,7 +131,7 @@ const PlaceModal = ({ place }: { place?: PlaceValues }) => {
 
                 <label className="relative">
                   <p className="font-semibold">Liczba punktów</p>
-                  <Field name="points" type="number" />
+                  <Field name="points" type="number" min={0} />
 
                   {errors.points && touched.points && (
                     <div className="absolute text-xs text-red-500">
@@ -126,7 +142,13 @@ const PlaceModal = ({ place }: { place?: PlaceValues }) => {
 
                 <p className="font-semibold">
                   Lokalizacja:{' '}
-                  <span>
+                  <span
+                    className={
+                      !location
+                        ? 'font-semibold text-red-500'
+                        : 'font-semibold text-primary'
+                    }
+                  >
                     {location
                       ? `${location.lat} / ${location.lng}`
                       : 'nieustawione'}
@@ -158,7 +180,11 @@ const PlaceModal = ({ place }: { place?: PlaceValues }) => {
               >
                 Zaznacz na mapie
               </button>
-              <button className="btn btn-primary w-36" type="submit">
+              <button
+                className="btn btn-primary w-36"
+                type="submit"
+                disabled={!location}
+              >
                 Zapisz
               </button>
             </div>
