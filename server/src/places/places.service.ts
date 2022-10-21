@@ -15,6 +15,7 @@ import { UserDocument } from 'src/users/schemas/user.schema';
 import { Place, PlaceDocument } from './schemas/place.schema';
 import { CreatePlaceDto } from './dto/createPlace.dto';
 import { calcDistance } from './lib/distance';
+import { UpdatePlaceDto } from './dto/updatePlace.dto';
 
 @Injectable()
 export class PlacesService {
@@ -63,6 +64,48 @@ export class PlacesService {
       code,
       imageUri,
     });
+  }
+
+  async update(
+    regionId: string,
+    id: string,
+    updatePlaceDto: UpdatePlaceDto,
+  ): Promise<PlaceDocument> {
+    const { lng, lat } = updatePlaceDto;
+    const place = await this.placeModel.findById(id).exec();
+
+    if (!place) {
+      throw new NotFoundException('Place not found');
+    }
+
+    if (place.region._id.toString() !== regionId) {
+      throw new BadRequestException('You cannot update this place');
+    }
+
+    const imageUri = !updatePlaceDto.imageBase64
+      ? place.imageUri
+      : await v2.uploader
+          .upload(updatePlaceDto.imageBase64, {
+            folder: 'scanningworld',
+          })
+          .then((result) => {
+            return result.url;
+          });
+
+    return this.placeModel
+      .findByIdAndUpdate(
+        id,
+        {
+          ...updatePlaceDto,
+          imageUri,
+          location: {
+            lng: lng || place.location.lng,
+            lat: lat || place.location.lat,
+          },
+        },
+        { new: true },
+      )
+      .exec();
   }
 
   async findAll(): Promise<PlaceDocument[]> {

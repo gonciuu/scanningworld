@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -17,6 +18,7 @@ import { User } from 'src/users/schemas/user.schema';
 
 import { CreatePlaceDto } from './dto/createPlace.dto';
 import { ScanPlaceDto } from './dto/scanPlace.dto';
+import { UpdatePlaceDto } from './dto/updatePlace.dto';
 import { PlacesService } from './places.service';
 import { Place } from './schemas/place.schema';
 
@@ -38,6 +40,18 @@ export class PlacesController {
     const regionId = req.user['sub'];
 
     return this.placesService.create(regionId, createPlaceDto);
+  }
+
+  @UseGuards(AccessTokenRegionGuard)
+  @Patch(':id')
+  async update(
+    @Body() updatePlaceDto: UpdatePlaceDto,
+    @Param('id') id: string,
+    @Req() req: Request,
+  ): Promise<Place> {
+    const regionId = req.user['sub'];
+
+    return this.placesService.update(regionId, id, updatePlaceDto);
   }
 
   @UseGuards(AccessTokenGuard)

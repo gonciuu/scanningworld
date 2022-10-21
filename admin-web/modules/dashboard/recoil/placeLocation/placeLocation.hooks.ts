@@ -21,7 +21,7 @@ export const useChangePlaceLocation = () => {
   };
 
   const saveLocation = () => {
-    setActivePlace(null);
+    // setActivePlace(null);
 
     placeLocation.onSave({ lat: placeLocation.lat, lng: placeLocation.lng });
     setPlaceLocation({

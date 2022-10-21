@@ -39,7 +39,7 @@ const PlaceModal = ({
   place?: PlaceValues;
   type?: Write;
 }) => {
-  const { activePlace } = useActivePlace();
+  const { activePlace, setActivePlace } = useActivePlace();
   const { setPlaceToActiveLocation } = useChangePlaceLocation();
   const { closeModal, openModal } = useModal();
 
@@ -66,6 +66,20 @@ const PlaceModal = ({
     {
       retry: 2,
       onSuccess: () => {
+        queryClient.invalidateQueries(['places']);
+        closeModal();
+      },
+    }
+  );
+
+  const editMutation = useMutation(
+    (newPlace: Partial<PostPlace>) => {
+      return axios.patch(`places/${activePlace?._id!}`, newPlace);
+    },
+    {
+      retry: 2,
+      onSuccess: () => {
+        setActivePlace(null);
         queryClient.invalidateQueries(['places']);
         closeModal();
       },
@@ -113,15 +127,41 @@ const PlaceModal = ({
         points: place?.points || activePlace?.points || 0,
       }}
       onSubmit={(values) => {
-        if (location && type === Write.POST) {
-          const points = Math.max(0, values.points);
+        const points = Math.max(0, values.points);
 
+        if (location && type === Write.POST) {
           createMutation.mutate({
             ...values,
             ...location,
             points,
             imageBase64: imageUri,
           });
+        } else if (type === Write.EDIT) {
+          const editObject: Partial<PostPlace> = {};
+
+          if (values.name !== activePlace?.name) {
+            editObject.name = values.name;
+          }
+
+          if (values.description !== activePlace?.description) {
+            editObject.description = values.description;
+          }
+
+          if (values.points !== activePlace?.points) {
+            editObject.points = points;
+          }
+
+          if (imageUri) {
+            editObject.imageBase64 = imageUri;
+          }
+
+          if (location && location !== activePlace?.location) {
+            console.log('change location');
+            editObject.lat = location.lat;
+            editObject.lng = location.lng;
+          }
+
+          editMutation.mutate(editObject);
         }
       }}
       validationSchema={PlaceSchema}
@@ -187,13 +227,18 @@ const PlaceModal = ({
               <div>
                 <p className="font-semibold">Zdjęcie lokalizacji</p>
                 <img
-                  src={imageUri || 'images/placeholder.jpg'}
+                  src={
+                    imageUri ||
+                    activePlace?.imageUri ||
+                    'images/placeholder.jpg'
+                  }
                   alt="Zdjęcie miejsca"
                   className="h-48 w-48 cursor-pointer object-cover transition-transform hover:scale-105 active:scale-100"
                   onClick={handleChangeImage}
                 />
                 <button
                   className="btn btn-primary mt-3 w-full py-1"
+                  type="button"
                   onClick={handleChangeImage}
                 >
                   Zmień zdjęcie
@@ -211,13 +256,20 @@ const PlaceModal = ({
               <button
                 className="btn btn-primary w-36"
                 type="submit"
-                disabled={!location || createMutation.isLoading}
+                disabled={
+                  !location ||
+                  createMutation.isLoading ||
+                  editMutation.isLoading
+                }
               >
-                {createMutation.isLoading ? 'Zapisywanie...' : 'Zapisz'}
+                {createMutation.isLoading || editMutation.isLoading
+                  ? 'Zapisywanie...'
+                  : 'Zapisz'}
               </button>
             </div>
             <p className="mt-2 text-right text-xs">
-              *Kod QR zostanie automatycznie wygenerowany.
+              {type === Write.POST &&
+                '*Kod QR zostanie automatycznie wygenerowany.'}
             </p>
           </div>
         </Form>
