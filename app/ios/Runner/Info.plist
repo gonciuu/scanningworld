@@ -69,5 +69,8 @@
     <true/>
     <key>NSCameraUsageDescription</key>
     <string>Aparat jest niezbędny do zeskanowania kodu QR</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Potrzebujemy twojej lokalizacji w celu zweryfikowania czy znajdujesz się z pobliżu punktu QR</string>
+
 </dict>
 </plist>

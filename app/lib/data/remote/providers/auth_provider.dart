@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:scanning_world/data/local/secure_storage_manager.dart';
 import 'package:scanning_world/data/remote/models/auth/auth_result.dart';
 import 'package:scanning_world/data/remote/models/user/place.dart';
@@ -252,10 +253,14 @@ class AuthProvider with ChangeNotifier {
   }
 
   // on scan QR Code Correctly
-  Future<Place> scanPlace(String code) async {
+  Future<Place> scanPlace(String code,Position position) async {
     try {
       final response = await dio.post(
         '/places/$code',
+        data: {
+          'lat': position.latitude,
+          'lng': position.longitude,
+        },
         options: Options(
           headers: {
             'Authorization': 'Bearer $accessToken',

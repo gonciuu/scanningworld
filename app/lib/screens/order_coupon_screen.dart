@@ -120,7 +120,10 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
                   duration: const Duration(milliseconds: 300),
                   child: Icon(
                     context.platformIcon(
-                        material: Icons.check_circle_outline,
+                        material: _orderState == OrderState.loading ||
+                            _orderState == OrderState.active
+                            ? Icons.check_circle
+                            : Icons.check_circle_outline,
                         cupertino: _orderState == OrderState.loading ||
                                 _orderState == OrderState.active
                             ? CupertinoIcons.check_mark_circled_solid

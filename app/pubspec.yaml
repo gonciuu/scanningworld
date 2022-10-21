@@ -55,6 +55,7 @@ dependencies:
   intl: ^0.17.0
   map_launcher: ^2.4.0
   cached_network_image: ^3.2.2
+  geolocator: ^9.0.2
 
 dev_dependencies:
   flutter_launcher_icons: ^0.10.0
