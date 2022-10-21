@@ -6,7 +6,23 @@
   @apply rounded-lg font-montserrat font-medium transition-colors focus:outline-none focus:ring focus:ring-black;
 }
 
-input {
+*::-webkit-scrollbar-track {
+  -webkit-box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+*::-webkit-scrollbar {
+  width: 6px !important;
+  position: absolute;
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply rounded bg-black/75;
+}
+
+input,
+textarea {
   @apply w-full rounded-md bg-zinc-200 py-1 px-2;
 }
 
@@ -16,11 +32,11 @@ input {
   }
 
   .btn-primary {
-    @apply bg-primary text-white hover:bg-green-500 active:bg-primary;
+    @apply bg-primary text-white hover:bg-green-500 active:bg-primary disabled:cursor-not-allowed disabled:bg-primary/60;
   }
 
   .btn-secondary {
-    @apply border-2 border-primary text-primary hover:bg-primary hover:text-white active:bg-white active:text-primary;
+    @apply border-2 border-primary bg-white text-primary hover:bg-primary hover:text-white active:bg-white active:text-primary;
   }
 }
 
@@ -49,7 +65,7 @@ html {
 .leaflet-popup-content-wrapper {
   box-shadow: none !important;
 
-  @apply h-96 w-[35rem];
+  @apply h-max w-[35rem];
 }
 
 .leaflet-popup-content {

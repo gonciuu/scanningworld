@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
+import { v2 } from 'cloudinary';
 import { isValidObjectId, Model } from 'mongoose';
 
 import { RegionsService } from 'src/regions/regions.service';
@@ -13,6 +14,8 @@ import { UserDocument } from 'src/users/schemas/user.schema';
 
 import { Place, PlaceDocument } from './schemas/place.schema';
 import { CreatePlaceDto } from './dto/createPlace.dto';
+import { calcDistance } from './lib/distance';
+import { UpdatePlaceDto } from './dto/updatePlace.dto';
 
 @Injectable()
 export class PlacesService {
@@ -22,8 +25,11 @@ export class PlacesService {
     private usersService: UsersService,
   ) {}
 
-  async create(createPlaceDto: CreatePlaceDto): Promise<PlaceDocument> {
-    const { regionId, lng, lat, ...place } = createPlaceDto;
+  async create(
+    regionId: string,
+    createPlaceDto: CreatePlaceDto,
+  ): Promise<PlaceDocument> {
+    const { lng, lat, ...place } = createPlaceDto;
 
     if (!isValidObjectId(regionId)) {
       throw new BadRequestException('Invalid region id');
@@ -39,12 +45,67 @@ export class PlacesService {
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
 
+    this.regionsService.updateRegionPlacesCount(regionId, 1);
+
+    const imageUri = !place.imageBase64
+      ? ''
+      : await v2.uploader
+          .upload(place.imageBase64, {
+            folder: 'scanningworld',
+          })
+          .then((result) => {
+            return result.url;
+          });
+
     return this.placeModel.create({
       ...place,
       region: regionId,
       location: { lat, lng },
       code,
+      imageUri,
     });
+  }
+
+  async update(
+    regionId: string,
+    id: string,
+    updatePlaceDto: UpdatePlaceDto,
+  ): Promise<PlaceDocument> {
+    const { lng, lat } = updatePlaceDto;
+    const place = await this.placeModel.findById(id).exec();
+
+    if (!place) {
+      throw new NotFoundException('Place not found');
+    }
+
+    if (place.region._id.toString() !== regionId) {
+      throw new BadRequestException('You cannot update this place');
+    }
+
+    const imageUri = !updatePlaceDto.imageBase64
+      ? place.imageUri
+      : await v2.uploader
+          .upload(updatePlaceDto.imageBase64, {
+            folder: 'scanningworld',
+          })
+          .then((result) => {
+            return result.url;
+          });
+
+    return this.placeModel
+      .findByIdAndUpdate(
+        id,
+        {
+          ...updatePlaceDto,
+          imageUri,
+          location: {
+            lng: lng || place.location.lng,
+            lat: lat || place.location.lat,
+          },
+        },
+        { new: true },
+      )
+      .exec();
   }
 
   async findAll(): Promise<PlaceDocument[]> {
@@ -65,7 +126,11 @@ export class PlacesService {
     return this.placeModel.find({ region: regionId }).exec();
   }
 
-  async scanCode(code: string, userId: string): Promise<UserDocument> {
+  async scanCode(
+    code: string,
+    userId: string,
+    location: { lat: number; lng: number },
+  ): Promise<UserDocument> {
     const place = await this.placeModel.findOne({ code }).exec();
 
     if (!place) {
@@ -90,6 +155,17 @@ export class PlacesService {
       )
     ) {
       throw new BadRequestException('User has already visited this place');
+    }
+
+    const distance = calcDistance(
+      place.location.lat,
+      place.location.lng,
+      location.lat,
+      location.lng,
+    );
+
+    if (distance > 0.5) {
+      throw new BadRequestException('User is not close enough to the place');
     }
 
     const regionId = user.region._id.toString();

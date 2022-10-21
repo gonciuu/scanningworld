@@ -32,6 +32,7 @@
     "argon2": "^0.29.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "cloudinary": "^1.32.0",
     "mongoose": "^6.6.5",
     "mongoose-autopopulate": "^0.16.1",
     "passport": "^0.6.0",

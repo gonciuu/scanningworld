@@ -1,23 +1,19 @@
-import { useEffect } from 'react';
-
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import axios from 'axios';
 import { MotionConfig } from 'framer-motion';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { RecoilRoot } from 'recoil';
 
+import { setupAxios } from '@/common/lib/setupAxios';
 import { ModalManager } from '@/modules/modal';
 
 import '../common/styles/global.css';
 
 const queryClient = new QueryClient();
 
-const App = ({ Component, pageProps }: AppProps) => {
-  useEffect(() => {
-    axios.defaults.baseURL = 'https://scanningworld-server.herokuapp.com';
-  }, []);
+setupAxios();
 
+const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>

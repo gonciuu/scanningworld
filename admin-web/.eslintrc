@@ -76,6 +76,14 @@
         "unused-imports/no-unused-vars": [
           "error",
           { "argsIgnorePattern": "^_" }
+        ],
+        "@typescript-eslint/naming-convention": [
+          "warn",
+          {
+            "selector": "variable",
+            "format": ["camelCase", "UPPER_CASE", "PascalCase"],
+            "leadingUnderscore": "allow"
+          }
         ]
       }
     }
