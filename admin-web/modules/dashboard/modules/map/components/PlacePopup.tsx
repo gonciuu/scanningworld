@@ -1,14 +1,26 @@
 import { AiOutlineClose } from 'react-icons/ai';
 import { Popup } from 'react-leaflet';
 
+import PlaceModal from '@/modules/dashboard/modals/PlaceModal';
 import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
+import { useChangePlaceLocation } from '@/modules/dashboard/recoil/placeLocation';
+import { useModal } from '@/modules/modal';
 
 const PlacePopup = () => {
+  const { openModal } = useModal();
+  const { placeLocation, setPlaceToActiveLocation } = useChangePlaceLocation();
   const { activePlace, setActivePlace } = useActivePlace();
 
-  if (!activePlace) return null;
+  if (!activePlace || placeLocation.active) return null;
 
   const { location, name, description, points } = activePlace;
+
+  const handleChangeLocation = () => {
+    setPlaceToActiveLocation(
+      (newLocation) => console.log(newLocation),
+      activePlace._id
+    );
+  };
 
   return (
     <Popup
@@ -56,8 +68,15 @@ const PlacePopup = () => {
         </div>
 
         <div className="mt-3 flex w-full justify-end gap-5">
-          <button className="btn btn-secondary">Edytuj informacje</button>
-          <button className="btn btn-primary">Zmień położenie</button>
+          <button
+            className="btn btn-secondary"
+            onClick={() => openModal(<PlaceModal />)}
+          >
+            Edytuj informacje
+          </button>
+          <button className="btn btn-primary" onClick={handleChangeLocation}>
+            Zmień położenie
+          </button>
         </div>
       </div>
     </Popup>

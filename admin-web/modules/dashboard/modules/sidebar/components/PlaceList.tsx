@@ -3,11 +3,14 @@ import axios from 'axios';
 
 import Spinner from '@/common/components/Spinner';
 import { useRegion } from '@/common/recoil/region';
+import PlaceModal from '@/modules/dashboard/modals/PlaceModal';
 import { PlaceType } from '@/modules/dashboard/types/place.type';
+import { useModal } from '@/modules/modal';
 
 import Place from './Place';
 
 const PlaceList = () => {
+  const { openModal } = useModal();
   const {
     region: { _id },
   } = useRegion();
@@ -31,7 +34,12 @@ const PlaceList = () => {
     <div className="flex flex-1 flex-col overflow-hidden px-1">
       <div className="mt-4 mb-8 flex gap-4">
         <button className="btn btn-secondary w-full">Filtruj</button>
-        <button className="btn btn-primary w-full">Dodaj miejsce</button>
+        <button
+          className="btn btn-primary w-full"
+          onClick={() => openModal(<PlaceModal />)}
+        >
+          Dodaj miejsce
+        </button>
       </div>
 
       {data.length === 0 && (

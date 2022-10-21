@@ -4,7 +4,8 @@ import Router from 'next/router';
 import { getTokens, setTokens } from './tokens';
 
 export const setupAxios = () => {
-  axios.defaults.baseURL = 'http://localhost:8080'; // 'https://scanningworld-server.herokuapp.com';
+  axios.defaults.baseURL =
+    /* 'http://localhost:8080'; */ 'https://scanningworld-server.herokuapp.com';
 
   axios.interceptors.request.use((config) => {
     const { accessToken } = getTokens();
