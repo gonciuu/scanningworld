@@ -45,8 +45,6 @@ export class PlacesService {
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
 
-    this.regionsService.updateRegionPlacesCount(regionId, 1);
-
     const imageUri = !place.imageBase64
       ? ''
       : await v2.uploader
@@ -56,6 +54,8 @@ export class PlacesService {
           .then((result) => {
             return result.url;
           });
+
+    this.regionsService.updateRegionPlacesCount(regionId, 1);
 
     return this.placeModel.create({
       ...place,
