@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 
 import { CreateRegionDto } from './dto/createRegion.dto';
 import { Region, RegionDocument } from './schemas/region.schema';
@@ -38,6 +38,10 @@ export class RegionsService {
     regionId: string,
     modifier: number,
   ): Promise<RegionDocument> {
+    if (!isValidObjectId(regionId)) {
+      throw new BadRequestException('Invalid region id');
+    }
+
     return this.regionModel
       .findByIdAndUpdate(
         regionId,

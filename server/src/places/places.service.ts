@@ -71,6 +71,10 @@ export class PlacesService {
     id: string,
     updatePlaceDto: UpdatePlaceDto,
   ): Promise<PlaceDocument> {
+    if (!isValidObjectId(regionId)) {
+      throw new BadRequestException('Invalid region id');
+    }
+
     const { lng, lat } = updatePlaceDto;
     const place = await this.placeModel.findById(id).exec();
 
