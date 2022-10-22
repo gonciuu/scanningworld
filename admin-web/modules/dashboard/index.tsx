@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 
+import LogoutButton from './components/LogoutButton';
 import Sidebar from './modules/sidebar';
 
 const Dashboard = () => {
@@ -7,10 +8,15 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-full w-full">
+      <LogoutButton />
+
       <div className="w-[30rem] bg-white">
         <Sidebar />
       </div>
-      <Map />
+
+      <div className="relative flex-1">
+        <Map />
+      </div>
     </div>
   );
 };
