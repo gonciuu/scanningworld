@@ -43,6 +43,18 @@ export class PlacesController {
   }
 
   @UseGuards(AccessTokenRegionGuard)
+  @Patch('location/:id')
+  async updateLocation(
+    @Param('id') id: string,
+    @Body() updatePlaceDto: UpdatePlaceDto,
+    @Req() req: Request,
+  ): Promise<Place> {
+    const regionId = req.user['sub'];
+
+    return this.placesService.update(regionId, id, updatePlaceDto);
+  }
+
+  @UseGuards(AccessTokenRegionGuard)
   @Patch(':id')
   async update(
     @Body() updatePlaceDto: UpdatePlaceDto,

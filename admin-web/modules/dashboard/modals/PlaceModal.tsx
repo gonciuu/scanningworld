@@ -10,6 +10,7 @@ import { useModal } from '@/modules/modal';
 
 import { useActivePlace } from '../recoil/activePlace';
 import { useChangePlaceLocation } from '../recoil/placeLocation';
+import { PlaceValues, PostPlace } from '../types/place.type';
 import { Write } from '../types/write.type';
 
 const PlaceSchema = Yup.object().shape({
@@ -17,20 +18,6 @@ const PlaceSchema = Yup.object().shape({
   description: Yup.string().required('Wymagane'),
   points: Yup.number().required('Wymagane'),
 });
-
-type PlaceValues = {
-  name: string;
-  description: string;
-  points: number;
-  location: { lat: number; lng: number };
-  imageUri: string;
-};
-
-interface PostPlace extends Omit<PlaceValues, 'imageUri' | 'location'> {
-  imageBase64: string;
-  lat: number;
-  lng: number;
-}
 
 const PlaceModal = ({
   place,

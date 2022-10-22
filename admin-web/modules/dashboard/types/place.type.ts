@@ -13,3 +13,17 @@ export type PlaceType = {
   code: string;
   region: RegionType;
 };
+
+export type PlaceValues = {
+  name: string;
+  description: string;
+  points: number;
+  location: { lat: number; lng: number };
+  imageUri: string;
+};
+
+export interface PostPlace extends Omit<PlaceValues, 'imageUri' | 'location'> {
+  imageBase64: string;
+  lat: number;
+  lng: number;
+}

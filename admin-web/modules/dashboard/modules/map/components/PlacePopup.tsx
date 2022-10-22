@@ -1,3 +1,5 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import { AiOutlineClose } from 'react-icons/ai';
 import { Popup } from 'react-leaflet';
 
@@ -11,14 +13,27 @@ const PlacePopup = () => {
   const { placeLocation, setPlaceToActiveLocation } = useChangePlaceLocation();
   const { activePlace, setActivePlace } = useActivePlace();
 
+  const queryClient = useQueryClient();
+
+  const changePlaceLocationMutation = useMutation(
+    (newLocation: { lat: number; lng: number }) => {
+      return axios.patch(`places/location/${placeLocation.id}`, newLocation);
+    },
+    {
+      retry: 2,
+      onSuccess: () => {
+        queryClient.invalidateQueries(['places']);
+      },
+    }
+  );
+
   if (!activePlace || placeLocation.active) return null;
 
   const { location, name, description, points, imageUri } = activePlace;
 
   const handleChangeLocation = () => {
     setPlaceToActiveLocation(
-      // TODO: Change location to active location
-      (newLocation) => console.log(newLocation),
+      changePlaceLocationMutation.mutate,
       activePlace._id
     );
   };
