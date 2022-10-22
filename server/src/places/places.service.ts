@@ -164,7 +164,7 @@ export class PlacesService {
       location.lng,
     );
 
-    if (distance > 0.5) {
+    if (distance > 1000) {
       throw new BadRequestException('User is not close enough to the place');
     }
 
