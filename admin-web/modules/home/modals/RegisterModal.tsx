@@ -126,7 +126,7 @@ const RegisterModal = () => {
             )}
 
             <button type="submit" className="btn btn-primary">
-              Zarejestruj
+              {registerMutation.isLoading ? 'Rejestracja...' : 'Zarejestruj'}
             </button>
           </Form>
         )}

@@ -44,7 +44,7 @@ const ModalManager = () => {
     <Portal>
       <motion.div
         className="z-40 flex min-h-full w-full items-center justify-center bg-black/60 backdrop-blur-sm"
-        onClick={() => clickToClose && handleClose()}
+        onMouseDown={() => clickToClose && handleClose()}
         variants={bgAnimation}
         initial="closed"
         animate={opened ? 'opened' : 'closed'}
@@ -56,7 +56,7 @@ const ModalManager = () => {
               initial="closed"
               animate="opened"
               exit="exited"
-              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
               className="relative flex w-full max-w-[20rem] flex-col items-center rounded-lg bg-white p-6 sm:w-auto sm:min-w-[20rem] sm:max-w-none"
             >
               {clickToClose && (

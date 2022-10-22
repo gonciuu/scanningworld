@@ -16,12 +16,11 @@ const qrCode = new QRCodeStyling({
   },
 });
 
-const QRCodeModal = ({ code }: { code: string }) => {
+const QRCodeModal = ({ code, name }: { code: string; name: string }) => {
   const qrRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (qrRef.current) {
-      console.log(code);
       qrCode.update({
         data: code,
       });
@@ -31,7 +30,19 @@ const QRCodeModal = ({ code }: { code: string }) => {
 
   return (
     <div>
-      <div ref={qrRef}></div>
+      <h1 className="text-center text-lg font-semibold">Kod QR</h1>
+      <div ref={qrRef} />
+      <button
+        className="btn btn-primary mt-3 w-full bg-black hover:bg-black/80"
+        onClick={() =>
+          qrCode.download({
+            extension: 'png',
+            name: `${name}-qrCode`,
+          })
+        }
+      >
+        Pobierz kod
+      </button>
     </div>
   );
 };

@@ -67,7 +67,7 @@ const PlacePopup = () => {
 
             <button
               className="btn mt-3 w-full bg-black text-white hover:bg-black/80 active:bg-black"
-              onClick={() => openModal(<QRCodeModal code={code} />)}
+              onClick={() => openModal(<QRCodeModal code={code} name={name} />)}
             >
               Pokaż kod QR
             </button>

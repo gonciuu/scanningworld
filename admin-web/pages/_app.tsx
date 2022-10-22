@@ -17,13 +17,22 @@ const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
-        <title>Template</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Dashboard | scanningworld</title>
+        <link rel="icon" href="/logo.ico" />
       </Head>
       <RecoilRoot>
         <QueryClientProvider client={queryClient}>
           <MotionConfig transition={{ ease: [0.6, 0.01, -0.05, 0.9] }}>
             <ModalManager />
+            <div
+              className="absolute top-0 left-0 flex h-full w-full items-center justify-center rounded-none bg-black sm:hidden"
+              style={{ zIndex: 9999 }}
+            >
+              <h1 className="text-white">
+                Dashboard administacji jedynie na komputery
+                {/* TODO: Trochę responsywnosci, tytuł strony dać lepszy, logo zeby nie bylo kwadratowe, pokazuj kod qr po stworzeniu miejsca, dodac modul kuponow, naprawic bug ze sie nie aktualizuje */}
+              </h1>
+            </div>
             <Component {...pageProps} />
           </MotionConfig>
         </QueryClientProvider>
