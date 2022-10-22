@@ -26,6 +26,14 @@ import { Place } from './schemas/place.schema';
 export class PlacesController {
   constructor(private placesService: PlacesService) {}
 
+  @UseGuards(AccessTokenRegionGuard)
+  @Get('as-region')
+  async findAsRegion(@Req() req: Request): Promise<Place[]> {
+    const regionId = req.user['sub'];
+
+    return this.placesService.findByRegionId(regionId, { code: true });
+  }
+
   @Get(':regionId')
   async findByRegionId(@Param('regionId') regionId: string): Promise<Place[]> {
     return this.placesService.findByRegionId(regionId);

@@ -14,6 +14,7 @@
     "framer-motion": "^7.5.4",
     "leaflet": "^1.9.2",
     "next": "12.2.3",
+    "qr-code-styling": "^1.6.0-rc.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.6.0",

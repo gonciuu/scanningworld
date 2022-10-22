@@ -4,6 +4,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { Popup } from 'react-leaflet';
 
 import PlaceModal from '@/modules/dashboard/modals/PlaceModal';
+import QRCodeModal from '@/modules/dashboard/modals/QRCodeModal';
 import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
 import { useChangePlaceLocation } from '@/modules/dashboard/recoil/placeLocation';
 import { useModal } from '@/modules/modal';
@@ -29,7 +30,7 @@ const PlacePopup = () => {
 
   if (!activePlace || placeLocation.active) return null;
 
-  const { location, name, description, points, imageUri } = activePlace;
+  const { location, name, description, points, imageUri, code } = activePlace;
 
   const handleChangeLocation = () => {
     setPlaceToActiveLocation(
@@ -64,7 +65,10 @@ const PlacePopup = () => {
               className="h-48 w-48 rounded-2xl object-cover"
             />
 
-            <button className="btn mt-3 w-full bg-black text-white hover:bg-black/80 active:bg-black">
+            <button
+              className="btn mt-3 w-full bg-black text-white hover:bg-black/80 active:bg-black"
+              onClick={() => openModal(<QRCodeModal code={code} />)}
+            >
               Pokaż kod QR
             </button>
           </div>
@@ -74,7 +78,7 @@ const PlacePopup = () => {
               {description}
             </p>
 
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 flex items-center justify-between gap-5">
               <p className="text-lg font-bold text-primary">
                 {location.lat} / {location.lng}
               </p>

@@ -19,8 +19,8 @@ const PlaceList = () => {
   const { setActivePlace } = useActivePlace();
 
   const { data, error, isLoading } = useQuery(
-    ['places', _id],
-    () => axios.get<PlaceType[]>(`places/${_id}`).then((res) => res.data),
+    ['places'],
+    () => axios.get<PlaceType[]>(`places/as-region`).then((res) => res.data),
     { enabled: !!_id }
   );
 

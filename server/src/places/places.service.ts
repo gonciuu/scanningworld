@@ -116,7 +116,10 @@ export class PlacesService {
     return this.placeModel.find().exec();
   }
 
-  async findByRegionId(regionId: string): Promise<PlaceDocument[]> {
+  async findByRegionId(
+    regionId: string,
+    { code }: { code?: boolean } = {},
+  ): Promise<PlaceDocument[]> {
     if (!isValidObjectId(regionId)) {
       throw new BadRequestException('Invalid region id');
     }
@@ -127,7 +130,10 @@ export class PlacesService {
       throw new NotFoundException('Region not found');
     }
 
-    return this.placeModel.find({ region: regionId }).exec();
+    return this.placeModel
+      .find({ region: regionId })
+      .select(code && '+code')
+      .exec();
   }
 
   async scanCode(
