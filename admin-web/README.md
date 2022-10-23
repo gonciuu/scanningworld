@@ -1,21 +1,35 @@
-# Next.js + Tailwind CSS Example
+![scanningworld](https://i.imgur.com/WuBu4TY.png)
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.0)](https://tailwindcss.com/blog/tailwindcss-v3) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+# Web app to manage regions of scanningworld
 
-## Deploy your own
+An application for admins of regions. Created using Next.js.
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
+## Features
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
+- Login/Register a region
+- Create/Edit/Delete a places with QR codes for users to scan
+- Create/Edit/Delete a coupons for users to activate with their points
 
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+## Installation
 
 ```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-# or
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
+  git clone https://github.com/gonciuu/scanningworld
+  cd scanningworld
+  cd admin-web
+  npm i
 ```
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+## Demo
+
+### Web application [link](https://scanningworld-admin.vercel.app)
+### Video [link]()
+---
+
+### Screenshots
+![home page](https://i.imgur.com/SMvB9NB.png)
+![dashboard](https://i.imgur.com/9ijFG76.png)
+![qr code](https://i.imgur.com/aqziBIW.png)
+![edit location](https://i.imgur.com/JuCgS53.png)
+![check location on map](https://i.imgur.com/JtqolxU.png)
+![list of coupons](https://i.imgur.com/r8FEDJU.png)
+![edit coupon](https://i.imgur.com/LI0OpdM.png)
