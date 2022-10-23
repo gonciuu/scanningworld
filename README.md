@@ -1,14 +1,19 @@
 
-![](https://res.cloudinary.com/dybborlve/image/upload/w_150,h_150/logo_scanningworld_elv8gd.png)
+![scanningworld](https://i.imgur.com/WuBu4TY.png)
 # Scanning World
 
  Scan QR codes in popular places and take benefits.
  
+## Docs
+
+- [Server](/tree/main/server)
+- [Application](/tree/main/app)
+- [Admin Web Application](/tree/main/admin-web)
 
 ## How it works?
 
 - Imagine there are QR codes in popular places in your city. 
-- You scan them and you order the points
+- You scan them and get the points
 - Now you can exchange points for some coupons in your city (like bus ticket or discount in the restaurant)
 
 ## Flow
@@ -20,7 +25,7 @@
 
 ![](https://res.cloudinary.com/dybborlve/image/upload/v1666294992/demo_cxfj6y.png)
 
-Click here to see [full demo](https://github.com/gonciuu/scanningworld)
+Click here to see [full demo](/tree/main/app)
 
 
 ## Tech Stack
@@ -29,15 +34,13 @@ Technology used in our project:
 
 - **Flutter** - android and iOS application
 - **React JS** - Frontend Web app for admins 
-- **node.js + Nest.js** - backend 
+- **Node.js + Nest.js** - backend 
 - **mongoDB** - Database
-
-And of course  itself is open source with a [public repository](https://github.com/gonciuu/scanningworld) on GitHub.
 
 ## Install server 
 
-- Server is hosted on [heroku](https://scanningworld-server.herokuapp.com/),so you don't have to install anything
-- Also you can install it manually. Here's [docs](https://github.com/gonciuu/scanningworld/tree/main/server) how to do it.
+- Server is hosted on [heroku](https://scanningworld-server.herokuapp.com/), so you don't have to install anything.
+- Also you can install it manually. Here's [docs](/tree/main/server) how to do it.
 
 ## Install App
 
@@ -45,7 +48,7 @@ And of course  itself is open source with a [public repository](https://github.c
 
 [![IMAGE ALT TEXT HERE](https://res.cloudinary.com/dybborlve/image/upload/w_200/google-play-badge_mlyxh8.png)](http://play.google.com/store/)
 
-Or install it manually.  Here's [docs](https://github.com/gonciuu/scanningworld/tree/main/server) how to do it.
+Or install it manually. Here's [docs](https://github.com/gonciuu/scanningworld/tree/main/server) how to do it.
 
 ### iOS:
 
