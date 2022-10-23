@@ -50,7 +50,7 @@ Technology used in our project:
 
 ### Android:
 
-[![IMAGE ALT TEXT HERE](https://res.cloudinary.com/dybborlve/image/upload/w_200/google-play-badge_mlyxh8.png)](http://play.google.com/store/)
+[![IMAGE ALT TEXT HERE](https://res.cloudinary.com/dybborlve/image/upload/w_200/google-play-badge_mlyxh8.png)](https://play.google.com/store/apps/details?id=kw.bd.scanning_world)
 
 Or install it manually. Here's [docs](https://github.com/gonciuu/scanningworld/tree/main/app#android-setup) how to do it.
 
