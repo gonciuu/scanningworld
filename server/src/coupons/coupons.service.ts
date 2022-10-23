@@ -70,7 +70,7 @@ export class CouponsService {
   }
 
   async updateCoupon(
-    regionId,
+    regionId: string,
     couponId: string,
     updateCouponDto: UpdateCouponDto,
   ): Promise<CouponDocument> {
@@ -142,6 +142,21 @@ export class CouponsService {
     if (coupon.region._id.toString() !== regionId) {
       throw new BadRequestException('Coupon does not belong to region');
     }
+
+    const userModel = this.usersService.getUserModel();
+
+    const users = await userModel.updateMany(
+      { 'activeCoupons.coupon': id },
+      {
+        $pull: {
+          activeCoupons: {
+            coupon: id,
+          },
+        },
+      },
+    );
+
+    console.log(users);
 
     return this.couponModel.findByIdAndDelete(id);
   }
