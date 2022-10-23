@@ -93,7 +93,7 @@ const CouponList = () => {
         </div>
       )}
 
-      {filteredData.length === 0 && (
+      {data.length !== 0 && filteredData.length === 0 && (
         <div className="flex flex-1 items-center justify-center">
           <p>Brak wyników</p>
         </div>
