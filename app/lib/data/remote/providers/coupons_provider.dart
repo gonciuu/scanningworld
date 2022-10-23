@@ -9,7 +9,9 @@ import '../models/coupon.dart';
 
 FutureOr<List<Coupon>> parseCoupons(dynamic responseBody) {
   final parsed =responseBody as List;
-  return parsed.map<Coupon>((json) => Coupon.fromJson(json)).toList();
+  final couponsList =  parsed.map<Coupon>((json) => Coupon.fromJson(json)).toList();
+  couponsList.sort((a, b) => a.points.compareTo(b.points));
+  return couponsList;
 }
 
 class CouponsProvider with ChangeNotifier {

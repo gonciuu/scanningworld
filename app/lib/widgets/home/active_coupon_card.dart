@@ -23,7 +23,7 @@ class ActiveCouponCard extends StatelessWidget {
               tag: '$heroPrefix-${activeCoupon.id}',
               child: CachedPlaceholderImage(
                 imageUrl: activeCoupon.coupon.imageUri,
-                height: 30,
+                height: 35,
                 fit: BoxFit.scaleDown,
               ),
             ),

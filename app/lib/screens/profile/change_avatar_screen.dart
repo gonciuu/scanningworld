@@ -19,7 +19,7 @@ class ChangeAvatarScreen extends StatefulWidget {
 }
 
 class _ChangeAvatarScreenState extends State<ChangeAvatarScreen> {
-  String _avatar = 'male1';
+  String _avatar = 'male2';
   var _isLoading = false;
 
   // change avatar

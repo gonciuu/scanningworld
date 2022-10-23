@@ -8,6 +8,7 @@ import 'package:scanning_world/data/remote/providers/coupons_provider.dart';
 import 'package:scanning_world/data/remote/providers/places_provider.dart';
 import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/utils/validators.dart';
+import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import 'package:scanning_world/widgets/common/platform_dropdown.dart';
 import 'package:scanning_world/widgets/common/success_dialog.dart';
 import '../../data/remote/models/user/region.dart';
@@ -197,7 +198,7 @@ class _ChangeAccountDataScreenState extends State<ChangeAccountDataScreen> {
                 child: PlatformElevatedButton(
                     onPressed: _isLoading ? null : _saveForm,
                     child: _isLoading
-                        ? PlatformCircularProgressIndicator()
+                        ? const CustomProgressIndicator()
                         : const Text('Zapisz',
                             style: TextStyle(color: Colors.white))),
               )

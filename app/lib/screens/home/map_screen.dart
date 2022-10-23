@@ -146,7 +146,7 @@ class _MapScreenState extends State<MapScreen> {
                   cupertino: (_, __) => CupertinoIconButtonData(minSize: 0),
                   icon: Icon(
                     context.platformIcon(
-                        material: Icons.list,
+                        material: Icons.list_alt,
                         cupertino: CupertinoIcons.square_list),
                     color: Colors.white,
                     size: 28,

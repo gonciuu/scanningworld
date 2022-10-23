@@ -36,7 +36,7 @@ class RewardCard extends StatelessWidget {
               tag: '$heroPrefix-${coupon.id}',
               child: CachedPlaceholderImage(
                 imageUrl: coupon.imageUri,
-                height: 30,
+                height: 35,
                 fit: BoxFit.scaleDown,
               ),
             ),
