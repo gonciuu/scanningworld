@@ -84,10 +84,12 @@ const CouponList = () => {
       )}
 
       {filteredData.length !== 0 && (
-        <div className="grid min-h-0 flex-1 grid-cols-2 gap-8 overflow-y-auto px-3">
-          {filteredData.map((place) => (
-            <Coupon {...place} key={place._id} />
-          ))}
+        <div className="overflow-y-auto">
+          <div className="grid min-h-0 grid-cols-2 gap-8 px-3">
+            {filteredData.map((place) => (
+              <Coupon {...place} key={place._id} />
+            ))}
+          </div>
         </div>
       )}
 
