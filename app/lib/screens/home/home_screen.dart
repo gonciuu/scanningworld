@@ -28,7 +28,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final User? user = context.watch<AuthProvider>().user;
 
-
     // control tooltip for show copy email text
     final tooltipKey = GlobalKey<State<Tooltip>>();
 
@@ -45,7 +44,6 @@ class HomeScreen extends StatelessWidget {
     double scannedPlacesPercent =
         (user?.scannedPlacesFromRegion ?? 0).toDouble() /
             (user?.region.placeCount ?? 1).toDouble();
-
 
     // set zero if it's NaN or Infinity
     if (scannedPlacesPercent.isNaN || scannedPlacesPercent.isInfinite) {
@@ -215,7 +213,7 @@ class HomeScreen extends StatelessWidget {
                                   margin: const EdgeInsets.only(right: 16),
                                   width: 180,
                                   child: RewardCard(
-                                      coupon: coupons[index],
+                                      couponId: coupons[index].id,
                                       heroPrefix: 'home-coupon'),
                                 ),
                               ),

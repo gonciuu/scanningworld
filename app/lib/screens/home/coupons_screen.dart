@@ -74,7 +74,7 @@ class RewardsScreen extends StatelessWidget {
                                         mainAxisSpacing: 12),
                                 scrollDirection: Axis.vertical,
                                 itemBuilder: (context, i) => RewardCard(
-                                  coupon: coupons[i],
+                                  couponId: coupons[i].id,
                                   heroPrefix: 'coupon',
                                 ),
                                 shrinkWrap: true,

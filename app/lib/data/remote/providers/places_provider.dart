@@ -1,11 +1,17 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_marker_popup/extension_api.dart';
 import 'package:scanning_world/data/remote/http/dio_client.dart';
 
 import '../http/http_exception.dart';
 import '../models/user/place.dart';
+
+FutureOr<List<Place>> parsePlaces(dynamic responseBody) {
+  final parsed =responseBody as List;
+  return parsed.map<Place>((json) => Place.fromJson(json)).toList();
+}
 
 class PlacesProvider with ChangeNotifier {
   List<Place> _places = [];
@@ -26,8 +32,7 @@ class PlacesProvider with ChangeNotifier {
   Future<List<Place>> getPlaces(String regionId) async {
     try {
       final response = await dio.get('/places/$regionId');
-      final placesRes =
-          (response.data as List).map((e) => Place.fromJson(e)).toList();
+      final placesRes = await compute(parsePlaces, response.data);
       _places = placesRes;
       notifyListeners();
       return placesRes;
