@@ -1,17 +1,40 @@
 import axios, { AxiosError } from 'axios';
+import jwt_decode from 'jwt-decode';
 import Router from 'next/router';
 
 import { getTokens, setTokens } from './tokens';
 
+const refreshAccessToken = async () => {
+  const { refreshToken } = getTokens();
+
+  const tokens = (
+    await axios.get<{ accessToken: string; refreshToken: string }>(
+      'auth/region/refresh',
+      { headers: { Authorization: `Bearer ${refreshToken}` } }
+    )
+  ).data;
+
+  setTokens(tokens);
+
+  return tokens.accessToken;
+};
+
 export const setupAxios = () => {
   axios.defaults.baseURL = 'http://localhost:8080'; //  'https://scanningworld-server.herokuapp.com';
 
-  axios.interceptors.request.use((config) => {
+  axios.interceptors.request.use(async (config) => {
     const { accessToken } = getTokens();
+    let goodAccessToken = accessToken;
 
     if (accessToken && config.headers && !config.headers.Authorization) {
+      const expiration = (jwt_decode(accessToken) as any).exp as number;
+
+      if (expiration * 1000 < Date.now()) {
+        goodAccessToken = await refreshAccessToken();
+      }
+
       // eslint-disable-next-line no-param-reassign
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      config.headers.Authorization = `Bearer ${goodAccessToken}`;
     }
 
     return config;
@@ -26,27 +49,6 @@ export const setupAxios = () => {
     (response) => response,
     async (error: AxiosError) => {
       const status = error.response ? error.response.status : null;
-
-      if (status === 401) {
-        const { refreshToken } = getTokens();
-
-        if (refreshToken) {
-          // eslint-disable-next-line no-console
-          console.log('refreshing token...');
-          const tokens = (
-            await axios.get<{ accessToken: string; refreshToken: string }>(
-              'auth/region/refresh',
-              { headers: { Authorization: `Bearer ${refreshToken}` } }
-            )
-          ).data;
-
-          setTokens(tokens);
-
-          if (error.config) return axios.request(error.config);
-        }
-
-        resetApp();
-      }
 
       if (status === 403) resetApp();
 
