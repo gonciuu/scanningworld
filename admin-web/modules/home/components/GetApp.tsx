@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { FaGooglePlay, FaApple } from 'react-icons/fa';
 
 const GetApp = () => {
@@ -33,6 +34,9 @@ const GetApp = () => {
       <p className="mt-2 text-xs">
         *Google Play and the Google Play logo are trademarks of Google LLC.
       </p>
+      <Link href="/privacy">
+        <a className="mt-2 text-xs font-bold underline">Polityka prywatności</a>
+      </Link>
     </>
   );
 };
