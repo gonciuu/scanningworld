@@ -23,9 +23,13 @@
 
 ## Demo (android and iOS)
 
-![](https://res.cloudinary.com/dybborlve/image/upload/v1666294992/demo_cxfj6y.png)
+Video [link](https://www.youtube.com/watch?v=Rcy4aq__1ag)
 
-Click here to see [full demo](https://github.com/gonciuu/scanningworld/tree/main/app)
+![ss](https://res.cloudinary.com/dybborlve/image/upload/v1666294992/demo_cxfj6y.png)
+
+Click here to see [full demo](https://github.com/gonciuu/scanningworld/tree/main/app) for app
+
+Click here to see [full demo](https://github.com/gonciuu/scanningworld/tree/main/admin-web) for web app
 
 
 ## Tech Stack
@@ -33,7 +37,7 @@ Click here to see [full demo](https://github.com/gonciuu/scanningworld/tree/main
 Technology used in our project:
 
 - **Flutter** - android and iOS application
-- **React JS** - Frontend Web app for admins 
+- **Next.js** - Frontend Web app for admins 
 - **Node.js + Nest.js** - backend 
 - **mongoDB** - Database
 
