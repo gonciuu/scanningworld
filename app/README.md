@@ -1,4 +1,4 @@
-![](https://res.cloudinary.com/dybborlve/image/upload/w_150,h_150/logo_scanningworld_elv8gd.png)
+![scanningworld](https://i.imgur.com/WuBu4TY.png)
 
 # Flutter Scanning World App
 
