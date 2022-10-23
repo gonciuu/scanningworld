@@ -13,10 +13,10 @@ const Coupon = (coupon: CouponType) => {
     <div className="h-max w-full border p-2 pt-4">
       <div className="relative h-12">
         <Image
-          src={imageUri}
+          src={imageUri || '/images/logo.svg'}
           alt="Logo"
           layout="fill"
-          objectFit="cover"
+          objectFit={imageUri ? 'cover' : 'contain'}
           placeholder="blur"
           blurDataURL="images/logo.svg"
         />
