@@ -36,7 +36,7 @@ const refreshAccessToken = async () => {
 };
 
 export const setupAxios = () => {
-  axios.defaults.baseURL = 'http://localhost:8080'; //  'https://scanningworld-server.herokuapp.com'; // TODO
+  axios.defaults.baseURL = 'https://scanningworld-server.herokuapp.com'; // 'http://localhost:8080';
 
   axios.interceptors.request.use(async (config) => {
     const { accessToken } = getTokens();
