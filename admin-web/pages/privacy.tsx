@@ -10,6 +10,21 @@ const SuccessPage: NextPage = () => {
       <p className="text-center font-semibold">
         Regulamin i polityka prywatności.
       </p>
+
+      <ol className="list-decimal">
+        <li>
+          Aplikacja Scanning World jest aplikacją na konkurs Hack Heroes. Nie
+          należy korzystać z niej realnie. Jest to aplikacja pokazowa.
+        </li>
+        <li>
+          Zdjęcia i dane w aplikacji są losowe. Nie należy ich traktować jako
+          prawdziwe.
+        </li>
+        <li>
+          Zdjęcia są użyte ze strony unsplash.com, pixabay.com oraz
+          logoipsum.com.
+        </li>
+      </ol>
     </div>
   );
 };
