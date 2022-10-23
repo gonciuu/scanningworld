@@ -52,8 +52,11 @@ Or install it manually. Here's [docs](https://github.com/gonciuu/scanningworld/t
 
 ### iOS:
 
-Folllow [this steps](https://github.com/gonciuu/scanningworld/tree/main/app#ios-setup) to install app on iOS (required computer with MacOS)
+Follow [this steps](https://github.com/gonciuu/scanningworld/tree/main/app#ios-setup) to install app on iOS (required computer with MacOS)
 
+## Install Web App 
+
+Follow [this steps](https://github.com/gonciuu/scanningworld/tree/main/admin-web#installation)
 
 ## Authors
 
