@@ -7,11 +7,11 @@ Scanning World is a mobile cross-platform application.
 ## Features
 
 - Login/Register with phone number and password
-    - after successfully register set your on 4 digits code for future sign in
+    - after successfully register set your 4 digits code for future sign in
     - if device supports Biometric Authentication like Face ID or Touch ID user can sign in with
       that instead of 4-digits PIN
 - Scan QR codes
-    - User can check where is QR codes on the map
+    - User can check where are QR codes on the map
     - Check if user is near QR Code
     - Check if user didn't scan this code yet and the code is in the region(city) chosen by user
     - Add points to User Account
