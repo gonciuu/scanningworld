@@ -6,6 +6,7 @@ import {
   Post,
   Req,
   UseGuards,
+  Patch,
 } from '@nestjs/common';
 import { Request } from 'express';
 
@@ -14,6 +15,7 @@ import { AccessTokenRegionGuard } from 'src/auth/guards/accessTokenRegion.guard'
 
 import { CouponsService } from './coupons.service';
 import { CreateCouponDto } from './dto/createCoupon.dto';
+import { UpdateCouponDto } from './dto/updateCoupon.dto';
 
 @Controller('coupons')
 export class CouponsController {
@@ -33,6 +35,22 @@ export class CouponsController {
     const regionId = req.user['sub'];
 
     return await this.couponsService.createCoupon(regionId, createCouponDto);
+  }
+
+  @UseGuards(AccessTokenRegionGuard)
+  @Patch(':couponId')
+  async updateCoupon(
+    @Body() updateCouponDto: UpdateCouponDto,
+    @Req() req: Request,
+    @Param('couponId') couponId: string,
+  ) {
+    const regionId = req.user['sub'];
+
+    return await this.couponsService.updateCoupon(
+      regionId,
+      couponId,
+      updateCouponDto,
+    );
   }
 
   @Post('activate/:couponId')

@@ -4,8 +4,12 @@ import Router from 'next/router';
 
 import { getTokens, setTokens } from './tokens';
 
+let isRefreshing = false;
+
 const refreshAccessToken = async () => {
   const { refreshToken } = getTokens();
+
+  isRefreshing = true;
 
   const tokens = (
     await axios.get<{ accessToken: string; refreshToken: string }>(
@@ -15,6 +19,8 @@ const refreshAccessToken = async () => {
   ).data;
 
   setTokens(tokens);
+
+  isRefreshing = false;
 
   return tokens.accessToken;
 };
@@ -29,7 +35,7 @@ export const setupAxios = () => {
     if (accessToken && config.headers && !config.headers.Authorization) {
       const expiration = (jwt_decode(accessToken) as any).exp as number;
 
-      if (expiration * 1000 < Date.now()) {
+      if (expiration * 1000 < Date.now() && !isRefreshing) {
         goodAccessToken = await refreshAccessToken();
       }
 

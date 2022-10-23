@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { v2 } from 'cloudinary';
 
 import { isValidObjectId, Model } from 'mongoose';
 
@@ -12,6 +13,7 @@ import { UserDocument } from 'src/users/schemas/user.schema';
 import { UsersService } from 'src/users/users.service';
 
 import { CreateCouponDto } from './dto/createCoupon.dto';
+import { UpdateCouponDto } from './dto/updateCoupon.dto';
 import { Coupon, CouponDocument } from './schemas/coupon.schema';
 
 @Injectable()
@@ -50,12 +52,70 @@ export class CouponsService {
       throw new NotFoundException('Region not found');
     }
 
-    const newCoupon = new this.couponModel({
+    const imageUri = !createCouponDto.imageBase64
+      ? ''
+      : await v2.uploader
+          .upload(createCouponDto.imageBase64, {
+            folder: 'scanningworld',
+          })
+          .then((result) => {
+            return result.url;
+          });
+
+    return this.couponModel.create({
       ...createCouponDto,
       region: regionId,
+      imageUri,
     });
+  }
 
-    return await newCoupon.save();
+  async updateCoupon(
+    regionId,
+    couponId: string,
+    updateCouponDto: UpdateCouponDto,
+  ): Promise<CouponDocument> {
+    if (!isValidObjectId(regionId)) {
+      throw new BadRequestException('Invalid region id');
+    }
+
+    if (!isValidObjectId(couponId)) {
+      throw new BadRequestException('Invalid coupon id');
+    }
+
+    const region = await this.regionsService.findById(regionId);
+
+    if (!region) {
+      throw new NotFoundException('Region not found');
+    }
+
+    const coupon = await this.couponModel.findById(couponId).exec();
+
+    if (!coupon) {
+      throw new NotFoundException('Coupon not found');
+    }
+
+    if (coupon.region._id.toString() !== regionId) {
+      throw new BadRequestException('Coupon does not belong to region');
+    }
+
+    const imageUri = !updateCouponDto.imageBase64
+      ? coupon.imageUri
+      : await v2.uploader
+          .upload(updateCouponDto.imageBase64, {
+            folder: 'scanningworld',
+          })
+          .then((result) => {
+            return result.url;
+          });
+
+    return this.couponModel.findByIdAndUpdate(
+      couponId,
+      {
+        ...updateCouponDto,
+        imageUri,
+      },
+      { new: true },
+    );
   }
 
   async activateCoupon(

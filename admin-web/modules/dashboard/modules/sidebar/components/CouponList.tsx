@@ -3,6 +3,9 @@ import axios from 'axios';
 
 import Spinner from '@/common/components/Spinner';
 import { useRegion } from '@/common/recoil/region';
+import CouponModal from '@/modules/dashboard/modals/CouponModal';
+import { Write } from '@/modules/dashboard/types/write.type';
+import { useModal } from '@/modules/modal';
 
 import Coupon from './Coupon';
 
@@ -10,6 +13,7 @@ const CouponList = () => {
   const {
     region: { _id },
   } = useRegion();
+  const { openModal } = useModal();
 
   const { data, error, isLoading } = useQuery(
     ['coupons', _id],
@@ -30,12 +34,20 @@ const CouponList = () => {
     <div className="flex flex-1 flex-col overflow-hidden px-1">
       <div className="mt-4 mb-8 flex gap-4">
         <button className="btn btn-secondary w-full">Filtruj</button>
-        <button className="btn btn-primary w-full">Dodaj kupon</button>
+        <button
+          className="btn btn-primary w-full"
+          onClick={() => openModal(<CouponModal type={Write.POST} />)}
+        >
+          Dodaj kupon
+        </button>
       </div>
 
       {data.length === 0 && (
         <div className="flex flex-1 items-center justify-center">
-          <button className="p-4 transition-transform hover:scale-105 active:scale-100">
+          <button
+            className="p-4 transition-transform hover:scale-105 active:scale-100"
+            onClick={() => openModal(<CouponModal type={Write.POST} />)}
+          >
             <img
               src="images/empty.svg"
               alt="Dodaj kupon"
