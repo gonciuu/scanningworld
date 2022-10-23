@@ -9,6 +9,7 @@ import 'package:scanning_world/data/remote/providers/regions_provider.dart';
 import 'package:scanning_world/screens/enter_pin_code_screen.dart';
 import 'package:scanning_world/screens/sign_in_screen.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
+import 'package:scanning_world/widgets/common/error_dialog.dart';
 
 import '../../data/local/secure_storage_manager.dart';
 
@@ -34,10 +35,9 @@ class _AuthWrapperState extends State<AuthWrapper> {
       final authProvider = context.read<RegionsProvider>();
       await authProvider.fetchRegions();
     } on HttpError catch (error) {
-      debugPrint("ERROR: ${error.message}");
       await fetchRegions();
     } catch (error) {
-      debugPrint(error.toString());
+      showPlatformDialog(context: context, builder: (c)=>ErrorDialog(message: error.toString()));
     }
   }
 

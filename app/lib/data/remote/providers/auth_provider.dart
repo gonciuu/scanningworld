@@ -238,7 +238,6 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> changeUserInfo(ChangeAccountData changeAccountData) async {
     try {
-      debugPrint('changeAccountData.region.id: ${changeAccountData.region.id}');
       final responseUser = await dio.patch(
         '/users/details',
         data: {
