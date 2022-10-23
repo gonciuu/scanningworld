@@ -94,7 +94,7 @@ Scanning world is currently extended with the following plugins.
 
 ## Demo
 
-### Video [link]()
+### Video [link](https://www.youtube.com/watch?v=Rcy4aq__1ag)
 ---
 
 ### Screenshots (iOS and Android)
