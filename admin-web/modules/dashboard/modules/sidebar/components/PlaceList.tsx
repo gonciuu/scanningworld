@@ -78,7 +78,7 @@ const PlaceList = () => {
         <div className="flex flex-1 items-center justify-center">
           <button
             className="p-4 transition-transform hover:scale-105 active:scale-100"
-            onClick={() => openModal(<PlaceModal />)}
+            onClick={() => openModal(<PlaceModal type={Write.POST} />)}
           >
             <img
               src="images/empty.svg"
@@ -97,7 +97,7 @@ const PlaceList = () => {
         </div>
       )}
 
-      {filteredData.length === 0 && (
+      {data.length !== 0 && filteredData.length === 0 && (
         <div className="flex flex-1 items-center justify-center">
           <p>Brak wyników</p>
         </div>
