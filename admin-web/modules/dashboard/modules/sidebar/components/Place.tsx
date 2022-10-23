@@ -16,7 +16,7 @@ const Place = (place: PlaceType) => {
     >
       <div className="relative h-24 w-24 overflow-hidden rounded-2xl">
         <Image
-          src={imageUri || 'images/placeholder.jpg'}
+          src={imageUri || '/images/placeholder.jpg'}
           alt={`Zdjęcie ${name}`}
           layout="fill"
           objectFit="cover"

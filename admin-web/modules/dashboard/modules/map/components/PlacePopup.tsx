@@ -62,7 +62,7 @@ const PlacePopup = () => {
           <div>
             <div className="relative h-48 w-48 overflow-hidden">
               <Image
-                src={imageUri || 'images/placeholder.jpg'}
+                src={imageUri || '/images/placeholder.jpg'}
                 alt="olza"
                 objectFit="cover"
                 layout="fill"

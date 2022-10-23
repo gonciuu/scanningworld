@@ -57,6 +57,19 @@ const CouponModal = ({
     }
   );
 
+  const deleteMutation = useMutation(
+    () => {
+      return axios.delete(`coupons/${couponId!}`);
+    },
+    {
+      retry: 2,
+      onSuccess: () => {
+        queryClient.invalidateQueries(['coupons']);
+        closeModal();
+      },
+    }
+  );
+
   const handleChangeImage = () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -166,6 +179,14 @@ const CouponModal = ({
               </div>
             </div>
             <div className="mt-5 flex justify-end gap-5">
+              {type === Write.EDIT && (
+                <button
+                  className="btn btn-primary bg-red-500 hover:bg-red-600 active:bg-red-500"
+                  onClick={() => deleteMutation.mutate()}
+                >
+                  {deleteMutation.isLoading ? 'Usuwanie...' : 'Usuń'}
+                </button>
+              )}
               <button
                 className="btn btn-primary w-36"
                 type="submit"

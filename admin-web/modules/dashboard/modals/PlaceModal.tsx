@@ -76,6 +76,20 @@ const PlaceModal = ({
     }
   );
 
+  const deleteMutation = useMutation(
+    () => {
+      return axios.delete(`places/${activePlace?._id!}`);
+    },
+    {
+      retry: 2,
+      onSuccess: () => {
+        setActivePlace(null);
+        queryClient.invalidateQueries(['places']);
+        closeModal();
+      },
+    }
+  );
+
   const handleChangeImage = () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -241,6 +255,14 @@ const PlaceModal = ({
               </div>
             </div>
             <div className="mt-5 flex justify-end gap-5">
+              {type === Write.EDIT && (
+                <button
+                  className="btn btn-primary bg-red-500 hover:bg-red-600 active:bg-red-500"
+                  onClick={() => deleteMutation.mutate()}
+                >
+                  {deleteMutation.isLoading ? 'Usuwanie...' : 'Usuń'}
+                </button>
+              )}
               <button
                 className="btn btn-secondary"
                 onClick={handlePlaceLocationChange}
