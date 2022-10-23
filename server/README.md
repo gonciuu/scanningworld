@@ -862,4 +862,95 @@ Typically you will pass access token to basically all request you will make. If 
         "avatar": "male3"
     }
 
-TODO: Add create coupon to documentation
+### `Add new coupon`
+
+#### You need to pass region access token as Authorization token.
+```
+  POST /coupons
+```
+
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | **Required**. Coupon name. |
+| `imageBase64` | `string` | **Required**. Coupon image in base64 format. |
+| `points` | `number` | **Required**. Coupon points that user needs to pay. |
+
+#### Response
+    {
+        "name": "Testowy wstęp na kąpielisko w Olzie",
+        "imageUri": "",
+        "points": 250,
+        "region": {
+            "_id": "6354474b2442cea8347fe0f5",
+            "name": "Gorzyce",
+            "placeCount": 7,
+            "email": "gorzyce@gmail.com",
+            "__v": 0
+        },
+        "_id": "63558c2c8d551ca7d345f851",
+        "__v": 0
+    }
+
+### `Edit coupon`
+
+#### You need to pass region access token as Authorization token.
+```
+  PATCH /coupons/:id
+```
+
+#### Request params
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `string` | **Required**. Coupon id. |
+
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | Coupon name. |
+| `imageBase64` | `string` | Coupon image in base64 format. |
+| `points` | `number` | Coupon points that user needs to pay. |
+
+#### Response
+    {
+        "name": "Testowy wstęp na kąpielisko w Olzie",
+        "imageUri": "",
+        "points": 250,
+        "region": {
+            "_id": "6354474b2442cea8347fe0f5",
+            "name": "Gorzyce",
+            "placeCount": 7,
+            "email": "gorzyce@gmail.com",
+            "__v": 0
+        },
+        "_id": "63558c2c8d551ca7d345f851",
+        "__v": 0
+    }
+
+### `Delete coupon`
+
+#### You need to pass region access token as Authorization token.
+```
+  DELETE /coupons/:id
+```
+
+#### Request params
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `string` | **Required**. Coupon id. |
+
+#### Response
+    {
+        "name": "Testowy wstęp na kąpielisko w Olzie",
+        "imageUri": "",
+        "points": 250,
+        "region": {
+            "_id": "6354474b2442cea8347fe0f5",
+            "name": "Gorzyce",
+            "placeCount": 7,
+            "email": "gorzyce@gmail.com",
+            "__v": 0
+        },
+        "_id": "63558c2c8d551ca7d345f851",
+        "__v": 0
+    }
