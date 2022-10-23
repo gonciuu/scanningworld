@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import Router from 'next/router';
 
@@ -53,8 +53,14 @@ export const setupAxios = () => {
 
   axios.interceptors.response.use(
     (response) => response,
-    async (error: AxiosError) => {
+    async (error) => {
       const status = error.response ? error.response.status : null;
+
+      if (status === 401) {
+        refreshAccessToken();
+
+        return axios.request(error.config);
+      }
 
       if (status === 403) resetApp();
 
