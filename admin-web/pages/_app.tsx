@@ -17,8 +17,8 @@ const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
-        <title>Template</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Zarządaj rejonem | scanningworld</title>
+        <link rel="icon" href="/logo.ico" />
       </Head>
       <RecoilRoot>
         <QueryClientProvider client={queryClient}>

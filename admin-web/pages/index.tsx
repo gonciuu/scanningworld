@@ -15,7 +15,19 @@ const HomePage: NextPage = () => {
     if (accessToken) router.push('/dashboard');
   }, [router]);
 
-  return <Home />;
+  return (
+    <>
+      <div
+        className="absolute top-0 left-0 flex h-full w-full items-center justify-center rounded-none bg-black lg:hidden"
+        style={{ zIndex: 9999 }}
+      >
+        <h1 className="p-5 text-center text-white">
+          Zaloguj się na komputerze, aby móc zarządzać rejonem
+        </h1>
+      </div>
+      <Home />
+    </>
+  );
 };
 
 export default HomePage;

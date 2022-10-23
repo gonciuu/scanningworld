@@ -4,8 +4,7 @@ export class CreateCouponDto {
   @IsNotEmpty()
   readonly name: string;
 
-  @IsNotEmpty()
-  readonly imageUri: string;
+  readonly imageBase64: string;
 
   @IsNumber()
   readonly points: number;

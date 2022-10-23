@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -26,6 +27,14 @@ import { Place } from './schemas/place.schema';
 export class PlacesController {
   constructor(private placesService: PlacesService) {}
 
+  @UseGuards(AccessTokenRegionGuard)
+  @Get('as-region')
+  async findAsRegion(@Req() req: Request): Promise<Place[]> {
+    const regionId = req.user['sub'];
+
+    return this.placesService.findByRegionId(regionId, { code: true });
+  }
+
   @Get(':regionId')
   async findByRegionId(@Param('regionId') regionId: string): Promise<Place[]> {
     return this.placesService.findByRegionId(regionId);
@@ -43,6 +52,18 @@ export class PlacesController {
   }
 
   @UseGuards(AccessTokenRegionGuard)
+  @Patch('location/:id')
+  async updateLocation(
+    @Param('id') id: string,
+    @Body() updatePlaceDto: UpdatePlaceDto,
+    @Req() req: Request,
+  ): Promise<Place> {
+    const regionId = req.user['sub'];
+
+    return this.placesService.update(regionId, id, updatePlaceDto);
+  }
+
+  @UseGuards(AccessTokenRegionGuard)
   @Patch(':id')
   async update(
     @Body() updatePlaceDto: UpdatePlaceDto,
@@ -52,6 +73,14 @@ export class PlacesController {
     const regionId = req.user['sub'];
 
     return this.placesService.update(regionId, id, updatePlaceDto);
+  }
+
+  @UseGuards(AccessTokenRegionGuard)
+  @Delete(':id')
+  async delete(@Param('id') id: string, @Req() req: Request): Promise<Place> {
+    const regionId = req.user['sub'];
+
+    return this.placesService.delete(regionId, id);
   }
 
   @UseGuards(AccessTokenGuard)

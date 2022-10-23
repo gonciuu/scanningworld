@@ -92,8 +92,8 @@ const Markers = () => {
   }>({ lat: 52.24126, lng: 21.01135 });
 
   const { data, error, isLoading } = useQuery(
-    ['places', _id],
-    () => axios.get<PlaceType[]>(`places/${_id}`).then((res) => res.data),
+    ['places'],
+    () => axios.get<PlaceType[]>(`places/as-region`).then((res) => res.data),
     { enabled: !!_id }
   );
 

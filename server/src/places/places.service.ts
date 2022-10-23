@@ -45,8 +45,6 @@ export class PlacesService {
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
 
-    this.regionsService.updateRegionPlacesCount(regionId, 1);
-
     const imageUri = !place.imageBase64
       ? ''
       : await v2.uploader
@@ -56,6 +54,8 @@ export class PlacesService {
           .then((result) => {
             return result.url;
           });
+
+    this.regionsService.updateRegionPlacesCount(regionId, 1);
 
     return this.placeModel.create({
       ...place,
@@ -71,6 +71,10 @@ export class PlacesService {
     id: string,
     updatePlaceDto: UpdatePlaceDto,
   ): Promise<PlaceDocument> {
+    if (!isValidObjectId(regionId)) {
+      throw new BadRequestException('Invalid region id');
+    }
+
     const { lng, lat } = updatePlaceDto;
     const place = await this.placeModel.findById(id).exec();
 
@@ -108,11 +112,43 @@ export class PlacesService {
       .exec();
   }
 
+  async delete(regionId: string, id: string): Promise<PlaceDocument> {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException('Invalid place id');
+    }
+
+    const place = await this.placeModel.findById(id).exec();
+
+    if (!place) {
+      throw new NotFoundException('Place not found');
+    }
+
+    if (place.region._id.toString() !== regionId) {
+      throw new BadRequestException('You cannot delete this place');
+    }
+
+    this.regionsService.updateRegionPlacesCount(
+      place.region._id.toString(),
+      -1,
+    );
+
+    const userModel = this.usersService.getUserModel();
+
+    await userModel
+      .updateMany({ scannedPlaces: id }, { $pull: { scannedPlaces: id } })
+      .exec();
+
+    return this.placeModel.findByIdAndDelete(id).exec();
+  }
+
   async findAll(): Promise<PlaceDocument[]> {
     return this.placeModel.find().exec();
   }
 
-  async findByRegionId(regionId: string): Promise<PlaceDocument[]> {
+  async findByRegionId(
+    regionId: string,
+    { code }: { code?: boolean } = {},
+  ): Promise<PlaceDocument[]> {
     if (!isValidObjectId(regionId)) {
       throw new BadRequestException('Invalid region id');
     }
@@ -123,7 +159,10 @@ export class PlacesService {
       throw new NotFoundException('Region not found');
     }
 
-    return this.placeModel.find({ region: regionId }).exec();
+    return this.placeModel
+      .find({ region: regionId })
+      .select(code && '+code')
+      .exec();
   }
 
   async scanCode(
@@ -164,7 +203,7 @@ export class PlacesService {
       location.lng,
     );
 
-    if (distance > 0.5) {
+    if (distance > 1000) {
       throw new BadRequestException('User is not close enough to the place');
     }
 

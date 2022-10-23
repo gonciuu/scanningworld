@@ -1,7 +1,11 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import Image from 'next/image';
 import { AiOutlineClose } from 'react-icons/ai';
 import { Popup } from 'react-leaflet';
 
 import PlaceModal from '@/modules/dashboard/modals/PlaceModal';
+import QRCodeModal from '@/modules/dashboard/modals/QRCodeModal';
 import { useActivePlace } from '@/modules/dashboard/recoil/activePlace';
 import { useChangePlaceLocation } from '@/modules/dashboard/recoil/placeLocation';
 import { useModal } from '@/modules/modal';
@@ -11,14 +15,27 @@ const PlacePopup = () => {
   const { placeLocation, setPlaceToActiveLocation } = useChangePlaceLocation();
   const { activePlace, setActivePlace } = useActivePlace();
 
+  const queryClient = useQueryClient();
+
+  const changePlaceLocationMutation = useMutation(
+    (newLocation: { lat: number; lng: number }) => {
+      return axios.patch(`places/location/${placeLocation.id}`, newLocation);
+    },
+    {
+      retry: 2,
+      onSuccess: () => {
+        queryClient.invalidateQueries(['places']);
+      },
+    }
+  );
+
   if (!activePlace || placeLocation.active) return null;
 
-  const { location, name, description, points, imageUri } = activePlace;
+  const { location, name, description, points, imageUri, code } = activePlace;
 
   const handleChangeLocation = () => {
     setPlaceToActiveLocation(
-      // TODO: Change location to active location
-      (newLocation) => console.log(newLocation),
+      changePlaceLocationMutation.mutate,
       activePlace._id
     );
   };
@@ -43,23 +60,31 @@ const PlacePopup = () => {
 
         <div className="flex gap-5">
           <div>
-            <img
-              src={imageUri || 'images/placeholder.jpg'}
-              alt="olza"
-              className="h-48 w-48 rounded-2xl object-cover"
-            />
+            <div className="relative h-48 w-48 overflow-hidden">
+              <Image
+                src={imageUri || '/images/placeholder.jpg'}
+                alt="olza"
+                objectFit="cover"
+                layout="fill"
+                placeholder="blur"
+                blurDataURL="images/logo.svg"
+              />
+            </div>
 
-            <button className="btn mt-3 w-full bg-black text-white hover:bg-black/80 active:bg-black">
+            <button
+              className="btn mt-3 w-full bg-black text-white hover:bg-black/80 active:bg-black"
+              onClick={() => openModal(<QRCodeModal code={code} name={name} />)}
+            >
               Pokaż kod QR
             </button>
           </div>
 
           <div className="flex h-48 flex-1 flex-col justify-between">
-            <p className="flex-1 text-justify text-[.9rem] leading-6">
+            <p className="flex-1 overflow-y-auto text-justify text-[.9rem] leading-6">
               {description}
             </p>
 
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 flex items-center justify-between gap-5">
               <p className="text-lg font-bold text-primary">
                 {location.lat} / {location.lng}
               </p>

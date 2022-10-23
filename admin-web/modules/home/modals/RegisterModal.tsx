@@ -15,7 +15,9 @@ const RegisterSchema = Yup.object().shape({
     .max(50, 'Nazwa jest za długa!')
     .required('Wymagane'),
   email: Yup.string().email('Nieprawidłowy email').required('Wymagane'),
-  password: Yup.string().required('Wymagane'),
+  password: Yup.string()
+    .min(6, 'Hasło powinno posiadać minimum 6 znaków')
+    .required('Wymagane'),
   passwordConfirmation: Yup.string().required('Wymagane'),
 });
 
@@ -126,7 +128,7 @@ const RegisterModal = () => {
             )}
 
             <button type="submit" className="btn btn-primary">
-              Zarejestruj
+              {registerMutation.isLoading ? 'Rejestracja...' : 'Zarejestruj'}
             </button>
           </Form>
         )}

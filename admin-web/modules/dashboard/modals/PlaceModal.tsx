@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
+import Image from 'next/image';
 import * as Yup from 'yup';
 
 import FormObserver from '@/common/components/FormObserver';
@@ -10,27 +11,18 @@ import { useModal } from '@/modules/modal';
 
 import { useActivePlace } from '../recoil/activePlace';
 import { useChangePlaceLocation } from '../recoil/placeLocation';
+import { PlaceType, PlaceValues, PostPlace } from '../types/place.type';
 import { Write } from '../types/write.type';
 
 const PlaceSchema = Yup.object().shape({
-  name: Yup.string().required('Wymagane'),
-  description: Yup.string().required('Wymagane'),
+  name: Yup.string()
+    .max(50, 'Nazwa jest za długa, max 50 znaków.')
+    .required('Wymagane'),
+  description: Yup.string()
+    .max(200, 'Opis jest za długi, max 200 znaków.')
+    .required('Wymagane'),
   points: Yup.number().required('Wymagane'),
 });
-
-type PlaceValues = {
-  name: string;
-  description: string;
-  points: number;
-  location: { lat: number; lng: number };
-  imageUri: string;
-};
-
-interface PostPlace extends Omit<PlaceValues, 'imageUri' | 'location'> {
-  imageBase64: string;
-  lat: number;
-  lng: number;
-}
 
 const PlaceModal = ({
   place,
@@ -61,13 +53,15 @@ const PlaceModal = ({
 
   const createMutation = useMutation(
     (newPlace: PostPlace) => {
-      return axios.post('places', newPlace);
+      return axios.post<PlaceType>('places', newPlace).then((res) => res.data);
     },
     {
       retry: 2,
-      onSuccess: () => {
+      onSuccess: (res) => {
         queryClient.invalidateQueries(['places']);
         closeModal();
+
+        setActivePlace(res);
       },
     }
   );
@@ -75,6 +69,20 @@ const PlaceModal = ({
   const editMutation = useMutation(
     (newPlace: Partial<PostPlace>) => {
       return axios.patch(`places/${activePlace?._id!}`, newPlace);
+    },
+    {
+      retry: 2,
+      onSuccess: () => {
+        setActivePlace(null);
+        queryClient.invalidateQueries(['places']);
+        closeModal();
+      },
+    }
+  );
+
+  const deleteMutation = useMutation(
+    () => {
+      return axios.delete(`places/${activePlace?._id!}`);
     },
     {
       retry: 2,
@@ -225,16 +233,22 @@ const PlaceModal = ({
 
               <div>
                 <p className="font-semibold">Zdjęcie lokalizacji</p>
-                <img
-                  src={
-                    imageUri ||
-                    activePlace?.imageUri ||
-                    'images/placeholder.jpg'
-                  }
-                  alt="Zdjęcie miejsca"
-                  className="h-48 w-48 cursor-pointer object-cover transition-transform hover:scale-105 active:scale-100"
-                  onClick={handleChangeImage}
-                />
+                <div className="relative h-48 w-48 overflow-hidden">
+                  <Image
+                    src={
+                      imageUri ||
+                      activePlace?.imageUri ||
+                      '/images/placeholder.jpg'
+                    }
+                    alt="Zdjęcie miejsca"
+                    className="cursor-pointer transition-transform hover:scale-105 active:scale-100"
+                    layout="fill"
+                    objectFit="cover"
+                    placeholder="blur"
+                    blurDataURL="images/logo.svg"
+                    onClick={handleChangeImage}
+                  />
+                </div>
                 <button
                   className="btn btn-primary mt-3 w-full py-1"
                   type="button"
@@ -245,6 +259,14 @@ const PlaceModal = ({
               </div>
             </div>
             <div className="mt-5 flex justify-end gap-5">
+              {type === Write.EDIT && (
+                <button
+                  className="btn btn-primary bg-red-500 hover:bg-red-600 active:bg-red-500"
+                  onClick={() => deleteMutation.mutate()}
+                >
+                  {deleteMutation.isLoading ? 'Usuwanie...' : 'Usuń'}
+                </button>
+              )}
               <button
                 className="btn btn-secondary"
                 onClick={handlePlaceLocationChange}

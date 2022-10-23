@@ -64,6 +64,10 @@ export class UsersService {
     });
   }
 
+  getUserModel(): Model<UserDocument> {
+    return this.userModel;
+  }
+
   async update(
     id: string,
     updateUserDto: UpdateUserDto,

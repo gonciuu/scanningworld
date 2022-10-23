@@ -7,3 +7,13 @@ export type CouponType = {
   points: number;
   region: RegionType;
 };
+
+export type CouponValues = {
+  name: string;
+  points: number;
+  imageUri: string;
+};
+
+export interface PostCoupon extends Omit<CouponValues, 'imageUri'> {
+  imageBase64: string;
+}
