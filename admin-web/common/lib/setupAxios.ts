@@ -6,8 +6,18 @@ import { getTokens, setTokens } from './tokens';
 
 let isRefreshing = false;
 
+const resetApp = () => {
+  setTokens({ accessToken: '', refreshToken: '' });
+  Router.push('/');
+};
+
 const refreshAccessToken = async () => {
   const { refreshToken } = getTokens();
+
+  if (!refreshToken) {
+    resetApp();
+    return '';
+  }
 
   isRefreshing = true;
 
@@ -46,20 +56,21 @@ export const setupAxios = () => {
     return config;
   });
 
-  const resetApp = () => {
-    setTokens({ accessToken: '', refreshToken: '' });
-    Router.push('/');
-  };
-
   axios.interceptors.response.use(
     (response) => response,
     async (error) => {
       const status = error.response ? error.response.status : null;
 
-      if (status === 401) {
-        refreshAccessToken();
+      const tokens = getTokens();
 
-        return axios.request(error.config);
+      if (status === 401) {
+        if (tokens.refreshToken) {
+          refreshAccessToken();
+
+          return axios.request(error.config);
+        }
+
+        resetApp();
       }
 
       if (status === 403) resetApp();
