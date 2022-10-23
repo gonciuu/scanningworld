@@ -7,6 +7,7 @@ import {
   Req,
   UseGuards,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { Request } from 'express';
 
@@ -51,6 +52,14 @@ export class CouponsController {
       couponId,
       updateCouponDto,
     );
+  }
+
+  @UseGuards(AccessTokenRegionGuard)
+  @Delete(':id')
+  async deleteCoupon(@Param('id') id: string, @Req() req: Request) {
+    const regionId = req.user['sub'];
+
+    return await this.couponsService.deleteCoupon(regionId, id);
   }
 
   @Post('activate/:couponId')

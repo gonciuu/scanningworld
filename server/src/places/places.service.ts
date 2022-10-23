@@ -112,6 +112,35 @@ export class PlacesService {
       .exec();
   }
 
+  async delete(regionId: string, id: string): Promise<PlaceDocument> {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException('Invalid place id');
+    }
+
+    const place = await this.placeModel.findById(id).exec();
+
+    if (!place) {
+      throw new NotFoundException('Place not found');
+    }
+
+    if (place.region._id.toString() !== regionId) {
+      throw new BadRequestException('You cannot delete this place');
+    }
+
+    this.regionsService.updateRegionPlacesCount(
+      place.region._id.toString(),
+      -1,
+    );
+
+    const userModel = this.usersService.getUserModel();
+
+    await userModel
+      .updateMany({ scannedPlaces: id }, { $pull: { scannedPlaces: id } })
+      .exec();
+
+    return this.placeModel.findByIdAndDelete(id).exec();
+  }
+
   async findAll(): Promise<PlaceDocument[]> {
     return this.placeModel.find().exec();
   }

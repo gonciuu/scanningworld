@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -72,6 +73,14 @@ export class PlacesController {
     const regionId = req.user['sub'];
 
     return this.placesService.update(regionId, id, updatePlaceDto);
+  }
+
+  @UseGuards(AccessTokenRegionGuard)
+  @Delete(':id')
+  async delete(@Param('id') id: string, @Req() req: Request): Promise<Place> {
+    const regionId = req.user['sub'];
+
+    return this.placesService.delete(regionId, id);
   }
 
   @UseGuards(AccessTokenGuard)

@@ -118,6 +118,34 @@ export class CouponsService {
     );
   }
 
+  async deleteCoupon(regionId: string, id: string): Promise<CouponDocument> {
+    if (!isValidObjectId(regionId)) {
+      throw new BadRequestException('Invalid region id');
+    }
+
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException('Invalid coupon id');
+    }
+
+    const region = await this.regionsService.findById(regionId);
+
+    if (!region) {
+      throw new NotFoundException('Region not found');
+    }
+
+    const coupon = await this.couponModel.findById(id).exec();
+
+    if (!coupon) {
+      throw new NotFoundException('Coupon not found');
+    }
+
+    if (coupon.region._id.toString() !== regionId) {
+      throw new BadRequestException('Coupon does not belong to region');
+    }
+
+    return this.couponModel.findByIdAndDelete(id);
+  }
+
   async activateCoupon(
     couponId: string,
     userId: string,
