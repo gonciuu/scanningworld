@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { MailerService } from '@nestjs-modules/mailer';
 
 import * as argon2 from 'argon2';
 
@@ -20,6 +21,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private mailerService: MailerService,
   ) {}
 
   async register(createUserDto: CreateUserDto) {
@@ -95,11 +97,11 @@ export class AuthService {
   }
 
   async generatePasswordResetToken(userPhone: string) {
-    const userId = (await this.usersService.findByPhone(userPhone))._id;
+    const user = await this.usersService.findByPhone(userPhone);
 
     const token = await this.jwtService.signAsync(
       {
-        sub: userId,
+        sub: user._id,
       },
       {
         secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
@@ -107,9 +109,21 @@ export class AuthService {
       },
     );
 
+    this.mailerService.sendMail({
+      to: user.email,
+      from: 'noreply@scanningworld.pl',
+      subject: 'Reset hasła - scanningworld',
+      html: `<div>
+               <p>Kliknij link poniżej, aby zresetować hasło</p>
+                <a href="${this.configService.get<string>(
+                  'FRONTEND_URL',
+                )}/reset-password/${token}">Resetuj hasło</a>
+             </div>`,
+    });
+
     const hashedToken = await this.hashData(token);
 
-    await this.usersService.update(userId, {
+    await this.usersService.update(user._id, {
       passwordResetToken: hashedToken,
     });
 

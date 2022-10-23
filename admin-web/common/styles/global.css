@@ -45,7 +45,7 @@ body {
   min-height: 100vh;
   min-height: -webkit-fill-available;
 
-  @apply bg-black lg:bg-white;
+  /* @apply bg-black lg:bg-white; */
 }
 html {
   height: -webkit-fill-available;

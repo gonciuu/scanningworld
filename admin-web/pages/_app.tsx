@@ -24,14 +24,14 @@ const App = ({ Component, pageProps }: AppProps) => {
         <QueryClientProvider client={queryClient}>
           <MotionConfig transition={{ ease: [0.6, 0.01, -0.05, 0.9] }}>
             <ModalManager />
-            <div
+            {/* <div
               className="absolute top-0 left-0 flex h-full w-full items-center justify-center rounded-none bg-black lg:hidden"
               style={{ zIndex: 9999 }}
             >
               <h1 className="p-5 text-center text-white">
                 Zaloguj się na komputerze, aby móc zarządzać rejonem
               </h1>
-            </div>
+            </div> */}
             <Component {...pageProps} />
           </MotionConfig>
         </QueryClientProvider>
