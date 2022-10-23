@@ -30,7 +30,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             >
               <h1 className="p-5 text-center text-white">
                 Zaloguj się na komputerze, aby móc zarządzać rejonem
-                {/* TODO: dodac modul kuponow, naprawic bug ze sie nie aktualizuje */}
+                {/* TODO: dodac modul kuponow */}
               </h1>
             </div>
             <Component {...pageProps} />

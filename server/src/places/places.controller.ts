@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 
 import { Request } from 'express';
+import * as rawbody from 'raw-body';
 
 import { AccessTokenGuard } from 'src/auth/guards/accessToken.guard';
 
@@ -59,7 +60,14 @@ export class PlacesController {
   ): Promise<Place> {
     const regionId = req.user['sub'];
 
-    return this.placesService.update(regionId, id, updatePlaceDto);
+    if (req.readable) {
+      const raw = await rawbody(req);
+      const text = raw.toString().trim();
+
+      const data = JSON.parse(text) as UpdatePlaceDto;
+
+      return this.placesService.update(regionId, id, data);
+    } else return this.placesService.update(regionId, id, updatePlaceDto);
   }
 
   @UseGuards(AccessTokenRegionGuard)
@@ -71,7 +79,14 @@ export class PlacesController {
   ): Promise<Place> {
     const regionId = req.user['sub'];
 
-    return this.placesService.update(regionId, id, updatePlaceDto);
+    if (req.readable) {
+      const raw = await rawbody(req);
+      const text = raw.toString().trim();
+
+      const data = JSON.parse(text) as UpdatePlaceDto;
+
+      return this.placesService.update(regionId, id, data);
+    } else return this.placesService.update(regionId, id, updatePlaceDto);
   }
 
   @UseGuards(AccessTokenGuard)
