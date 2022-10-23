@@ -13,7 +13,7 @@ class LoadingDialog extends StatelessWidget {
         children: const [
           CustomProgressIndicator(),
           SizedBox(width: 10),
-          Text('Loading...'),
+          Text('Ładowanie...'),
         ],
       ),
     );
