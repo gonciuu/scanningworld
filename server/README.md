@@ -1,3 +1,4 @@
+![scanningworld](https://i.imgur.com/WuBu4TY.png)
 # scanningworld server
 
 A server for a scanningworld app and its admin dashboard. Created using NestJS.
@@ -29,7 +30,7 @@ https://scanningworld-server.herokuapp.com/
 
 ## The dependency of the modules
 
-![Dependecy of modules](https://i.imgur.com/cQUoKpV.png)
+![Dependecy of modules](https://i.imgur.com/oo51KlK.png)
 
 ## Auth module
 
