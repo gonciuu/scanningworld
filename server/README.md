@@ -256,7 +256,41 @@ Typically you will pass access token to basically all request you will make. If 
         "msg": "Password changed"
     }
 
-TODO: Add forgot password documentation later
+### `Forgot user password`
+
+**This request sends an email to the user found by the phone number with a link to reset the password**
+
+```
+  GET /auth/forgot-password?phone=123123123
+```
+
+#### Request query
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `phoned` | `string` | **Required**. User phone number. |
+
+#### Response
+    {
+        "msg": "Forgot password",
+        "passwordResetToken": "reset-password-token"
+    }
+
+### `Reset user password`
+
+```
+  GET /auth/reset-password
+```
+
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `passwordResetToken` | `string` | **Required**. Password reset token that previous request has set |
+| `newPassword` | `string` | **Required**. New password |
+
+#### Response
+    {
+         "msg": "Password reset"
+    }
 
 ## Users module
 
@@ -496,7 +530,7 @@ TODO: Add forgot password documentation later
 
 ### `Scan place QR Code`
 
-#### You need to pass access token as Authorization token.
+#### You need to pass user access token as Authorization token.
 
 ```
   POST /places/:qrCode
@@ -550,7 +584,166 @@ TODO: Add forgot password documentation later
         "activeCoupons": []
     }
 
-TODO: Add create place to documentation
+### `Add new place`
+
+#### You need to pass region access token as Authorization token.
+```
+  POST /places
+```
+
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | **Required**. Place name. |
+| `description` | `string` | **Required**. Place description. |
+| `imageBase64` | `string` | **Required**. Place image in base64 format. |
+| `points` | `number` | **Required**. Place points that user gets. |
+| `lat` | `number` | **Required**. Place latitude location. |
+| `lng` | `number` | **Required**. Place longtitude location. |
+
+#### Response
+    {
+        "name": "Testowa kapliczka",
+        "description": "Super kapliczka na wierzbowej, blisko do Dino",
+        "imageUri": "",
+        "region": {
+            "_id": "6354474b2442cea8347fe0f5",
+            "name": "Gorzyce",
+            "placeCount": 7,
+            "email": "gorzyce@gmail.com",
+            "__v": 0
+        },
+        "points": 25,
+        "location": {
+            "lat": 49.96181,
+            "lng": 18.396556,
+            "_id": "63558adb8d551ca7d345f847"
+        },
+        "code": "2vd0xtgz9irj08tjqcwn7",
+        "_id": "63558adb8d551ca7d345f846",
+        "__v": 0
+    }
+
+### `Edit place`
+
+#### You need to pass region access token as Authorization token.
+```
+  PATCH /places/:id
+```
+
+#### Request params
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `string` | **Required**. Place id. |
+
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `name` | `string` | Place name. |
+| `description` | `string` | Place description. |
+| `imageBase64` | `string` | Place image in base64 format. |
+| `points` | `number` | Place points that user gets. |
+| `lat` | `number` | Place latitude location. |
+| `lng` | `number` | Place longtitude location. |
+
+#### Response
+    {
+        "name": "Testowa kapliczka",
+        "description": "Super kapliczka na wierzbowej, blisko do Dino",
+        "imageUri": "",
+        "region": {
+            "_id": "6354474b2442cea8347fe0f5",
+            "name": "Gorzyce",
+            "placeCount": 7,
+            "email": "gorzyce@gmail.com",
+            "__v": 0
+        },
+        "points": 25,
+        "location": {
+            "lat": 49.96181,
+            "lng": 18.396556,
+            "_id": "63558adb8d551ca7d345f847"
+        },
+        "code": "2vd0xtgz9irj08tjqcwn7",
+        "_id": "63558adb8d551ca7d345f846",
+        "__v": 0
+    }
+
+### `Edit only place location`
+
+#### You need to pass region access token as Authorization token.
+```
+  PATCH /places/location/:id
+```
+
+#### Request params
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `string` | **Required**. Place id. |
+
+#### Request body
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `lat` | `number` | Place latitude location. |
+| `lng` | `number` | Place longtitude location. |
+
+#### Response
+    {
+        "name": "Testowa kapliczka",
+        "description": "Super kapliczka na wierzbowej, blisko do Dino",
+        "imageUri": "",
+        "region": {
+            "_id": "6354474b2442cea8347fe0f5",
+            "name": "Gorzyce",
+            "placeCount": 7,
+            "email": "gorzyce@gmail.com",
+            "__v": 0
+        },
+        "points": 25,
+        "location": {
+            "lat": 49.96181,
+            "lng": 18.396556,
+            "_id": "63558adb8d551ca7d345f847"
+        },
+        "code": "2vd0xtgz9irj08tjqcwn7",
+        "_id": "63558adb8d551ca7d345f846",
+        "__v": 0
+    }
+
+### `Delete place`
+
+#### You need to pass region access token as Authorization token.
+```
+  DELETE /places/:id
+```
+
+#### Request params
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `id` | `string` | **Required**. Place id. |
+
+#### Response
+    {
+        "name": "Testowa kapliczka",
+        "description": "Super kapliczka na wierzbowej, blisko do Dino",
+        "imageUri": "",
+        "region": {
+            "_id": "6354474b2442cea8347fe0f5",
+            "name": "Gorzyce",
+            "placeCount": 7,
+            "email": "gorzyce@gmail.com",
+            "__v": 0
+        },
+        "points": 25,
+        "location": {
+            "lat": 49.96181,
+            "lng": 18.396556,
+            "_id": "63558adb8d551ca7d345f847"
+        },
+        "code": "2vd0xtgz9irj08tjqcwn7",
+        "_id": "63558adb8d551ca7d345f846",
+        "__v": 0
+    }
 
 ## Coupons module
 
