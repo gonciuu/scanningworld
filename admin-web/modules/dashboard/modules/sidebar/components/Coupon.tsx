@@ -16,7 +16,7 @@ const Coupon = (coupon: CouponType) => {
           src={imageUri || '/images/logo.svg'}
           alt="Logo"
           layout="fill"
-          objectFit={imageUri ? 'cover' : 'contain'}
+          objectFit={imageUri ? 'scale-down' : 'contain'}
           placeholder="blur"
           blurDataURL="images/logo.svg"
         />
