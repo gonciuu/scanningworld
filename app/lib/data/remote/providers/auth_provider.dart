@@ -1,26 +1,37 @@
-import 'dart:io';
-
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scanning_world/data/local/secure_storage_manager.dart';
 import 'package:scanning_world/data/remote/models/auth/auth_result.dart';
 import 'package:scanning_world/data/remote/models/user/place.dart';
-import 'package:scanning_world/widgets/common/error_dialog.dart';
-
 import '../../../screens/profile/change_account_data_screen.dart';
 import '../http/dio_client.dart';
 import '../http/http_exception.dart';
 import '../models/auth/auth.dart';
 import '../models/auth/session.dart';
-
 import '../models/coupon.dart';
 import '../models/user/user.dart';
+
+FutureOr<User> parseUser(dynamic responseBody) {
+  final resUser = User.fromJson(responseBody);
+  return resUser;
+}
+
+FutureOr<AuthResult> parseAuthResult(dynamic responseBody) {
+  final resAuthResult = AuthResult.fromJson(responseBody);
+  return resAuthResult;
+}
+
+FutureOr<Session> parseSession(dynamic responseBody) {
+  final resSession = Session.fromJson(responseBody);
+  return resSession;
+}
 
 class AuthProvider with ChangeNotifier {
   final dio = DioClient.dio;
   final SecureStorageManager secureStorageManager = SecureStorageManager();
+
 
   // user and access token needed for requests
   User? _user;
@@ -72,8 +83,7 @@ class AuthProvider with ChangeNotifier {
     try {
       final response = await dio.get('/users/me',
           options: Options(headers: {'Authorization': 'Bearer $accessToken'}));
-
-      final resUser = User.fromJson(response.data);
+      final resUser = await compute(parseUser, response.data);
       _user = resUser;
       notifyListeners();
       return resUser;
@@ -96,7 +106,7 @@ class AuthProvider with ChangeNotifier {
         },
       );
       //map response to AuthResult
-      final authResult = AuthResult.fromJson(response.data);
+      final authResult = await compute(parseAuthResult, response.data);
       final resultSession = authResult.session;
 
       // save refresh token and pincode
@@ -129,7 +139,7 @@ class AuthProvider with ChangeNotifier {
         },
       );
       //map response to AuthResult
-      final authResult = AuthResult.fromJson(response.data);
+      final authResult = await compute(parseAuthResult, response.data);
       final resultSession = authResult.session;
       // save refresh token and pincode
       await secureStorageManager.saveRefreshToken(resultSession.refreshToken);
@@ -159,7 +169,7 @@ class AuthProvider with ChangeNotifier {
         ),
       );
       //map response to Session
-      final session = Session.fromJson(response.data);
+      final session = await compute(parseSession, response.data);
       //save new refresh token and access token
       await secureStorageManager.saveRefreshToken(session.refreshToken);
       _accessToken = session.accessToken;
@@ -228,7 +238,6 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> changeUserInfo(ChangeAccountData changeAccountData) async {
     try {
-      debugPrint('changeAccountData.region.id: ${changeAccountData.region.id}');
       final responseUser = await dio.patch(
         '/users/details',
         data: {
@@ -242,7 +251,7 @@ class AuthProvider with ChangeNotifier {
           },
         ),
       );
-      final newUser = User.fromJson(responseUser.data);
+      final newUser = await compute(parseUser, responseUser.data);
       _user = newUser;
       notifyListeners();
     } on DioError catch (e) {
@@ -267,7 +276,7 @@ class AuthProvider with ChangeNotifier {
           },
         ),
       );
-      User newUser = User.fromJson(response.data);
+      User newUser = await compute(parseUser, response.data);
       _user = newUser;
       notifyListeners();
       return newUser.scannedPlaces.last;
@@ -289,7 +298,7 @@ class AuthProvider with ChangeNotifier {
           },
         ),
       );
-      User newUser = User.fromJson(response.data);
+      User newUser = await compute(parseUser, response.data);
       _user = newUser;
       notifyListeners();
       return newUser.activeCoupons.last;
@@ -313,7 +322,7 @@ class AuthProvider with ChangeNotifier {
           },
         ),
       );
-      User newUser = User.fromJson(response.data);
+      User newUser = await compute(parseUser, response.data);
       _user = newUser;
       notifyListeners();
       return newUser;

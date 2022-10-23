@@ -23,7 +23,7 @@ Scanning World is a mobile cross-platform application.
 A few resources to get you started if this is your first Flutter project:
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)z
 
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials, samples, guidance on
@@ -38,7 +38,7 @@ mobile development, and a full API reference.
 export PATH="$PATH:{your_path_to_flutter_sdk}/bin"
 ```
 
-## Andorid Setup
+## Android Setup
 
 ##### You can download the app directly from google play from this [link]()
 
@@ -97,12 +97,8 @@ Scanning world is currently extended with the following plugins.
 ### Video [link]()
 ---
 
-### Screenshots
+### Screenshots (iOS and Android)
+![](https://res.cloudinary.com/dybborlve/image/upload/v1666548701/Simulator_Screen_Shot_-_iPhone_14_Pro_Max_-_2022-10-23_at_20.00_tlwbdz.png)
 
-#### Android
-
----
-
-#### iOS
 
 

@@ -54,23 +54,26 @@ class ActiveCoupon {
         "coupon": coupon.toJson(),
         "validUntil": validUntil.toIso8601String(),
         "_id": id
-  };
+      };
 
-  String get formattedValidUntil{
+  String get formattedValidUntil {
     var formatter = DateFormat('HH:mm:ss');
-    String formattedDate = formatter.format(validUntil.add(const Duration(hours: 2)));
+    String formattedDate =
+        formatter.format(validUntil.add(const Duration(hours: 2)));
     return formattedDate;
   }
 
   int get durationInSeconds => validUntil.difference(DateTime.now()).inSeconds;
 
-  String get timeLeft {
-    Duration difference = validUntil.difference(DateTime.now());
-    int minutes = difference.inMinutes % 60;
-    int seconds = difference.inSeconds % 60;
+  String timeLeft(int secondsLeft) {
+    final timeLeft = Duration(seconds: secondsLeft);
+    final min = timeLeft.inMinutes < 10
+        ? '0${timeLeft.inMinutes}'
+        : '${timeLeft.inMinutes}';
 
-    String min = minutes < 10 ? "0$minutes" : "$minutes";
-    String sec = seconds < 10 ? "0$seconds" : "$seconds";
+    final sec = (timeLeft.inSeconds % 60) < 10
+        ? '0${timeLeft.inSeconds % 60}'
+        : '${timeLeft.inSeconds % 60}';
 
     return "$min:$sec";
   }

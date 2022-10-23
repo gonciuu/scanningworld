@@ -9,20 +9,26 @@ import 'package:scanning_world/screens/order_coupon_screen.dart';
 import 'package:scanning_world/widgets/common/cached_placeholder_image.dart';
 import 'package:scanning_world/widgets/common/white_wrapper.dart';
 
+import '../../data/remote/providers/coupons_provider.dart';
+
 class RewardCard extends StatelessWidget {
-  final Coupon coupon;
+  final String couponId;
 
   final String heroPrefix;
 
-  const RewardCard({Key? key, required this.coupon, required this.heroPrefix})
+  const RewardCard({Key? key, required this.couponId, required this.heroPrefix})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final Coupon? coupon = context.watch<CouponsProvider>().getCouponById(couponId);
+
     final userPoints = context.select(
         (AuthProvider authProvider) => authProvider.user?.pointsInRegion ?? 0);
-    final canOrder = userPoints >= coupon.points;
-    return WhiteWrapper(
+    final canOrder = userPoints >= (coupon?.points ?? 200);
+
+    if(coupon != null) {
+      return WhiteWrapper(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
@@ -30,7 +36,7 @@ class RewardCard extends StatelessWidget {
               tag: '$heroPrefix-${coupon.id}',
               child: CachedPlaceholderImage(
                 imageUrl: coupon.imageUri,
-                height: 30,
+                height: 35,
                 fit: BoxFit.scaleDown,
               ),
             ),
@@ -69,5 +75,8 @@ class RewardCard extends StatelessWidget {
             )
           ],
         ));
+    }
+
+    return const SizedBox.shrink();
   }
 }

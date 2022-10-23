@@ -11,12 +11,14 @@ import 'package:scanning_world/data/remote/http/http_exception.dart';
 import 'package:scanning_world/data/remote/providers/coupons_provider.dart';
 import 'package:scanning_world/data/remote/providers/places_provider.dart';
 import 'package:scanning_world/screens/wrappers/home_wrapper.dart';
+import 'package:scanning_world/services/permission_service.dart';
 import 'package:scanning_world/theme/theme.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
 import 'package:scanning_world/widgets/common/error_dialog.dart';
 
 import '../data/remote/models/user/place.dart';
 import '../data/remote/providers/auth_provider.dart';
+import '../widgets/common/loading_dialog.dart';
 
 class ScanQrCodeScreen extends StatefulWidget {
   const ScanQrCodeScreen({Key? key}) : super(key: key);
@@ -28,12 +30,15 @@ class ScanQrCodeScreen extends StatefulWidget {
 }
 
 class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
+  //control for QR scanner
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
+  // control start/stop scanning
   var _isQrCodeScanned = false;
 
+  // resume camera
   void _resumeCamera() {
     if (controller != null) {
       controller!.resumeCamera();
@@ -43,29 +48,25 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
     }
   }
 
+  // check if user has permissions to use camera and location and if qr code is good
   Future<void> _checkQRCode(String code) async {
+    final authProvider = context.read<AuthProvider>();
     setState(() {
       _isQrCodeScanned = true;
     });
-    final authProvider = context.read<AuthProvider>();
+
     try {
       showPlatformDialog(
           barrierDismissible: false,
           context: context,
-          builder: (context) => PlatformAlertDialog(
-                content: Row(
-                  children: const [
-                    CustomProgressIndicator(),
-                    SizedBox(width: 10),
-                    Text('Loading...'),
-                  ],
-                ),
-              ));
-      //final canScan = await _checkLocation();
+          builder: (context) => const LoadingDialog());
+
       final position = await _getPosition();
       final Place place = await authProvider.scanPlace(code, position);
+      //close loading dialog
       if (!mounted) return;
       Navigator.of(context).pop();
+      //show success dialog
       await showPlatformDialog(
           barrierDismissible: false,
           context: context,
@@ -88,21 +89,35 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
                       'OK',
                       style: TextStyle(color: primary[700]),
                     ),
-                    onPressed: () => Navigator.of(context).popUntil((route) =>
-                        route.settings.name == HomeWrapper.routeName),
+                    onPressed: () => Navigator.of(context)
+                      ..pop()
+                      ..pop(),
                   ),
                 ],
               ));
+      //http server error
     } on HttpError catch (e) {
       if (!mounted) return;
       Navigator.of(context).pop();
       await showPlatformDialog(
         context: context,
         builder: (c) => ErrorDialog(message: e.message),
-        barrierDismissible: false,
+      );
+      _resumeCamera();
+      //location permission denied permanently
+    } on PermissionDeniedException catch (e) {
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      await showPlatformDialog(
+        context: context,
+        builder: (c) => ErrorDialog(
+            message: e.message ?? 'Włącz uprawnienia do lokalizacji',
+            buttonText: 'Ustawienia',
+            onPressed: () => openAppSettings()),
       );
       _resumeCamera();
     } catch (e) {
+      //other errors
       if (!mounted) return;
       Navigator.of(context).pop();
       await showPlatformDialog(
@@ -111,49 +126,14 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
     }
   }
 
+  //get user current position
   Future<Position> _getPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
+    await PermissionService.checkLocationPermission();
     final Position position = await Geolocator.getCurrentPosition();
-
-
-
-
-
     return position;
   }
 
+  //qr code scanner bug fix
   @override
   void reassemble() {
     super.reassemble();
@@ -163,17 +143,14 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
     controller!.resumeCamera();
   }
 
+  //dispose controller
   @override
-  Widget build(BuildContext context) {
-    return PlatformScaffold(
-        appBar: PlatformAppBar(
-          title: const Text('Skanuj kod QR'),
-          cupertino: (_, __) => CupertinoNavigationBarData(
-              transitionBetweenRoutes: false,
-              heroTag: 'Skanuj kod QR',
-              previousPageTitle: 'Home'),
-        ),
-        body: _buildQrView(context));
+  void dispose() {
+    if (controller != null) {
+      if (Platform.isIOS) controller!.pauseCamera();
+      controller!.dispose();
+    }
+    super.dispose();
   }
 
   void _onQRViewCreated(QRViewController controller) {
@@ -212,35 +189,31 @@ class _ScanQrCodeScreenState extends State<ScanQrCodeScreen> {
     );
   }
 
+  // check if user has permissions to use camera
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
     if (!p) {
       showPlatformDialog(
           context: context,
-          builder: (_) => PlatformAlertDialog(
-                title: const Text('Error'),
-                content: const Text('Musisz udzielić uprawnień do aparatu'),
-                actions: [
-                  PlatformDialogAction(
-                    child: Text(
-                      'Ustawienia',
-                      style: TextStyle(color: primary[600]),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      openAppSettings();
-                    },
-                  ),
-                ],
+          builder: (_) => ErrorDialog(
+                message: 'Musisz udzielić uprawnień do aparatu',
+                buttonText: 'Ustawienia',
+                onPressed: () {
+                  openAppSettings();
+                },
               ));
     }
   }
 
   @override
-  void dispose() {
-    if (controller != null) {
-      if (Platform.isIOS) controller!.pauseCamera();
-      controller!.dispose();
-    }
-    super.dispose();
+  Widget build(BuildContext context) {
+    return PlatformScaffold(
+        appBar: PlatformAppBar(
+          title: const Text('Skanuj kod QR'),
+          cupertino: (_, __) => CupertinoNavigationBarData(
+              transitionBetweenRoutes: false,
+              heroTag: 'Skanuj kod QR',
+              previousPageTitle: 'Home'),
+        ),
+        body: _buildQrView(context));
   }
 }

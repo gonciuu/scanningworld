@@ -19,10 +19,10 @@ class ChangeAvatarScreen extends StatefulWidget {
 }
 
 class _ChangeAvatarScreenState extends State<ChangeAvatarScreen> {
-  String _avatar = 'male1';
-
+  String _avatar = 'male2';
   var _isLoading = false;
 
+  // change avatar
   Future<void> _changeAvatar() async {
     try {
       setState(() => _isLoading = true);
@@ -100,7 +100,9 @@ class _ChangeAvatarScreenState extends State<ChangeAvatarScreen> {
         ));
   }
 
-  Widget _avatarImage(String name) => Expanded(
+
+  // avatar image (if selected with border)
+   Widget _avatarImage(String name) => Expanded(
           child: GestureDetector(
         onTap: () => setState(() => _avatar = name),
         child: Container(

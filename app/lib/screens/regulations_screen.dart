@@ -29,7 +29,10 @@ class RegulationsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       const Text(
-                          '1.')
+                          '1. Aplikacja Scanning World jest aplikacją na konkurs Hack Heroes. Nie należy korzystać z niej realnie. Jest to aplikacja pokazowa.'),
+                      const Text(
+                          '2. Zdjęcia i dane w aplikacji są losowe. Nie należy ich traktować jako prawdziwe.'),
+                      const Text('3. Zdjęcia są użyte ze strony unsplash.com oraz pixabay.com.'),
                     ]))));
   }
 }

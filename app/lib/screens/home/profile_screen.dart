@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
@@ -16,9 +15,7 @@ import '../profile/change_account_data_screen.dart';
 import '../profile/change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-
-  const ProfileScreen({Key? key})
-      : super(key: key);
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -27,11 +24,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    final points = context.select(
-            (AuthProvider auth) => auth.user?.points[auth.user?.region.id]) ??
-        0;
-    final String? avatar =
-        context.select((AuthProvider auth) => auth.user?.avatar);
     return SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: SafeArea(
@@ -49,12 +41,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         .pushNamed(ChangeAvatarScreen.routeName),
                     child: Stack(
                       children: [
-                        CircleAvatar(
-                          radius: 60,
-                          backgroundColor: Colors.grey.shade200,
-                          backgroundImage: AssetImage(avatar != null
-                              ? 'assets/avatars/$avatar.png'
-                              : 'assets/avatars/male2.png'),
+                        Consumer<AuthProvider>(
+                          builder: (context, authProvider, child) =>
+                              CircleAvatar(
+                            radius: 60,
+                            backgroundColor: Colors.grey.shade200,
+                            backgroundImage: AssetImage(authProvider
+                                        .user?.avatar !=
+                                    null
+                                ? 'assets/avatars/${authProvider.user?.avatar}.png'
+                                : 'assets/avatars/male2.png'),
+                          ),
                         ),
                         Positioned(
                           bottom: 1,
@@ -84,11 +81,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(100),
                         color: primary[600]),
-                    child: Text('Saldo: $points punkty',
-                        style: DefaultTextStyle.of(context).style.copyWith(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold)),
+                    child: Consumer<AuthProvider>(
+                      builder: (context, authProvider, child) => Text(
+                          'Saldo: ${authProvider.user?.pointsInRegion ?? 0} punkty',
+                          style: DefaultTextStyle.of(context).style.copyWith(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold)),
+                    ),
                   ),
                   const SizedBox(height: 32),
                   SettingsRow(
@@ -98,8 +98,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       cupertino: CupertinoIcons.settings,
                     ),
                     onTap: () {
-                      Navigator.of(context).pushNamed(
-                          ChangeAccountDataScreen.routeName);
+                      Navigator.of(context)
+                          .pushNamed(ChangeAccountDataScreen.routeName);
                     },
                   ),
                   const SizedBox(

@@ -7,17 +7,13 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:scanning_world/data/remote/providers/auth_provider.dart';
-import 'package:scanning_world/theme/theme.dart';
-import 'package:scanning_world/utils/extensions.dart';
-import 'package:scanning_world/widgets/common/big_title.dart';
+import 'package:scanning_world/services/url_service.dart';
 import 'package:scanning_world/widgets/common/custom_progress_indicator.dart';
-import 'package:scanning_world/widgets/common/white_wrapper.dart';
-import 'package:scanning_world/widgets/home/place_map_popup.dart';
-import 'package:url_launcher/url_launcher.dart';
-
+import 'package:scanning_world/widgets/home/map/place_map_popup.dart';
+import 'package:scanning_world/widgets/home/map/places_list_modal_sheet.dart';
+import 'package:scanning_world/widgets/home/map/set_filter_modal_sheet.dart';
 import '../../data/remote/models/user/place.dart';
 import '../../data/remote/providers/places_provider.dart';
-import '../../widgets/home/place_item.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -27,20 +23,28 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+
+  final mc = MapController();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<PlacesProvider>().setControllers(mc);
+    _getPlaces();
+  }
+
+
   /// Used to trigger showing/hiding of popups.
   final PopupController _popupLayerController = PopupController();
 
+  // Used to trigger showing/hiding of markers.
   var _showScannedPlaces = true;
   var _showUnscannedPlaces = true;
 
-  Future<void> _launchUrl(String url) async {
-    if (!await launchUrl(Uri.parse(url))) {
-      throw 'Could not launch $url';
-    }
-  }
-
+  // is loadng?
   var _isLoading = true;
 
+  // filter places by showScannedPlaces and showUnscannedPlaces
   List<Place> filterPlaces(List<Place> places) {
     final userScannedPlaces =
         context.read<AuthProvider>().user?.scannedPlaces.map((e) => e.id) ?? [];
@@ -64,126 +68,52 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  // set filters modal bottom sheet
   void _showSettingsModalBottomSheet() {
     showPlatformModalSheet(
       context: context,
       builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (ctx, setModalState) => Container(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BigTitle(
-                    text: 'Filtry',
-                    style: TextStyle(color: primary[700]),
-                  ),
-                  const BigTitle(
-                    text: 'Pokaż punkty:',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Row(
-                    children: [
-                      PlatformSwitch(
-                        value: _showScannedPlaces,
-                        onChanged: (value) {
-                          setModalState(() {
-                            _showScannedPlaces = value;
-                          });
-                          setState(() {
-                            _showScannedPlaces = value;
-                          });
-                        },
-                        activeColor: primary[700],
-                      ),
-                      const SizedBox(
-                        width: 2,
-                      ),
-                      const Text('Odwiedzone'),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 4,
-                  ),
-                  Row(
-                    children: [
-                      PlatformSwitch(
-                        value: _showUnscannedPlaces,
-                        activeColor: primary[700],
-                        onChanged: (value) {
-                          setModalState(() {
-                            _showUnscannedPlaces = value;
-                          });
-                          setState(() {
-                            _showUnscannedPlaces = value;
-                          });
-                        },
-                      ),
-                      const SizedBox(
-                        width: 2,
-                      ),
-                      const Text('Nieodwiedzone'),
-                    ],
-                  ),
-                ],
-              )),
-        );
+        return StatefulBuilder(builder: (ctx, setModalState) {
+          return SetFiltersModalSheet(
+            showScannedPlaces: _showScannedPlaces,
+            showUnscannedPlaces: _showUnscannedPlaces,
+            onShowScannedPlacesChanged: (value) {
+              setModalState(() {
+                _showScannedPlaces = value;
+              });
+              setState(() {
+                _showScannedPlaces = value;
+              });
+            },
+            onShowUnscannedPlacesChanged: (value) {
+              setModalState(() {
+                _showUnscannedPlaces = value;
+              });
+              setState(() {
+                _showUnscannedPlaces = value;
+              });
+            },
+          );
+        });
       },
     );
   }
 
+  // show places on click list icon on top appbar
   void _showPlacesListModal() {
     final places = filterPlaces(context.read<PlacesProvider>().places);
     showPlatformModalSheet(
         context: context,
         builder: (c) {
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.6,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-            ),
-            child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (c, i) {
-                  return PlaceItem(
-                    place: places[i],
-                  );
-                },
-                itemCount: places.length,
-                padding: const EdgeInsets.symmetric(vertical: 20)),
-          );
+          return PlacesListModalSheet(places: places);
         });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
-  final mc = MapController();
 
-  @override
-  void initState() {
-    super.initState();
-    context.read<PlacesProvider>().setControllers(mc);
-    _getPlaces();
-  }
 
+
+  // get places from server for region
   Future<void> _getPlaces() async {
     final regionId = context.read<AuthProvider>().user!.region.id;
     await context.read<PlacesProvider>().getPlaces(regionId);
@@ -216,7 +146,7 @@ class _MapScreenState extends State<MapScreen> {
                   cupertino: (_, __) => CupertinoIconButtonData(minSize: 0),
                   icon: Icon(
                     context.platformIcon(
-                        material: Icons.list,
+                        material: Icons.list_alt,
                         cupertino: CupertinoIcons.square_list),
                     color: Colors.white,
                     size: 28,
@@ -263,7 +193,7 @@ class _MapScreenState extends State<MapScreen> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => _launchUrl(
+                              onTap: () => UrlService.launchLink(
                                   'https://www.openstreetmap.org/copyright'),
                               child: const Text(
                                 ' © OpenStreetMap contributors',

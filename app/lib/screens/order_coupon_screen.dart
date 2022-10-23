@@ -13,6 +13,7 @@ import 'package:scanning_world/widgets/common/error_dialog.dart';
 import '../data/remote/providers/auth_provider.dart';
 import '../theme/theme.dart';
 import '../widgets/common/cached_placeholder_image.dart';
+import '../widgets/home/order_coupon_bottom_sheet.dart';
 
 class OrderCouponScreen extends StatefulWidget {
   static const routeName = '/order-coupon';
@@ -24,14 +25,41 @@ class OrderCouponScreen extends StatefulWidget {
   State<OrderCouponScreen> createState() => _OrderCouponScreenState();
 }
 
+//Order coupon screen state
 enum OrderState { order, active, loading, error }
 
 class _OrderCouponScreenState extends State<OrderCouponScreen> {
+  //initial state
   var _orderState = OrderState.order;
+
+  //check if this coupon is activated
   ActiveCoupon? _activeCoupon;
 
+  //time left to coupon activation is valid
   Timer? _timer;
   int secondsLeft = 0;
+
+
+  @override
+  void initState() {
+    super.initState();
+    // check if this coupon is activated
+    if (widget.arguments != null &&
+        (widget.arguments as Map<String, dynamic>)['isActivated']) {
+      //set active coupon
+      _activeCoupon = (widget.arguments as Map<String, dynamic>)['coupon'] as ActiveCoupon;
+
+      // start the timer
+      if(_activeCoupon!.durationInSeconds > 0) {
+        startTimer();
+        _orderState = OrderState.active;
+      } else {
+        //if time is gone, set state to error
+        _orderState = OrderState.error;
+      }
+    }
+  }
+
 
   @override
   void dispose() {
@@ -39,18 +67,23 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
     super.dispose();
   }
 
+
+  //start the time
   void startTimer() {
+    //get seconds left
     secondsLeft = _activeCoupon!.durationInSeconds;
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
       (Timer timer) {
+        //if time is gone, set state to error
         if (_activeCoupon?.durationInSeconds == 0) {
           setState(() {
             _orderState = OrderState.error;
           });
           _timer?.cancel();
         } else {
+          //decrease time
           setState(() {
             secondsLeft--;
           });
@@ -59,10 +92,12 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
     );
   }
 
+  //order coupon
   Future<void> _orderCoupon(String couponId, StateSetter setModalState) async {
     final authProvider = context.read<AuthProvider>();
     try {
       setModalState(() => _orderState = OrderState.loading);
+      //set active coupon
       final activeCoupon = await authProvider.orderCoupon(couponId);
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -82,80 +117,15 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
     }
   }
 
+  //show confirm order coupon bottom sheet
   void _showConfirmBottomSheet(String couponId) {
     showPlatformModalSheet(
       context: context,
       builder: (context) =>
           StatefulBuilder(builder: (context, StateSetter setState) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(),
-              const Text(
-                'Zlealizuj kupon',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              ),
-              const Text(
-                'Ważny 15 minut',
-                style: TextStyle(fontSize: 14),
-              ),
-              const SizedBox(height: 12),
-              AnimatedScale(
-                scale: _orderState == OrderState.loading ||
-                        _orderState == OrderState.active
-                    ? 1.2
-                    : 1,
-                duration: const Duration(milliseconds: 300),
-                child: AnimatedRotation(
-                  turns: _orderState == OrderState.loading ? 1 : 0,
-                  duration: const Duration(milliseconds: 300),
-                  child: Icon(
-                    context.platformIcon(
-                        material: _orderState == OrderState.loading ||
-                            _orderState == OrderState.active
-                            ? Icons.check_circle
-                            : Icons.check_circle_outline,
-                        cupertino: _orderState == OrderState.loading ||
-                                _orderState == OrderState.active
-                            ? CupertinoIcons.check_mark_circled_solid
-                            : CupertinoIcons.check_mark_circled),
-                    color: Colors.green,
-                    size: 64,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: PlatformElevatedButton(
-                    onPressed: _orderState == OrderState.loading
-                        ? null
-                        : () => _orderCoupon(couponId, setState),
-                    child: _orderState == OrderState.loading
-                        ? const CustomProgressIndicator()
-                        : const Text(
-                            'Odbierz',
-                            style: TextStyle(color: Colors.white),
-                          )),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: PlatformTextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Anuluj'),
-                ),
-              ),
-            ],
-          ),
+        return OrderCouponBottomSheet(
+          orderState: _orderState,
+          onOrderCoupon: () => _orderCoupon(couponId, setState),
         );
       }),
       cupertino: CupertinoModalSheetData(
@@ -168,40 +138,23 @@ class _OrderCouponScreenState extends State<OrderCouponScreen> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.arguments != null &&
-        (widget.arguments as Map<String, dynamic>)['isActivated']) {
-      _activeCoupon =
-          (widget.arguments as Map<String, dynamic>)['coupon'] as ActiveCoupon;
-      if(_activeCoupon!.durationInSeconds > 0) {
-        startTimer();
-        _orderState = OrderState.active;
-      } else {
-        _orderState = OrderState.error;
-      }
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
+
     final data = widget.arguments as Map<String, dynamic>;
+
+    //check if this coupon is activated
     final coupon = data['isActivated']
         ? (data['coupon'] as ActiveCoupon).coupon
         : data['coupon'] as Coupon;
+
+    // get hero prefix
     final heroPrefix = data['heroPrefix'] as String;
 
-    final timeLeft = Duration(seconds: secondsLeft);
-    final min = timeLeft.inMinutes < 10
-        ? '0${timeLeft.inMinutes}'
-        : '${timeLeft.inMinutes}';
-
-    final sec = (timeLeft.inSeconds % 60) < 10
-        ? '0${timeLeft.inSeconds % 60}'
-        : '${timeLeft.inSeconds % 60}';
-
-    final String timeLeftString = _activeCoupon != null ? '$min:$sec' : "15:00";
+    //get time left formatted string
+    final String timeLeftString = _activeCoupon != null ? _activeCoupon!.timeLeft(secondsLeft) : "15:00";
 
     return PlatformScaffold(
         appBar: PlatformAppBar(
