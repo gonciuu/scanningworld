@@ -31,6 +31,8 @@ Click here to see [full demo](https://github.com/gonciuu/scanningworld/tree/main
 
 Click here to see [full demo](https://github.com/gonciuu/scanningworld/tree/main/admin-web) for web app
 
+## QR Codes
+There is a folder containing all QR codes [link](https://github.com/gonciuu/scanningworld/tree/main/qr-codes)
 
 ## Tech Stack
 
