@@ -34,6 +34,19 @@ Click here to see [full demo](https://github.com/gonciuu/scanningworld/tree/main
 ## QR Codes
 There is a folder containing all QR codes [link](https://github.com/gonciuu/scanningworld/tree/main/qr-codes)
 
+## Test accounts
+#### Mobile app
+
+| Phone  | Password     |
+| :--------- | :------- |
+| `123123123`     | `qwerty` |
+
+#### Web app
+
+| Email  | Password     |
+| :--------- | :------- |
+| `warszawa@warszawa.pl`     | `qwerty` |
+
 ## Tech Stack
 
 Technology used in our project:
