@@ -10,7 +10,7 @@ import { useModal } from '@/modules/modal';
 
 import { useActivePlace } from '../recoil/activePlace';
 import { useChangePlaceLocation } from '../recoil/placeLocation';
-import { PlaceValues, PostPlace } from '../types/place.type';
+import { PlaceType, PlaceValues, PostPlace } from '../types/place.type';
 import { Write } from '../types/write.type';
 
 const PlaceSchema = Yup.object().shape({
@@ -48,13 +48,15 @@ const PlaceModal = ({
 
   const createMutation = useMutation(
     (newPlace: PostPlace) => {
-      return axios.post('places', newPlace);
+      return axios.post<PlaceType>('places', newPlace).then((res) => res.data);
     },
     {
       retry: 2,
-      onSuccess: () => {
+      onSuccess: (res) => {
         queryClient.invalidateQueries(['places']);
         closeModal();
+
+        setActivePlace(res);
       },
     }
   );
