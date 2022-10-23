@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
+import Image from 'next/image';
 import * as Yup from 'yup';
 
 import FormObserver from '@/common/components/FormObserver';
@@ -214,16 +215,22 @@ const PlaceModal = ({
 
               <div>
                 <p className="font-semibold">Zdjęcie lokalizacji</p>
-                <img
-                  src={
-                    imageUri ||
-                    activePlace?.imageUri ||
-                    'images/placeholder.jpg'
-                  }
-                  alt="Zdjęcie miejsca"
-                  className="h-48 w-48 cursor-pointer object-cover transition-transform hover:scale-105 active:scale-100"
-                  onClick={handleChangeImage}
-                />
+                <div className="relative h-48 w-48 overflow-hidden">
+                  <Image
+                    src={
+                      imageUri ||
+                      activePlace?.imageUri ||
+                      '/images/placeholder.jpg'
+                    }
+                    alt="Zdjęcie miejsca"
+                    className="cursor-pointer transition-transform hover:scale-105 active:scale-100"
+                    layout="fill"
+                    objectFit="cover"
+                    placeholder="blur"
+                    blurDataURL="images/logo.svg"
+                    onClick={handleChangeImage}
+                  />
+                </div>
                 <button
                   className="btn btn-primary mt-3 w-full py-1"
                   type="button"

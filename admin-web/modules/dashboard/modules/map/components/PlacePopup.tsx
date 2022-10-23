@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import Image from 'next/image';
 import { AiOutlineClose } from 'react-icons/ai';
 import { Popup } from 'react-leaflet';
 
@@ -59,11 +60,16 @@ const PlacePopup = () => {
 
         <div className="flex gap-5">
           <div>
-            <img
-              src={imageUri || 'images/placeholder.jpg'}
-              alt="olza"
-              className="h-48 w-48 rounded-2xl object-cover"
-            />
+            <div className="relative h-48 w-48 overflow-hidden">
+              <Image
+                src={imageUri || 'images/placeholder.jpg'}
+                alt="olza"
+                objectFit="cover"
+                layout="fill"
+                placeholder="blur"
+                blurDataURL="images/logo.svg"
+              />
+            </div>
 
             <button
               className="btn mt-3 w-full bg-black text-white hover:bg-black/80 active:bg-black"
