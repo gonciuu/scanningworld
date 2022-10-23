@@ -6,9 +6,9 @@
  
 ## Docs
 
-- [Server](/tree/main/server)
-- [Application](/tree/main/app)
-- [Admin Web Application](/tree/main/admin-web)
+- [Server](https://github.com/gonciuu/scanningworld/tree/main/server)
+- [Application](https://github.com/gonciuu/scanningworld/tree/main/app)
+- [Admin Web Application](https://github.com/gonciuu/scanningworld/tree/main/admin-web)
 
 ## How it works?
 
@@ -25,7 +25,7 @@
 
 ![](https://res.cloudinary.com/dybborlve/image/upload/v1666294992/demo_cxfj6y.png)
 
-Click here to see [full demo](/tree/main/app)
+Click here to see [full demo](https://github.com/gonciuu/scanningworld/tree/main/app)
 
 
 ## Tech Stack
@@ -40,7 +40,7 @@ Technology used in our project:
 ## Install server 
 
 - Server is hosted on [heroku](https://scanningworld-server.herokuapp.com/), so you don't have to install anything.
-- Also you can install it manually. Here's [docs](/tree/main/server) how to do it.
+- Also you can install it manually. Here's [docs](https://github.com/gonciuu/scanningworld/tree/main/server#installation) how to do it.
 
 ## Install App
 
@@ -48,11 +48,11 @@ Technology used in our project:
 
 [![IMAGE ALT TEXT HERE](https://res.cloudinary.com/dybborlve/image/upload/w_200/google-play-badge_mlyxh8.png)](http://play.google.com/store/)
 
-Or install it manually. Here's [docs](https://github.com/gonciuu/scanningworld/tree/main/server) how to do it.
+Or install it manually. Here's [docs](https://github.com/gonciuu/scanningworld/tree/main/app#android-setup) how to do it.
 
 ### iOS:
 
-Folllow [this steps](https://github.com/gonciuu/scanningworld/tree/main/server) to install app on iOS (required computer with MacOS)
+Folllow [this steps](https://github.com/gonciuu/scanningworld/tree/main/app#ios-setup) to install app on iOS (required computer with MacOS)
 
 
 ## Authors
