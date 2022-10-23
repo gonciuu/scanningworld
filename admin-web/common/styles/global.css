@@ -22,7 +22,8 @@
 }
 
 input,
-textarea {
+textarea,
+select {
   @apply w-full rounded-md bg-zinc-200 py-1 px-2;
 }
 

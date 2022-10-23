@@ -5,6 +5,8 @@ import Spinner from '@/common/components/Spinner';
 import { useRegion } from '@/common/recoil/region';
 import CouponModal from '@/modules/dashboard/modals/CouponModal';
 import { Write } from '@/modules/dashboard/types/write.type';
+import { useFilter } from '@/modules/filter';
+import { Sort } from '@/modules/filter/types.ts/filter.type';
 import { useModal } from '@/modules/modal';
 
 import Coupon from './Coupon';
@@ -21,6 +23,8 @@ const CouponList = () => {
     { enabled: !!_id }
   );
 
+  const { Filter, search, openFilter, sort } = useFilter();
+
   if (isLoading)
     return (
       <div className="mt-16 flex w-full justify-center">
@@ -30,10 +34,32 @@ const CouponList = () => {
 
   if (error || !data) return <div>Error</div>;
 
+  const filteredData = data
+    .filter((place) => {
+      const name = place.name.toLowerCase();
+      const searchLower = search.toLowerCase();
+
+      return name.includes(searchLower);
+    })
+    .sort((a, b) => {
+      if (sort === Sort.NAME_ASC) return a.name.localeCompare(b.name);
+      if (sort === Sort.NAME_DESC) return b.name.localeCompare(a.name);
+
+      if (sort === Sort.POINTS_ASC) return a.points - b.points;
+      if (sort === Sort.POINTS_DESC) return b.points - a.points;
+
+      return 0;
+    });
+
   return (
     <div className="flex flex-1 flex-col overflow-hidden px-1">
       <div className="mt-4 mb-8 flex gap-4">
-        <button className="btn btn-secondary w-full">Filtruj</button>
+        <div className="relative w-full">
+          <button className="btn btn-secondary w-full" onClick={openFilter}>
+            Filtruj
+          </button>
+          {Filter}
+        </div>
         <button
           className="btn btn-primary w-full"
           onClick={() => openModal(<CouponModal type={Write.POST} />)}
@@ -57,11 +83,17 @@ const CouponList = () => {
         </div>
       )}
 
-      {data.length !== 0 && (
+      {filteredData.length !== 0 && (
         <div className="grid min-h-0 flex-1 grid-cols-2 gap-8 overflow-y-auto px-3">
-          {data.map((place) => (
+          {filteredData.map((place) => (
             <Coupon {...place} key={place._id} />
           ))}
+        </div>
+      )}
+
+      {filteredData.length === 0 && (
+        <div className="flex flex-1 items-center justify-center">
+          <p>Brak wyników</p>
         </div>
       )}
     </div>
