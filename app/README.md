@@ -98,7 +98,7 @@ Scanning world is currently extended with the following plugins.
 ---
 
 ### Screenshots (iOS and Android)
-![](https://res.cloudinary.com/dybborlve/image/upload/w_150,h_150/Simulator_Screen_Shot_-_iPhone_14_Pro_Max_-_2022-10-23_at_20.00_tlwbdz.png)
+![](https://res.cloudinary.com/dybborlve/image/upload/h_500/Simulator_Screen_Shot_-_iPhone_14_Pro_Max_-_2022-10-23_at_20.00_tlwbdz.png)
 
 
 
