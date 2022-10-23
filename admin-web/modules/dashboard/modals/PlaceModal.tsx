@@ -15,8 +15,12 @@ import { PlaceType, PlaceValues, PostPlace } from '../types/place.type';
 import { Write } from '../types/write.type';
 
 const PlaceSchema = Yup.object().shape({
-  name: Yup.string().required('Wymagane'),
-  description: Yup.string().required('Wymagane'),
+  name: Yup.string()
+    .max(50, 'Nazwa jest za długa, max 50 znaków.')
+    .required('Wymagane'),
+  description: Yup.string()
+    .max(200, 'Opis jest za długi, max 200 znaków.')
+    .required('Wymagane'),
   points: Yup.number().required('Wymagane'),
 });
 

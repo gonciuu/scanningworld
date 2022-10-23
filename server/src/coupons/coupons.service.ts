@@ -145,7 +145,7 @@ export class CouponsService {
 
     const userModel = this.usersService.getUserModel();
 
-    const users = await userModel.updateMany(
+    await userModel.updateMany(
       { 'activeCoupons.coupon': id },
       {
         $pull: {
@@ -155,8 +155,6 @@ export class CouponsService {
         },
       },
     );
-
-    console.log(users);
 
     return this.couponModel.findByIdAndDelete(id);
   }

@@ -12,7 +12,9 @@ import { CouponValues, PostCoupon } from '../types/coupon.type';
 import { Write } from '../types/write.type';
 
 const CouponSchema = Yup.object().shape({
-  name: Yup.string().required('Wymagane'),
+  name: Yup.string()
+    .max(50, 'Nazwa jest za długa, max 50 znaków.')
+    .required('Wymagane'),
   points: Yup.number().required('Wymagane'),
 });
 

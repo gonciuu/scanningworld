@@ -80,7 +80,7 @@ const PlacePopup = () => {
           </div>
 
           <div className="flex h-48 flex-1 flex-col justify-between">
-            <p className="flex-1 text-justify text-[.9rem] leading-6">
+            <p className="flex-1 overflow-y-auto text-justify text-[.9rem] leading-6">
               {description}
             </p>
 
