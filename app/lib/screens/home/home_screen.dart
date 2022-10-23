@@ -147,7 +147,7 @@ class HomeScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const BigTitle(
-                          text: "Poznaj naszą gminę",
+                          text: "Poznaj nasz rejon",
                           style: TextStyle(fontSize: 20),
                         ),
                         const SizedBox(height: 4),

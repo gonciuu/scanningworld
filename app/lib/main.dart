@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
             '/': (context) => const AuthWrapper(),
             SignInScreen.routeName: (ctx) => const SignInScreen(),
             RegisterScreen.routeName: (ctx) => const RegisterScreen(),
-            ForgotPasswordScreen.routeName: (ctx) => ForgotPasswordScreen(),
+            ForgotPasswordScreen.routeName: (ctx) => const ForgotPasswordScreen(),
             HomeWrapper.routeName: (ctx) => const HomeWrapper(),
             EnterPinCodeScreen.routeName: (ctx) => const EnterPinCodeScreen(),
             ChangePasswordScreen.routeName: (ctx) =>

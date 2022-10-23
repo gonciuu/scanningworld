@@ -17,7 +17,7 @@ class PermissionService {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       throw const PermissionDeniedException(
-          'Serwis lokalizacji jest wyłączony.');
+          'Serwis lokalizacji jest wyłączony. Włącz go w ustawiniach swojego telefonu.');
     }
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
